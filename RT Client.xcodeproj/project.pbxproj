@@ -1,0 +1,322 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36192CC166D7B2F00D86162 /* Cocoa.framework */; };
+		B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B36192D5166D7B2F00D86162 /* InfoPlist.strings */; };
+		B36192D9166D7B2F00D86162 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192D8166D7B2F00D86162 /* main.m */; };
+		B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B36192DB166D7B2F00D86162 /* Credits.rtf */; };
+		B36192E0166D7B2F00D86162 /* RTCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */; };
+		B36192E3166D7B3000D86162 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = B36192E1166D7B3000D86162 /* MainMenu.xib */; };
+		B36192E6166D7B3000D86162 /* RT_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B36192E4166D7B3000D86162 /* RT_Client.xcdatamodeld */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B36192C8166D7B2F00D86162 /* RT Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RT Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B36192CC166D7B2F00D86162 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		B36192CF166D7B2F00D86162 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		B36192D0166D7B2F00D86162 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		B36192D1166D7B2F00D86162 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		B36192D4166D7B2F00D86162 /* RT Client-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RT Client-Info.plist"; sourceTree = "<group>"; };
+		B36192D6166D7B2F00D86162 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B36192D8166D7B2F00D86162 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B36192DA166D7B2F00D86162 /* RT Client-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RT Client-Prefix.pch"; sourceTree = "<group>"; };
+		B36192DC166D7B2F00D86162 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		B36192DE166D7B2F00D86162 /* RTCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RTCAppDelegate.h; sourceTree = "<group>"; };
+		B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RTCAppDelegate.m; sourceTree = "<group>"; };
+		B36192E2166D7B3000D86162 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		B36192E5166D7B3000D86162 /* RT_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RT_Client.xcdatamodel; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B36192C5166D7B2F00D86162 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B36192BD166D7B2F00D86162 = {
+			isa = PBXGroup;
+			children = (
+				B36192D2166D7B2F00D86162 /* RT Client */,
+				B36192CB166D7B2F00D86162 /* Frameworks */,
+				B36192C9166D7B2F00D86162 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B36192C9166D7B2F00D86162 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B36192C8166D7B2F00D86162 /* RT Client.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B36192CB166D7B2F00D86162 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B36192CC166D7B2F00D86162 /* Cocoa.framework */,
+				B36192CE166D7B2F00D86162 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B36192CE166D7B2F00D86162 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B36192CF166D7B2F00D86162 /* AppKit.framework */,
+				B36192D0166D7B2F00D86162 /* CoreData.framework */,
+				B36192D1166D7B2F00D86162 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		B36192D2166D7B2F00D86162 /* RT Client */ = {
+			isa = PBXGroup;
+			children = (
+				B36192DE166D7B2F00D86162 /* RTCAppDelegate.h */,
+				B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */,
+				B36192E1166D7B3000D86162 /* MainMenu.xib */,
+				B36192E4166D7B3000D86162 /* RT_Client.xcdatamodeld */,
+				B36192D3166D7B2F00D86162 /* Supporting Files */,
+			);
+			path = "RT Client";
+			sourceTree = "<group>";
+		};
+		B36192D3166D7B2F00D86162 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B36192D4166D7B2F00D86162 /* RT Client-Info.plist */,
+				B36192D5166D7B2F00D86162 /* InfoPlist.strings */,
+				B36192D8166D7B2F00D86162 /* main.m */,
+				B36192DA166D7B2F00D86162 /* RT Client-Prefix.pch */,
+				B36192DB166D7B2F00D86162 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B36192C7166D7B2F00D86162 /* RT Client */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B36192E9166D7B3000D86162 /* Build configuration list for PBXNativeTarget "RT Client" */;
+			buildPhases = (
+				B36192C4166D7B2F00D86162 /* Sources */,
+				B36192C5166D7B2F00D86162 /* Frameworks */,
+				B36192C6166D7B2F00D86162 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "RT Client";
+			productName = "RT Client";
+			productReference = B36192C8166D7B2F00D86162 /* RT Client.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B36192BF166D7B2F00D86162 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = RTC;
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = INMO;
+			};
+			buildConfigurationList = B36192C2166D7B2F00D86162 /* Build configuration list for PBXProject "RT Client" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B36192BD166D7B2F00D86162;
+			productRefGroup = B36192C9166D7B2F00D86162 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B36192C7166D7B2F00D86162 /* RT Client */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B36192C6166D7B2F00D86162 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */,
+				B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */,
+				B36192E3166D7B3000D86162 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B36192C4166D7B2F00D86162 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B36192D9166D7B2F00D86162 /* main.m in Sources */,
+				B36192E0166D7B2F00D86162 /* RTCAppDelegate.m in Sources */,
+				B36192E6166D7B3000D86162 /* RT_Client.xcdatamodeld in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		B36192D5166D7B2F00D86162 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B36192D6166D7B2F00D86162 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B36192DB166D7B2F00D86162 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B36192DC166D7B2F00D86162 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		B36192E1166D7B3000D86162 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B36192E2166D7B3000D86162 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B36192E7166D7B3000D86162 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		B36192E8166D7B3000D86162 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		B36192EA166D7B3000D86162 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RT Client/RT Client-Prefix.pch";
+				INFOPLIST_FILE = "RT Client/RT Client-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		B36192EB166D7B3000D86162 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "RT Client/RT Client-Prefix.pch";
+				INFOPLIST_FILE = "RT Client/RT Client-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B36192C2166D7B2F00D86162 /* Build configuration list for PBXProject "RT Client" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B36192E7166D7B3000D86162 /* Debug */,
+				B36192E8166D7B3000D86162 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B36192E9166D7B3000D86162 /* Build configuration list for PBXNativeTarget "RT Client" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B36192EA166D7B3000D86162 /* Debug */,
+				B36192EB166D7B3000D86162 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		B36192E4166D7B3000D86162 /* RT_Client.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				B36192E5166D7B3000D86162 /* RT_Client.xcdatamodel */,
+			);
+			currentVersion = B36192E5166D7B3000D86162 /* RT_Client.xcdatamodel */;
+			path = RT_Client.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = B36192BF166D7B2F00D86162 /* Project object */;
+}
