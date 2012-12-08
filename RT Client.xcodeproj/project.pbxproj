@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		75152FD39F7642488E1B9FB1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB1DB00277340CC97CD8018 /* libPods.a */; };
+		B3479A3C166D8425008DD1EE /* RTEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = B3479A3B166D8425008DD1EE /* RTEngine.m */; };
 		B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36192CC166D7B2F00D86162 /* Cocoa.framework */; };
 		B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B36192D5166D7B2F00D86162 /* InfoPlist.strings */; };
 		B36192D9166D7B2F00D86162 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192D8166D7B2F00D86162 /* main.m */; };
@@ -20,6 +21,8 @@
 /* Begin PBXFileReference section */
 		442FCCFAA48F4502B8382CCF /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		ABB1DB00277340CC97CD8018 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3479A3A166D8425008DD1EE /* RTEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTEngine.h; sourceTree = "<group>"; };
+		B3479A3B166D8425008DD1EE /* RTEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTEngine.m; sourceTree = "<group>"; };
 		B36192C8166D7B2F00D86162 /* RT Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RT Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B36192CC166D7B2F00D86162 /* Cocoa.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B36192CF166D7B2F00D86162 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -115,6 +118,8 @@
 		B36192FF166D7FEA00D86162 /* API Engine */ = {
 			isa = PBXGroup;
 			children = (
+				B3479A3A166D8425008DD1EE /* RTEngine.h */,
+				B3479A3B166D8425008DD1EE /* RTEngine.m */,
 			);
 			name = "API Engine";
 			sourceTree = "<group>";
@@ -205,6 +210,7 @@
 				B36192D9166D7B2F00D86162 /* main.m in Sources */,
 				B36192E0166D7B2F00D86162 /* RTCAppDelegate.m in Sources */,
 				B36192E6166D7B3000D86162 /* RT_Client.xcdatamodeld in Sources */,
+				B3479A3C166D8425008DD1EE /* RTEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
