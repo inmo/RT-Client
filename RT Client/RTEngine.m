@@ -28,6 +28,7 @@
     }
 }
 
+// TODO: #0 get authentication to work
 - (void)_doAuthenticate
 {
     for (NSHTTPCookie * cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:RT_SERVER_URL])

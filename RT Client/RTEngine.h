@@ -9,17 +9,19 @@
 #import <AFNetworking/AFNetworking.h>
 
 typedef void (^RTTemporaryBlock)();
+typedef void (^RTErrorBlock)(NSError * error);
 
 @interface RTEngine : AFHTTPClient
 
-// -- /REST/1.0/ticket/<ticket-id>/show
-- (void)requestTicketDetail:(id)ticketID
-                 completion:(RTTemporaryBlock)completionBlock
-                      error:(RTTemporaryBlock)errorBlock
+// TODO: #1 get a list of ticket/id's via the "/search/ticket..." endpoint
+- (void)requestSelfServiceTickets:(void (^)(NSArray * tickets))completionBlock
+                            error:(RTErrorBlock)errorBlock
 ;
 
-- (void)requestQueues:(void (^)(NSArray * queues))completionBlock
-                error:(RTTemporaryBlock)errorBlock
+// TODO: #2 get attachments, metadata, and related tickets to build timeline view
+- (void)requestTicketDetails:(id)ticket
+                  completion:(void (^)())completionBlock
+                       error:(RTErrorBlock)errorBlock
 ;
 
 @property (nonatomic) BOOL isAuthenticated;
