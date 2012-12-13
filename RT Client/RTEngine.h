@@ -6,7 +6,7 @@
 //  Copyright (c) 2012 INMO. All rights reserved.
 //
 
-#import <AFNetworking/AFHTTPClient.h>
+#import <AFNetworking/AFNetworking.h>
 
 typedef void (^RTTemporaryBlock)();
 
@@ -17,5 +17,14 @@ typedef void (^RTTemporaryBlock)();
                  completion:(RTTemporaryBlock)completionBlock
                       error:(RTTemporaryBlock)errorBlock
 ;
+
+- (void)requestQueues:(void (^)(NSArray * queues))completionBlock
+                error:(RTTemporaryBlock)errorBlock
+;
+
+@property (nonatomic) BOOL isAuthenticated;
+
+- (void)setUsername:(NSString *)username password:(NSString *)password;
+- (void)removeUsernameAndPassword;
 
 @end

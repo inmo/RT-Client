@@ -7,9 +7,11 @@
 //
 
 #import "RTCAppDelegate.h"
-#import <AFNetworking/AFNetworking.h> // TODO: Remove me later
+#import "RTEngine.h"
 
-@implementation RTCAppDelegate
+@implementation RTCAppDelegate {
+    RTEngine * engine;
+}
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -17,20 +19,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // TODO: Remove me later
-    // This is just demo code for how to use the HTTP library
-    NSURL *url = [NSURL URLWithString:@"https://alpha-api.app.net/stream/0/posts/stream/global"];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    
-    AFJSONRequestOperation *operation =
-    [AFJSONRequestOperation
-     JSONRequestOperationWithRequest:request
-     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-         NSLog(@"App.net Global Stream: %@", JSON);
-     }
-     failure:nil];
-    
-    [operation start];
+    engine = [[RTEngine alloc] init];
 }
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "com.inmo.RT_Client" in the user's Application Support directory.
