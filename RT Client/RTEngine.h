@@ -8,24 +8,22 @@
 
 #import <AFNetworking/AFNetworking.h>
 
-typedef void (^RTTemporaryBlock)();
 typedef void (^RTErrorBlock)(NSError * error);
 
 @interface RTEngine : AFHTTPClient
 
+@property (nonatomic, readonly) BOOL isAuthenticated;
+
 // TODO: #1 get a list of ticket/id's via the "/search/ticket..." endpoint
 - (void)requestSelfServiceTickets:(void (^)(NSArray * tickets))completionBlock
-                            error:(RTErrorBlock)errorBlock
-;
+                            error:(RTErrorBlock)errorBlock;
 
 // TODO: #2 get attachments, metadata, and related tickets to build timeline view
 - (void)requestTicketDetails:(id)ticket
                   completion:(void (^)())completionBlock
-                       error:(RTErrorBlock)errorBlock
-;
+                       error:(RTErrorBlock)errorBlock;
 
-@property (nonatomic) BOOL isAuthenticated;
-
+// TODO: These need written, using keychain for storage
 - (void)setUsername:(NSString *)username password:(NSString *)password;
 - (void)removeUsernameAndPassword;
 

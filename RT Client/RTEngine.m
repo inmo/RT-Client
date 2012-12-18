@@ -10,66 +10,97 @@
 
 #define RT_SERVER_URL [NSURL URLWithString:@"http://sulfur.rose-hulman.edu/rt"]
 
-@interface RTEngine () {
-    
-}
-
-- (void)_doAuthenticate;
-
+@interface RTEngine (/* Private */)
 @end
 
 @implementation RTEngine
 
-- (id)init
+@synthesize isAuthenticated = _isAuthenticated;
+
+- (id)init;
 {
     if ((self = [super initWithBaseURL:RT_SERVER_URL]))
     {
-        [self _doAuthenticate];
+        [self _doLogin]; // DEBUG: For now, just login immediately
     }
+    
+    return self;
 }
 
-// TODO: #0 get authentication to work
-- (void)_doAuthenticate
+#pragma mark - API Endpoints
+
+- (void)requestSelfServiceTickets:(void (^)(NSArray * tickets))completionBlock
+                            error:(RTErrorBlock)errorBlock;
 {
-    for (NSHTTPCookie * cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:RT_SERVER_URL])
-    {
+    // TODO: #1 get a list of ticket/id's via the "/search/ticket..." endpoint
+}
+
+- (void)requestTicketDetails:(id)ticket
+                  completion:(void (^)())completionBlock
+                       error:(RTErrorBlock)errorBlock;
+{
+    // TODO: #2 get attachments, metadata, and related tickets to build timeline view
+}
+
+#pragma mark - Authentication (Keychain)
+
+- (void)setUsername:(NSString *)username password:(NSString *)password;
+{
+    // TODO: Implement this method stub
+}
+
+- (void)removeUsernameAndPassword;
+{
+    // TODO: Implement this method stub
+}
+
+- (NSDictionary *)_retrieveCredientialsDictionary;
+{
+    // DEBUG: Replace this with working keychain code
+    return @{ @"user": @"root", @"pass": @"password" };
+}
+
+#pragma mark - Authentication (Server)
+
+- (void)_doLogin;
+{
+    // TODO: Retrieve credientals from keychain
+    NSDictionary * credientials = [self _retrieveCredientialsDictionary];
+    
+    [self postPath:@""
+        parameters:credientials
+           success:^(AFHTTPRequestOperation * operation, id responseObject) {
+               // TODO: Logic to determine if login was a success or failure
+               /* Might be able to spoof a browser user agent in the request.
+                * I noticed that I was getting a 302 response when posting
+                * to /NoAuth/Login.html from the browser, but only a 200
+                * when doing it from the app. */
+               _isAuthenticated = YES;
+               
+               // DEBUG: Just to prove that it actually worked
+               [self getPath:@"REST/1.0/ticket/1"
+                  parameters:nil
+                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                         NSLog(@"Response String: %@", operation.responseString);
+                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                         NSLog(@"Error: %@", error);
+                     }];
+           }
+           failure:^(AFHTTPRequestOperation * operation, NSError * error) {
+               // TODO: This needs better error handeling
+               NSLog(@"Authentication failed: %@", error);
+           }];
+}
+
+- (void)_doLogout;
+{
+    // TODO: POST to /REST/1.0/logout to clear session on the server
+    NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:RT_SERVER_URL];
+    [cookies enumerateObjectsUsingBlock:^(NSHTTPCookie * cookie, NSUInteger idx, BOOL *stop) {
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
-    }
+    }];
     
-    [self
-     postPath:@"NoAuth/Login.html"
-     parameters:@{@"user": @"savagejs", @"password":@"password"}
-     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         NSLog(@"Posting to %@", [[operation request] URL]);
-         NSLog(@"Login success: %@", [[operation response] allHeaderFields]);
-         
-         for (NSHTTPCookie * cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:RT_SERVER_URL])
-         {
-             if ([[cookie name] isEqualToString:@"RT_SID_sulfur.rose-hulman.edu.80"])
-                 [self setDefaultHeader:@"Cookie" value:[NSString stringWithFormat:@"%@=%@", [cookie name], [cookie value]]];   
-         }
-         
-         [self
-          getPath:@"REST/1.0/ticket/1"
-          parameters:@{@"user": @"savagejs", @"password":@"password"}
-          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-              NSLog(@"Request headers: %@", [[operation request] allHTTPHeaderFields]);
-              NSLog(@"Search success: %@", [[operation response] allHeaderFields]);
-              NSLog(@"Response: %@", [operation responseString]);
-          } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-              NSLog(@"Failure");
-          }];
-         
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-         NSLog(@"Unexpected error: %@", error);
-     }];
-}
-
-- (void)requestTicket:(NSString *)ticketID
-           completion:(void (^)(NSArray *))completionBlock
-                error:(void (^)(NSError *))errorBlock
-{
-    
+    _isAuthenticated = NO;
 }
 
 @end
