@@ -21,10 +21,33 @@
 {
     if ((self = [super initWithBaseURL:RT_SERVER_URL]))
     {
-        [self _doLogin]; // DEBUG: For now, just login immediately
+        
     }
     
     return self;
+}
+
+- (void)attemptInitialLogin:(RTBasicBlock)initialLoginBlock
+          onLoginCompletion:(void (^)(BOOL didSucceed))loginCompletionBlock
+        onVerifyCredentials:(void (^)(NSWindow * credentialsWindow))verifyCredentialsBlock;
+{
+    NSAssert(initialLoginBlock != nil, @"cannot have a nil initialLoginBlock");
+    NSAssert(loginCompletionBlock != nil, @"cannot have a nil loginCompletionBlock");
+    NSAssert(verifyCredentialsBlock != nil, @"cannot have a nil verifyCredentialsBlock");
+    
+    initialLoginBlock();
+    
+    [self _doLogin:^(BOOL credentialsFailed, BOOL networkFailed) {
+        onLoginCompletion(credentialsFailed || networkFailed);
+        
+        if (credentialsFailed)
+        {
+            NSWindow * aWindow = [[NSWindow alloc] init];
+            [aWindow setFrame:NSMakeRect(0, 0, 320, 320) display:YES];
+            
+            verifyCredentialsBlock(aWindow);
+        }
+    }];
 }
 
 #pragma mark - API Endpoints
@@ -62,10 +85,14 @@
 
 #pragma mark - Authentication (Server)
 
-- (void)_doLogin;
+- (void)_doLogin:(void (^)(BOOL credentialsFailed, BOOL networkFailed))completionBlock;
 {
     // TODO: Retrieve credientals from keychain
     NSDictionary * credientials = [self _retrieveCredientialsDictionary];
+    
+    __block BOOL _isAuthenticated = NO;
+    
+    _isAuthenticated = YES;
     
     [self postPath:@""
         parameters:credientials
@@ -76,6 +103,8 @@
                 * to /NoAuth/Login.html from the browser, but only a 200
                 * when doing it from the app. */
                _isAuthenticated = YES;
+               
+               
                
                // DEBUG: Just to prove that it actually worked
                [self getPath:@"REST/1.0/ticket/1"
