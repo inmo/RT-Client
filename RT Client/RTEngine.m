@@ -33,6 +33,11 @@
                             error:(RTErrorBlock)errorBlock;
 {
     // TODO: #1 get a list of ticket/id's via the "/search/ticket..." endpoint
+    
+    
+    
+    
+    
 }
 
 - (void)requestTicketDetails:(id)ticket
@@ -40,6 +45,23 @@
                        error:(RTErrorBlock)errorBlock;
 {
     // TODO: #2 get attachments, metadata, and related tickets to build timeline view
+    
+    NSInteger ticketNo = 1;
+    NSString *linkStr = [NSString stringWithFormat:@"REST/1.0/ticket/%d/show", ticketNo];
+    
+    
+    
+    //now i am trying to get the data for a single ticket
+    [self postPath:linkStr
+        parameters:nil
+           success:^(AFHTTPRequestOperation * operation, id responseObject) {
+               NSLog(@"requestTicketDetails first step sucess. The operation response string is: %@", operation.responseString);
+           }
+           failure:^(AFHTTPRequestOperation * operation, NSError * error) {
+               // TODO: This needs better error handeling
+               NSLog(@"get ticket data failed: %@", error);
+           }];
+    
 }
 
 #pragma mark - Authentication (Keychain)
@@ -77,19 +99,24 @@
                 * when doing it from the app. */
                _isAuthenticated = YES;
                
+               //testing for requestTicketDetails:
+               [self requestTicketDetails:nil completion:nil error:nil];
+               //
+               
                // DEBUG: Just to prove that it actually worked
-               [self getPath:@"REST/1.0/ticket/1"
-                  parameters:nil
-                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                         NSLog(@"Response String: %@", operation.responseString);
-                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                         NSLog(@"Error: %@", error);
-                     }];
+//               [self getPath:@"REST/1.0/ticket/1"
+//                  parameters:nil
+//                     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+//                         NSLog(@"Response String: %@", operation.responseString);
+//                     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+//                         NSLog(@"Error: %@", error);
+//                     }];
            }
            failure:^(AFHTTPRequestOperation * operation, NSError * error) {
                // TODO: This needs better error handeling
                NSLog(@"Authentication failed: %@", error);
            }];
+
 }
 
 - (void)_doLogout;
