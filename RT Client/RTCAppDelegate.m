@@ -7,8 +7,11 @@
 //
 
 #import "RTCAppDelegate.h"
+#import "RTCLoginWindowController.h"
 
-@implementation RTCAppDelegate
+@implementation RTCAppDelegate {
+    RTCLoginWindowController *login;
+}
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -16,7 +19,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Insert code here to initialize your application
+    login = [[RTCLoginWindowController alloc ] initWithWindowNibName:@"RTCLoginWindowController"];
+    [login showWindow:nil];
 }
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "com.inmo.RT_Client" in the user's Application Support directory.
