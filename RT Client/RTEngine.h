@@ -9,10 +9,16 @@
 #import <AFNetworking/AFNetworking.h>
 
 typedef void (^RTErrorBlock)(NSError * error);
+@protocol RTEngineDelegate;
 
 @interface RTEngine : AFHTTPClient
 
-@property (nonatomic, readonly) BOOL isAuthenticated;
+@property (nonatomic, weak) id <RTEngineDelegate> delegate;
+
+@property (nonatomic, readonly, getter = isAuthenticated) BOOL authenticated;
+@property (nonatomic, readonly) BOOL hasCredientials;
+
+- (void)refreshLogin;
 
 // TODO: #1 get a list of ticket/id's via the "/search/ticket..." endpoint
 - (void)requestSelfServiceTickets:(void (^)(NSArray * tickets))completionBlock
@@ -20,11 +26,22 @@ typedef void (^RTErrorBlock)(NSError * error);
 
 // TODO: #2 get attachments, metadata, and related tickets to build timeline view
 - (void)requestTicketDetails:(id)ticket
-                  completion:(void (^)())completionBlock
+                  completion:(void (^)(/* signature not yet known */))completionBlock
                        error:(RTErrorBlock)errorBlock;
 
 // TODO: These need written, using keychain for storage
 - (void)setUsername:(NSString *)username password:(NSString *)password;
 - (void)removeUsernameAndPassword;
+
+@end
+
+@protocol RTEngineDelegate <NSObject>
+
+@required
+- (void)apiEngineWillAttemptLogin:(RTEngine *)engine;
+- (void)apiEngineDidAttemptLogin:(RTEngine *)engine;
+- (void)apiEngineWillLogout:(RTEngine *)engine;
+- (void)apiEngineDidLogout:(RTEngine *)engine;
+- (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindow *)authWindow;
 
 @end

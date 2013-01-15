@@ -9,9 +9,12 @@
 #import "RTCAppDelegate.h"
 #import "RTEngine.h"
 
-@implementation RTCAppDelegate {
+@interface RTCAppDelegate () <RTEngineDelegate> {
     RTEngine * engine;
 }
+@end
+
+@implementation RTCAppDelegate
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -20,7 +23,50 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     engine = [[RTEngine alloc] init];
+    engine.delegate = self;
+    
+    [engine refreshLogin];
 }
+
+- (void)apiEngineWillAttemptLogin:(RTEngine *)engine
+{
+    NSLog(@"API Engine Will Attempt Login");
+}
+
+- (void)apiEngineDidAttemptLogin:(RTEngine *)engine
+{
+    NSLog(@"API Engine Did Attempt Login");
+}
+
+- (void)apiEngineWillLogout:(RTEngine *)engine
+{
+    NSLog(@"API Engine Will Logout");
+}
+
+- (void)apiEngineDidLogout:(RTEngine *)engine
+{
+    NSLog(@"API Engine Did Logout");
+}
+
+- (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindow *)authWindow
+{
+    NSLog(@"API Engine Requires Authentication: %p", authWindow);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "com.inmo.RT_Client" in the user's Application Support directory.
 - (NSURL *)applicationFilesDirectory
@@ -95,7 +141,7 @@
     return _persistentStoreCoordinator;
 }
 
-// Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.) 
+// Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
 - (NSManagedObjectContext *)managedObjectContext
 {
     if (_managedObjectContext) {
@@ -113,7 +159,7 @@
     }
     _managedObjectContext = [[NSManagedObjectContext alloc] init];
     [_managedObjectContext setPersistentStoreCoordinator:coordinator];
-
+    
     return _managedObjectContext;
 }
 
@@ -156,13 +202,13 @@
     
     NSError *error = nil;
     if (![[self managedObjectContext] save:&error]) {
-
-        // Customize this code block to include application-specific recovery steps.              
+        
+        // Customize this code block to include application-specific recovery steps.
         BOOL result = [sender presentError:error];
         if (result) {
             return NSTerminateCancel;
         }
-
+        
         NSString *question = NSLocalizedString(@"Could not save changes while quitting. Quit anyway?", @"Quit without saves error question message");
         NSString *info = NSLocalizedString(@"Quitting now will lose any changes you have made since the last successful save", @"Quit without saves error question info");
         NSString *quitButton = NSLocalizedString(@"Quit anyway", @"Quit anyway button title");
@@ -172,14 +218,14 @@
         [alert setInformativeText:info];
         [alert addButtonWithTitle:quitButton];
         [alert addButtonWithTitle:cancelButton];
-
+        
         NSInteger answer = [alert runModal];
         
         if (answer == NSAlertAlternateReturn) {
             return NSTerminateCancel;
         }
     }
-
+    
     return NSTerminateNow;
 }
 
