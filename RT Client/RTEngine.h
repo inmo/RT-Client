@@ -13,6 +13,8 @@ typedef void (^RTErrorBlock)(NSError * error);
 
 @interface RTEngine : AFHTTPClient
 
++ (RTEngine *)sharedEngine;
+
 @property (nonatomic, weak) id <RTEngineDelegate> delegate;
 
 @property (nonatomic, readonly, getter = isAuthenticated) BOOL authenticated;

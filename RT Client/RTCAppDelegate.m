@@ -9,9 +9,7 @@
 #import "RTCAppDelegate.h"
 #import "RTEngine.h"
 
-@interface RTCAppDelegate () <RTEngineDelegate> {
-    RTEngine * engine;
-}
+@interface RTCAppDelegate () <RTEngineDelegate>
 @end
 
 @implementation RTCAppDelegate
@@ -22,7 +20,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    engine = [[RTEngine alloc] init];
+    RTEngine * engine = [RTEngine sharedEngine];
     engine.delegate = self;
     
     [engine refreshLogin];
@@ -35,12 +33,12 @@
 
 - (void)apiEngineDidAttemptLogin:(RTEngine *)engine
 {
-    NSLog(@"API Engine Did Attempt Login");
+    NSLog(@"API Engine Did Attempt Login => %i", engine.isAuthenticated);
 }
 
 - (void)apiEngineWillLogout:(RTEngine *)engine
 {
-    NSLog(@"API Engine Will Logout");
+    NSLog(@"API Engine Will Logout => %i", engine.isAuthenticated);
 }
 
 - (void)apiEngineDidLogout:(RTEngine *)engine

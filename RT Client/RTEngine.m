@@ -25,6 +25,18 @@
 
 @implementation RTEngine
 
+static RTEngine * __staticEngine = nil;
+
++ (void)initialize
+{
+    __staticEngine = [[self alloc] init];
+}
+
++ (RTEngine *)sharedEngine
+{
+    return __staticEngine;
+}
+
 - (id)init;
 {
     if ((self = [super initWithBaseURL:RT_SERVER_URL]))
