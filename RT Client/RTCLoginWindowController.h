@@ -10,12 +10,16 @@
 
 @interface RTCLoginWindowController : NSWindowController{
     IBOutlet NSButton *login;
-    
+    IBOutlet NSButton *close;
+    IBOutlet NSTextField *username;
+    IBOutlet NSTextField *password;
     
 }
 
 - (IBAction)DoLogin:(id)sender;
-- (IBAction)closeLoginButton:(id)sender;
+- (IBAction)CloseLoginButton:(id)sender;
+- (IBAction)EnterUsername:(id)sender;
+- (IBAction)EnterPassword:(id)sender;
 
 
 

@@ -30,20 +30,32 @@
     NSLog(@"You are logged in");
 }
 
-- (IBAction)closeLoginButton:(id)sender{
+- (IBAction)CloseLoginButton:(id)sender{
     [self close];
     
 }
 
+- (IBAction)EnterUsername:(id)sender{
+    NSString *user = @"";
+    user = username.stringValue;
+    //Check for info verification
+}
 
+- (IBAction)EnterPassword:(id)sender{
+    NSString *pass = @"";
+    pass = password.stringValue;
+    //Check for info verification
+}
     
 
 
 - (void)windowDidLoad
 {
     [super windowDidLoad];
+
     
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+    // Implement this method to handle any initialization after your
+    // window controller's window has been loaded from its nib file.
 }
 
 @end
