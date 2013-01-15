@@ -9,9 +9,12 @@
 #import "RTCAppDelegate.h"
 #import "RTEngine.h"
 
-@implementation RTCAppDelegate {
+@interface RTCAppDelegate () <RTEngineDelegate> {
     RTEngine * engine;
 }
+@end
+
+@implementation RTCAppDelegate
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -20,21 +23,50 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     engine = [[RTEngine alloc] init];
+    engine.delegate = self;
     
-    [engine attemptInitialLogin:^{
-        // show logging-in window
-    } onLoginCompletion:^(BOOL didSucceed) {
-        // hide logging-in window
-        if (didSucceed) {
-            // show main UI
-        }
-    } onVerifyCredentials:^(NSWindow * credentialsWindow) {
-        // TODO: show credentialsWindow
-        [(id)credentialsWindow setCompletionBlock:^{
-            // TODO: hide credentialsWindow
-        }];
-    }];
+    [engine refreshLogin];
 }
+
+- (void)apiEngineWillAttemptLogin:(RTEngine *)engine
+{
+    NSLog(@"API Engine Will Attempt Login");
+}
+
+- (void)apiEngineDidAttemptLogin:(RTEngine *)engine
+{
+    NSLog(@"API Engine Did Attempt Login");
+}
+
+- (void)apiEngineWillLogout:(RTEngine *)engine
+{
+    NSLog(@"API Engine Will Logout");
+}
+
+- (void)apiEngineDidLogout:(RTEngine *)engine
+{
+    NSLog(@"API Engine Did Logout");
+}
+
+- (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindow *)authWindow
+{
+    NSLog(@"API Engine Requires Authentication: %p", authWindow);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Returns the directory the application uses to store the Core Data store file. This code uses a directory named "com.inmo.RT_Client" in the user's Application Support directory.
 - (NSURL *)applicationFilesDirectory
