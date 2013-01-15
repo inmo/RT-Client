@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2BC6EE1D16A5FDB7005B43DD /* RTParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BC6EE1C16A5FDB7005B43DD /* RTParser.m */; };
+		2BC6EE2116A60CAA005B43DD /* testingString1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 2BC6EE2016A60CAA005B43DD /* testingString1.txt */; };
 		75152FD39F7642488E1B9FB1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB1DB00277340CC97CD8018 /* libPods.a */; };
 		B3479A3C166D8425008DD1EE /* RTEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = B3479A3B166D8425008DD1EE /* RTEngine.m */; };
 		B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36192CC166D7B2F00D86162 /* Cocoa.framework */; };
@@ -19,6 +21,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2BC6EE1B16A5FDB7005B43DD /* RTParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTParser.h; sourceTree = "<group>"; };
+		2BC6EE1C16A5FDB7005B43DD /* RTParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTParser.m; sourceTree = "<group>"; };
+		2BC6EE2016A60CAA005B43DD /* testingString1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = testingString1.txt; sourceTree = "<group>"; };
 		442FCCFAA48F4502B8382CCF /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		ABB1DB00277340CC97CD8018 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3479A3A166D8425008DD1EE /* RTEngine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTEngine.h; sourceTree = "<group>"; };
@@ -52,6 +57,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2BC6EE1F16A5FDD6005B43DD /* Parser */ = {
+			isa = PBXGroup;
+			children = (
+				2BC6EE1B16A5FDB7005B43DD /* RTParser.h */,
+				2BC6EE1C16A5FDB7005B43DD /* RTParser.m */,
+				2BC6EE2016A60CAA005B43DD /* testingString1.txt */,
+			);
+			name = Parser;
+			sourceTree = "<group>";
+		};
 		B36192BD166D7B2F00D86162 = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +108,7 @@
 		B36192D2166D7B2F00D86162 /* RT Client */ = {
 			isa = PBXGroup;
 			children = (
+				2BC6EE1F16A5FDD6005B43DD /* Parser */,
 				B36192FF166D7FEA00D86162 /* API Engine */,
 				B36192DE166D7B2F00D86162 /* RTCAppDelegate.h */,
 				B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */,
@@ -180,6 +196,7 @@
 				B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */,
 				B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */,
 				B36192E3166D7B3000D86162 /* MainMenu.xib in Resources */,
+				2BC6EE2116A60CAA005B43DD /* testingString1.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,6 +228,7 @@
 				B36192E0166D7B2F00D86162 /* RTCAppDelegate.m in Sources */,
 				B36192E6166D7B3000D86162 /* RT_Client.xcdatamodeld in Sources */,
 				B3479A3C166D8425008DD1EE /* RTEngine.m in Sources */,
+				2BC6EE1D16A5FDB7005B43DD /* RTParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

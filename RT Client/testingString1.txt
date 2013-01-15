@@ -1,0 +1,23 @@
+RT/3.4.5 200 Ok
+
+id: ticket/<ticket-id>
+Queue: <...>
+Owner: <...>
+Creator: <...>
+Subject: <...>
+Status: <...>
+Priority: <...>
+InitialPriority: <...>
+FinalPriority: <...>
+Requestors: <...>
+Cc: <...>
+AdminCc: <...>
+Created: <...>
+Starts: <...>
+Started: <...>
+Due: <...>
+Resolved: <...>
+Told: <...>
+TimeEstimated: <...>
+TimeWorked: <...>
+TimeLeft: <...>
