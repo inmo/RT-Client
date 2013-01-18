@@ -32,7 +32,9 @@ typedef void (^RTErrorBlock)(NSError * error);
                        error:(RTErrorBlock)errorBlock;
 
 // TODO: These need written, using keychain for storage
-- (void)setUsername:(NSString *)username password:(NSString *)password;
+- (void)validateUsername:(NSString *)username
+                password:(NSString *)password
+              completion:(void (^)(BOOL verified))completionBlock;
 - (void)removeUsernameAndPassword;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "RTEngine.h"
+#import "RTKeychainEntry.h"
 
 #define RT_SERVER_URL [NSURL URLWithString:@"http://sulfur.rose-hulman.edu/rt"]
 #define SAFARI_USER_AGENT @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.17 (KHTML, like Gecko) Version/6.0.2 Safari/536.26.17"
@@ -20,6 +21,7 @@
 @interface RTEngine (/* Private */)
 
 @property (nonatomic, assign, readwrite, getter = isAuthenticated) BOOL authenticated;
+@property (nonatomic, strong) RTKeychainEntry * keychainEntry;
 
 @end
 
@@ -41,31 +43,14 @@ static RTEngine * __staticEngine = nil;
 {
     if ((self = [super initWithBaseURL:RT_SERVER_URL]))
     {
+        self.keychainEntry = [RTKeychainEntry entryForService:@"request-tracker" account:@"default"];
+        
 //        [self setDefaultHeader:@"User-Agent" value:SAFARI_USER_AGENT];
 //        [self setDefaultHeader:@"Referer" value:@"http://sulfur.rose-hulman.edu/rt/"];
 //        [self setDefaultHeader:@"Origin" value:@"http://sulfur.rose-hulman.edu"];
     }
     
-    
     return self;
-}
-
-- (void)refreshLogin
-{
-    NSAssert(self.delegate != nil, @"RTEngine must have a delegate set before operations can take place");
-    
-    [self _doLogin:^(BOOL credentialsFailed, BOOL networkFailed) {
-        // TODO: Continue these error values through the app
-        DISPATCH_DELEGATE([self.delegate apiEngineDidAttemptLogin:self]);
-        
-        if (credentialsFailed)
-        {
-            NSWindow * aWindow = [[NSWindow alloc] init];
-            [aWindow setFrame:NSMakeRect(0, 0, 320, 320) display:YES];
-            
-            DISPATCH_DELEGATE([self.delegate apiEngine:self requiresAuthentication:aWindow]);
-        }
-    }];
 }
 
 #pragma mark - API Endpoints
@@ -107,23 +92,41 @@ static RTEngine * __staticEngine = nil;
 
 #pragma mark - Authentication (Keychain)
 
-- (void)setUsername:(NSString *)username password:(NSString *)password;
+- (void)validateUsername:(NSString *)username
+                password:(NSString *)password
+              completion:(void (^)(BOOL verified))completionBlock;
 {
-    // TODO: Implement this method stub
+    self.keychainEntry.contents = @{
+        @"user" : username,
+        @"password" : password
+    };
 }
 
 - (void)removeUsernameAndPassword;
 {
-    // TODO: Implement this method stub
-}
-
-- (NSDictionary *)_retrieveCredientialsDictionary;
-{
-    // DEBUG: Replace this with working keychain code
-    return @{ @"user": @"root", @"pass": @"password" };
+    [self _doLogout];
+    self.keychainEntry.contents = nil;
 }
 
 #pragma mark - Authentication (Server)
+
+- (void)refreshLogin
+{
+    NSAssert(self.delegate != nil, @"RTEngine must have a delegate set before operations can take place");
+    
+    [self _doLogin:^(BOOL credentialsFailed, BOOL networkFailed) {
+        // TODO: Continue these error values through the app
+        DISPATCH_DELEGATE([self.delegate apiEngineDidAttemptLogin:self]);
+        
+        if (credentialsFailed)
+        {
+            NSWindow * aWindow = [[NSWindow alloc] init];
+            [aWindow setFrame:NSMakeRect(0, 0, 320, 320) display:YES];
+            
+            DISPATCH_DELEGATE([self.delegate apiEngine:self requiresAuthentication:aWindow]);
+        }
+    }];
+}
 
 - (void)_doLogin:(void (^)(BOOL credentialsFailed, BOOL networkFailed))completionBlock;
 {
@@ -132,7 +135,7 @@ static RTEngine * __staticEngine = nil;
     DISPATCH_DELEGATE([self.delegate apiEngineWillAttemptLogin:self]);
     
     // TODO: Retrieve credientals from keychain
-    NSMutableDictionary * credientials = [self _retrieveCredientialsDictionary].mutableCopy;
+    NSMutableDictionary * credientials = self.keychainEntry.contents.mutableCopy;
     credientials[@"next"] = @"c2eb5af67a20123fbac8cd57aa94e040"; // TODO: Figure this out more
     
     NSURLRequest * request = [self requestWithMethod:@"POST" path:@"NoAuth/Login.html" parameters:credientials];
