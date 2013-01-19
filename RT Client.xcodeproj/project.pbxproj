@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0A0211A316A606EC00054395 /* RT_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0A0211A116A606EC00054395 /* RT_Client.xcdatamodeld */; };
 		0A0211A816A6077F00054395 /* MainMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0211A616A6077F00054395 /* MainMenu.m */; };
-		0A0211A916A6077F00054395 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A0211A716A6077F00054395 /* MainMenu.xib */; };
 		0A393BA416824C1500DEAFE2 /* RTEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A393BA316824C1500DEAFE2 /* RTEngine.m */; };
 		0A393BA8168255CC00DEAFE2 /* RTCLoginWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A393BA6168255CC00DEAFE2 /* RTCLoginWindowController.m */; };
 		0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A393BA7168255CC00DEAFE2 /* RTCLoginWindowController.xib */; };
@@ -20,13 +19,13 @@
 		B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B36192DB166D7B2F00D86162 /* Credits.rtf */; };
 		B36192E0166D7B2F00D86162 /* RTCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */; };
 		B36192E6166D7B3000D86162 /* RT_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B36192E4166D7B3000D86162 /* RT_Client.xcdatamodeld */; };
+		B3AB10C416AB2177004F1F17 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3AB10C316AB2177004F1F17 /* MainMenu.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0A0211A216A606EC00054395 /* RT_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RT_Client.xcdatamodel; sourceTree = "<group>"; };
 		0A0211A516A6077F00054395 /* MainMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenu.h; sourceTree = "<group>"; };
 		0A0211A616A6077F00054395 /* MainMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenu.m; sourceTree = "<group>"; };
-		0A0211A716A6077F00054395 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		0A393BA116824B6B00DEAFE2 /* RTEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RTEngine.h; sourceTree = "<group>"; };
 		0A393BA316824C1500DEAFE2 /* RTEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTEngine.m; sourceTree = "<group>"; };
 		0A393BA5168255CC00DEAFE2 /* RTCLoginWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCLoginWindowController.h; sourceTree = "<group>"; };
@@ -47,6 +46,7 @@
 		B36192DE166D7B2F00D86162 /* RTCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RTCAppDelegate.h; sourceTree = "<group>"; };
 		B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RTCAppDelegate.m; sourceTree = "<group>"; };
 		B36192E5166D7B3000D86162 /* RT_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RT_Client.xcdatamodel; sourceTree = "<group>"; };
+		B3AB10C316AB2177004F1F17 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +109,7 @@
 				0A393BA116824B6B00DEAFE2 /* RTEngine.h */,
 				0A0211A516A6077F00054395 /* MainMenu.h */,
 				0A0211A616A6077F00054395 /* MainMenu.m */,
-				0A0211A716A6077F00054395 /* MainMenu.xib */,
+				B3AB10C316AB2177004F1F17 /* MainMenu.xib */,
 				0A0211A116A606EC00054395 /* RT_Client.xcdatamodeld */,
 				0A393BA5168255CC00DEAFE2 /* RTCLoginWindowController.h */,
 				0A393BA6168255CC00DEAFE2 /* RTCLoginWindowController.m */,
@@ -196,7 +196,7 @@
 				B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */,
 				B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */,
 				0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */,
-				0A0211A916A6077F00054395 /* MainMenu.xib in Resources */,
+				B3AB10C416AB2177004F1F17 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
