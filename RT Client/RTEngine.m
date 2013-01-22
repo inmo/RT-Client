@@ -12,6 +12,8 @@
 #define RT_SERVER_URL [NSURL URLWithString:@"http://sulfur.rose-hulman.edu/rt"]
 #define SAFARI_USER_AGENT @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.17 (KHTML, like Gecko) Version/6.0.2 Safari/536.26.17"
 
+// TODO: Docs were unclear about the validity of calling dispatch_get_current_queue() for production code.
+// Is this bad practice? Is there a better way to ensure execution on main thread?
 #define DISPATCH_DELEGATE(CODE) do { if (self.delegate) { \
     if (dispatch_get_current_queue() != dispatch_get_main_queue()) { \
         dispatch_async(dispatch_get_main_queue(), ^{ CODE; }); \
@@ -21,7 +23,7 @@
 @interface RTEngine (/* Private */)
 
 @property (nonatomic, assign, readwrite, getter = isAuthenticated) BOOL authenticated;
-@property (nonatomic, strong) RTKeychainEntry * keychainEntry;
+@property (nonatomic, strong, readonly) RTKeychainEntry * keychainEntry;
 
 @end
 
@@ -43,68 +45,39 @@ static RTEngine * __staticEngine = nil;
 {
     if ((self = [super initWithBaseURL:RT_SERVER_URL]))
     {
-        self.keychainEntry = [RTKeychainEntry entryForService:@"request-tracker" account:@"default"];
-        
-//        [self setDefaultHeader:@"User-Agent" value:SAFARI_USER_AGENT];
-//        [self setDefaultHeader:@"Referer" value:@"http://sulfur.rose-hulman.edu/rt/"];
-//        [self setDefaultHeader:@"Origin" value:@"http://sulfur.rose-hulman.edu"];
+        self->_keychainEntry = [RTKeychainEntry entryForService:@"request-tracker" account:@"default"];
     }
     
     return self;
 }
 
-#pragma mark - API Endpoints
-
-- (void)requestSelfServiceTickets:(void (^)(NSArray * tickets))completionBlock
-                            error:(RTErrorBlock)errorBlock;
-{
-    // TODO: #1 get a list of ticket/id's via the "/search/ticket..." endpoint
-    
-    
-    
-    
-    
-}
-
-- (void)requestTicketDetails:(id)ticket
-                  completion:(void (^)())completionBlock
-                       error:(RTErrorBlock)errorBlock;
-{
-    // TODO: #2 get attachments, metadata, and related tickets to build timeline view
-    
-    NSInteger ticketNo = 1;
-    NSString *linkStr = [NSString stringWithFormat:@"REST/1.0/ticket/%d/show", ticketNo];
-    
-    
-    
-    //now i am trying to get the data for a single ticket
-    [self postPath:linkStr
-        parameters:nil
-           success:^(AFHTTPRequestOperation * operation, id responseObject) {
-               NSLog(@"requestTicketDetails first step sucess. The operation response string is: %@", operation.responseString);
-           }
-           failure:^(AFHTTPRequestOperation * operation, NSError * error) {
-               // TODO: This needs better error handeling
-               NSLog(@"get ticket data failed: %@", error);
-           }];
-    
-}
-
 #pragma mark - Authentication (Keychain)
 
-- (void)validateUsername:(NSString *)username
-                password:(NSString *)password
-              completion:(void (^)(BOOL verified))completionBlock;
+- (void)setUsername:(NSString *)username password:(NSString *)password errorBlock:(RTBasicBlock)errorBlock
 {
-    self.keychainEntry.contents = @{
-        @"user" : username,
-        @"password" : password
-    };
+    NSDictionary * candidateCredentials = @{ @"user": username, @"password": password };
+    
+    [self
+     _tryLoginWithCredentials:candidateCredentials
+     onCompletion:^(BOOL invalidCredentialsError, BOOL networkError) {
+         if (!invalidCredentialsError && !networkError)
+         {
+             self.keychainEntry.contents = candidateCredentials;
+             DISPATCH_DELEGATE([self.delegate apiEngineDidAttemptLogin:self]);
+             return;
+         }
+         
+         if (networkError)
+             DISPATCH_DELEGATE([self.delegate apiEngineRequiresNetwork:self]);
+         
+         if (errorBlock)
+             errorBlock();
+     }];
 }
 
 - (void)removeUsernameAndPassword;
 {
-    [self _doLogout];
+    [self _logout];
     self.keychainEntry.contents = nil;
 }
 
@@ -114,42 +87,52 @@ static RTEngine * __staticEngine = nil;
 {
     NSAssert(self.delegate != nil, @"RTEngine must have a delegate set before operations can take place");
     
-    [self _doLogin:^(BOOL credentialsFailed, BOOL networkFailed) {
-        // TODO: Continue these error values through the app
-        DISPATCH_DELEGATE([self.delegate apiEngineDidAttemptLogin:self]);
-        
-        if (credentialsFailed)
-        {
-            NSWindow * aWindow = [[NSWindow alloc] init];
-            [aWindow setFrame:NSMakeRect(0, 0, 320, 320) display:YES];
-            
-            DISPATCH_DELEGATE([self.delegate apiEngine:self requiresAuthentication:aWindow]);
-        }
-    }];
+    DISPATCH_DELEGATE([self.delegate apiEngineWillAttemptLogin:self]);
+    [self
+     _tryLoginWithCredentials:self.keychainEntry.contents
+     onCompletion:^(BOOL invalidCredentialsError, BOOL networkError) {
+         // Only ask user for new credentials if the network was valid
+         if (invalidCredentialsError && !networkError)
+         {
+             NSWindow * aWindow = [[NSWindow alloc] init];
+             [aWindow setFrame:NSMakeRect(0, 0, 320, 320) display:YES];
+             
+             DISPATCH_DELEGATE([self.delegate apiEngine:self requiresAuthentication:aWindow]);
+             return; // Leave -apiEngineDidAttemptLogin: sequence open, it is handled in verification
+         }
+         
+         // Otherwise, fail here. User must restart operation.
+         DISPATCH_DELEGATE([self.delegate apiEngineDidAttemptLogin:self]);
+         
+         if (networkError)
+             DISPATCH_DELEGATE([self.delegate apiEngineRequiresNetwork:self]);
+     }];
 }
 
-- (void)_doLogin:(void (^)(BOOL credentialsFailed, BOOL networkFailed))completionBlock;
+- (void)_tryLoginWithCredentials:(NSDictionary *)roCredentials
+                    onCompletion:(void (^)(BOOL invalidCredentialsError, BOOL networkError))completionBlock;
 {
-    [self _doLogout];
+    [self _logout];
     
-    DISPATCH_DELEGATE([self.delegate apiEngineWillAttemptLogin:self]);
+    NSMutableDictionary * credentials = roCredentials.mutableCopy;
+    credentials[@"next"] = @"c2eb5af67a20123fbac8cd57aa94e040"; // TODO: Figure this out more
     
-    // TODO: Retrieve credientals from keychain
-    NSMutableDictionary * credientials = self.keychainEntry.contents.mutableCopy;
-    credientials[@"next"] = @"c2eb5af67a20123fbac8cd57aa94e040"; // TODO: Figure this out more
-    
-    NSURLRequest * request = [self requestWithMethod:@"POST" path:@"NoAuth/Login.html" parameters:credientials];
+    NSURLRequest * request = [self requestWithMethod:@"POST" path:@"NoAuth/Login.html" parameters:credentials];
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation * operation, id responseObject) {
+        // If no redirect is found, credentials must have failed
         completionBlock(YES, NO);
     } failure:^(AFHTTPRequestOperation * operation, NSError * error) {
+        // Upon success, the redirection handler invalidates the request, so it technically "errors"
+        // But since we already succeeded, prevent the default failure action here.
         if (self.authenticated)
             return;
         
-        // TODO: This needs better error handeling
-        NSLog(@"Authentication failed: %@", error);
+        // Classify all other failures as network errors
         completionBlock(NO, YES);
     }];
+    
     [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
         if ([request.URL.absoluteString hasSuffix:@"/rt/"])
         {
@@ -164,8 +147,12 @@ static RTEngine * __staticEngine = nil;
     [self enqueueHTTPRequestOperation:operation];
 }
 
-- (void)_doLogout;
+- (void)_logout;
 {
+    // If nothing will be changed, don't invoke the delegate methods
+    if (!self.authenticated)
+        return;
+    
     DISPATCH_DELEGATE([self.delegate apiEngineWillLogout:self]);
     
     // TODO: POST to /REST/1.0/logout to clear session on the server

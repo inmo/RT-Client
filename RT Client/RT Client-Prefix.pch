@@ -6,4 +6,6 @@
     #import <Cocoa/Cocoa.h>
 #endif
 
+// Define basic block types globally
 typedef void (^RTBasicBlock)();
+typedef void (^RTBasicErrorBlock)(NSError * error);
