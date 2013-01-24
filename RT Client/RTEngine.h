@@ -7,7 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
-
+ 
 // Put data fetching methods in here!
 @protocol RTDataProvider
 // - (void)getTickets...
