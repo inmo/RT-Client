@@ -29,6 +29,8 @@
 
 @implementation RTEngine
 
+#pragma mark Singelton Instance
+
 static RTEngine * __staticEngine = nil;
 
 + (void)initialize
@@ -41,14 +43,36 @@ static RTEngine * __staticEngine = nil;
     return __staticEngine;
 }
 
+#pragma mark - NSObject Overrides
+
 - (id)init;
 {
     if ((self = [super initWithBaseURL:RT_SERVER_URL]))
     {
         self->_keychainEntry = [RTKeychainEntry entryForService:@"request-tracker" account:@"default"];
+        
+        self.keychainEntry.contents = @{ @"user": @"root", @"pass": @"password" }; // DEBUG
     }
     
     return self;
+}
+
+#pragma mark - API Endpoints
+
+- (void)_testHook
+{
+    [self
+     getPath:@"REST/1.0/search/ticket"
+     parameters:@{
+        @"query": @"Status = 'new' OR Status = 'open'", // [NSString stringWithFormat:@"Owner = '%@' AND ( Status = 'new' OR Status = 'open' )", self.username],
+        @"orderby": @"-Created",
+        @"format": @"l",
+     }
+     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         NSLog(@"%@", operation.responseString);
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"%@", error);
+     }];
 }
 
 #pragma mark - Authentication (Keychain)
@@ -73,6 +97,11 @@ static RTEngine * __staticEngine = nil;
          if (errorBlock)
              errorBlock();
      }];
+}
+
+- (NSString *)username
+{
+    return self.keychainEntry.contents[@"user"];
 }
 
 - (void)removeUsernameAndPassword;

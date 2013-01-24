@@ -34,6 +34,9 @@
 - (void)apiEngineDidAttemptLogin:(RTEngine *)engine
 {
     NSLog(@"API Engine Did Attempt Login => %i", engine.isAuthenticated);
+    
+    if (engine.isAuthenticated)
+        [engine _testHook];
 }
 
 - (void)apiEngineWillLogout:(RTEngine *)engine
@@ -49,6 +52,11 @@
 - (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindow *)authWindow
 {
     NSLog(@"API Engine Requires Authentication: %p", authWindow);
+}
+
+- (void)apiEngineRequiresNetwork:(RTEngine *)engine
+{
+    NSLog(@"API Engine Requires Authentication");
 }
 
 

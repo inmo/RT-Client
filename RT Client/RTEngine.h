@@ -8,9 +8,15 @@
 
 #import <AFNetworking/AFNetworking.h>
 
+// Put data fetching methods in here!
+@protocol RTDataProvider
+// - (void)getTickets...
+// - (void)postChanges...
+@end
+
 @protocol RTEngineDelegate;
 
-@interface RTEngine : AFHTTPClient
+@interface RTEngine : AFHTTPClient <RTDataProvider>
 
 + (RTEngine *)sharedEngine;
 
@@ -23,6 +29,9 @@
 
 - (void)setUsername:(NSString *)username password:(NSString *)password errorBlock:(RTBasicBlock)errorBlock;
 - (void)removeUsernameAndPassword;
+- (NSString *)username;
+
+- (void)_testHook;
 
 @end
 

@@ -20,6 +20,7 @@
 		B36192E6166D7B3000D86162 /* RT_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B36192E4166D7B3000D86162 /* RT_Client.xcdatamodeld */; };
 		B3AB109F16A61804004F1F17 /* RTKeychainEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = B3AB109E16A61804004F1F17 /* RTKeychainEntry.m */; };
 		B3AB10A416A91A72004F1F17 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3AB10A316A91A72004F1F17 /* Security.framework */; };
+		B3F30F4516AF5EE900D07E9F /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3F30F4416AF5EE900D07E9F /* SystemConfiguration.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 		B3AB109B16A617E7004F1F17 /* RTKeychainEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTKeychainEntry.h; sourceTree = "<group>"; };
 		B3AB109E16A61804004F1F17 /* RTKeychainEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTKeychainEntry.m; sourceTree = "<group>"; };
 		B3AB10A316A91A72004F1F17 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		B3F30F4416AF5EE900D07E9F /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3F30F4516AF5EE900D07E9F /* SystemConfiguration.framework in Frameworks */,
 				B3AB10A416A91A72004F1F17 /* Security.framework in Frameworks */,
 				B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */,
 				75152FD39F7642488E1B9FB1 /* libPods.a in Frameworks */,
@@ -94,6 +97,7 @@
 		B36192CB166D7B2F00D86162 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B3F30F4416AF5EE900D07E9F /* SystemConfiguration.framework */,
 				B36192CC166D7B2F00D86162 /* Cocoa.framework */,
 				B36192CE166D7B2F00D86162 /* Other Frameworks */,
 				ABB1DB00277340CC97CD8018 /* libPods.a */,
