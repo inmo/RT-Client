@@ -10,11 +10,9 @@
 
 @interface RTParser : NSObject
 
-@property (nonatomic) NSString *inputString;
-@property (nonatomic) NSMutableDictionary *parsedData;
+- (NSDictionary *)dictionaryWithString:(NSString *)inputString;
+- (NSArray *)arrayWithString:(NSString *)inputString;
 
-
--(NSDictionary *)getParsedData:(NSString *)string;
-
+- (void)_parseTestString;
 
 @end
