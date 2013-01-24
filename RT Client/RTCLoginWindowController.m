@@ -28,8 +28,8 @@
 }
 
 - (IBAction)DoLogin:(id)sender{
-    [(BOOL)isEqual:(id)member];
-    if (_username.stringValue.isequal(@" ") && _password.stringValue)
+    
+    if ([_username.stringValue isEqualToString:@""] && _password.stringValue);
         //Need to check for valid username and password
 }
 
