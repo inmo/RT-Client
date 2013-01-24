@@ -8,7 +8,23 @@
 
 #import "RTParser.h"
 
+#define SEGMENT_DIVISION_STRING @"--"
+#define SEGMENT_NOT_SET_MARKER @"Not set"
+
 @implementation RTParser
+
++ (NSDateFormatter *)defaultDateFormatter;
+{
+    static NSDateFormatter * __defaultDateFormatter = nil;
+    if (__defaultDateFormatter == nil)
+    {
+        __defaultDateFormatter = [[NSDateFormatter alloc] init];
+        __defaultDateFormatter.dateFormat = @"MMM dd HH:MM:ss yyyy";
+        __defaultDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    }
+    
+    return __defaultDateFormatter;
+}
 
 - (void)_parseTestString;
 {
@@ -17,8 +33,6 @@
                                                             encoding:NSUTF8StringEncoding error:&unused];
     NSLog(@"RTParser Test Parse: %@", [self arrayWithString:testString]);
 }
-
-#define SEGMENT_DIVISION_STRING @"--"
 
 - (NSArray *)arrayWithString:(NSString *)inputString;
 {
@@ -62,12 +76,23 @@
         
         NSRange dividerRange = [line rangeOfCharacterFromSet:keyValueDividerSet];
         
+        // If no ":" is contained in the string, it is not a key/value line, and cannot be parsed
         if (dividerRange.location != NSNotFound)
         {
             NSString * key = [line substringToIndex:dividerRange.location];
-            NSString * value = (line.length > dividerRange.location + 2) ? [line substringFromIndex:dividerRange.location + 2] : @"";
+            id value = (line.length > dividerRange.location + 2) ? [line substringFromIndex:dividerRange.location + 2] : @"";
             
-            returnDictionary[key] = value;
+            // TODO: Correctly parse dates
+            NSDate * dateValue = [[self.class defaultDateFormatter] dateFromString:value];
+            if (dateValue != nil)
+                value = dateValue;
+            
+            // Unset values are treated as returning nil by the dictionary
+            if ([SEGMENT_NOT_SET_MARKER isEqualToString:value])
+                value = nil;
+            
+            if (value != nil)
+                returnDictionary[key] = value;
         }
     }];
     
