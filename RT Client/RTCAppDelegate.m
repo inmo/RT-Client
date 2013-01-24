@@ -10,7 +10,7 @@
 #import "RTCLoginWindowController.h"
 #import "RTEngine.h"
 
-@interface RTCAppDelegate () <RTEngineDelegate>
+@interface RTCAppDelegate ()
 @end
 
 @implementation RTCAppDelegate {
