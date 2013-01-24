@@ -21,6 +21,50 @@
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
 
+<<<<<<< HEAD
+=======
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+    RTEngine * engine = [RTEngine sharedEngine];
+    engine.delegate = self;
+    
+    [engine refreshLogin];
+}
+
+- (void)apiEngineWillAttemptLogin:(RTEngine *)engine
+{
+    NSLog(@"API Engine Will Attempt Login");
+}
+
+- (void)apiEngineDidAttemptLogin:(RTEngine *)engine
+{
+    NSLog(@"API Engine Did Attempt Login => %i", engine.isAuthenticated);
+    
+    if (engine.isAuthenticated)
+        [engine _testHook];
+}
+
+- (void)apiEngineWillLogout:(RTEngine *)engine
+{
+    NSLog(@"API Engine Will Logout => %i", engine.isAuthenticated);
+}
+
+- (void)apiEngineDidLogout:(RTEngine *)engine
+{
+    NSLog(@"API Engine Did Logout");
+}
+
+- (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindow *)authWindow
+{
+    NSLog(@"API Engine Requires Authentication: %p", authWindow);
+}
+
+- (void)apiEngineRequiresNetwork:(RTEngine *)engine
+{
+    NSLog(@"API Engine Requires Authentication");
+}
+
+>>>>>>> api-engine
 
 
 
