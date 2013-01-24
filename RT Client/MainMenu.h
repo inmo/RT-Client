@@ -8,14 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
+
 @interface MainMenu : NSWindowController{
-    IBOutlet NSToolbarItem *reply;
-    IBOutlet NSToolbarItem *replyToAll;
-    IBOutlet NSToolbarItem *deleteIt;
-    IBOutlet NSToolbarItem *createNew;
-    IBOutlet NSScrollView *ticketList;
-    IBOutlet NSScrollView *ticketMessage;
+    
 }
+@property(nonatomic,strong) NSToolbarItem *reply;
+@property(nonatomic,strong) NSToolbarItem *replyToAll;
+@property(nonatomic,strong) NSToolbarItem *deleiteIt;
+@property(nonatomic,strong) NSToolbarItem *createNew;
+@property(nonatomic,strong) NSScrollView *tickerList;
+@property(nonatomic,strong) NSScrollView *ticketMessage;
 
 - (IBAction)Replier:(id)sender;
 - (IBAction)ReplierAll:(id)sender;

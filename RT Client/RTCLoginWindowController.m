@@ -26,6 +26,7 @@
     
     return self;
 }
+
 - (IBAction)DoLogin:(id)sender{
     NSLog(@"You are logged in");
 }
@@ -37,13 +38,13 @@
 
 - (IBAction)EnterUsername:(id)sender{
     NSString *user = @"";
-    user = username.stringValue;
+    user = _username.stringValue;
     //Check for info verification
 }
 
 - (IBAction)EnterPassword:(id)sender{
     NSString *pass = @"";
-    pass = password.stringValue;
+    pass = _password.stringValue;
     //Check for info verification
 }
     
