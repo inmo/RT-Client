@@ -8,6 +8,7 @@
 
 #import "RTEngine.h"
 #import "RTKeychainEntry.h"
+#import "RTParser.h"
 
 #define RT_SERVER_URL [NSURL URLWithString:@"http://sulfur.rose-hulman.edu/rt"]
 #define SAFARI_USER_AGENT @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.17 (KHTML, like Gecko) Version/6.0.2 Safari/536.26.17"
@@ -69,7 +70,8 @@ static RTEngine * __staticEngine = nil;
         @"format": @"l",
      }
      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         NSLog(@"%@", operation.responseString);
+         RTParser * parser = [[RTParser alloc] init];
+         NSLog(@"Parsed Response: %@", [parser arrayWithString:operation.responseString]);
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"%@", error);
      }];
