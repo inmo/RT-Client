@@ -7,12 +7,15 @@
 //
 
 #import "RTCAppDelegate.h"
+#import "RTCLoginWindowController.h"
 #import "RTEngine.h"
 
 @interface RTCAppDelegate () <RTEngineDelegate>
 @end
 
-@implementation RTCAppDelegate
+@implementation RTCAppDelegate {
+    RTCLoginWindowController *login;
+}
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
@@ -49,6 +52,9 @@
 - (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindow *)authWindow
 {
     NSLog(@"API Engine Requires Authentication: %p", authWindow);
+    
+    login = [[RTCLoginWindowController alloc ] initWithWindowNibName:@"RTCLoginWindowController"];
+    [NSApp beginSheet:login.window modalForWindow:self.window modalDelegate:nil didEndSelector:nil contextInfo:NULL];
 }
 
 

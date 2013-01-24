@@ -59,11 +59,7 @@ static RTEngine * __staticEngine = nil;
                             error:(RTErrorBlock)errorBlock;
 {
     // TODO: #1 get a list of ticket/id's via the "/search/ticket..." endpoint
-    
-    
-    
-    
-    
+
 }
 
 - (void)requestTicketDetails:(id)ticket
@@ -71,7 +67,7 @@ static RTEngine * __staticEngine = nil;
                        error:(RTErrorBlock)errorBlock;
 {
     // TODO: #2 get attachments, metadata, and related tickets to build timeline view
-    
+   
     NSInteger ticketNo = 1;
     NSString *linkStr = [NSString stringWithFormat:@"REST/1.0/ticket/%d/show", ticketNo];
     
@@ -87,7 +83,6 @@ static RTEngine * __staticEngine = nil;
                // TODO: This needs better error handeling
                NSLog(@"get ticket data failed: %@", error);
            }];
-    
 }
 
 #pragma mark - Authentication (Keychain)

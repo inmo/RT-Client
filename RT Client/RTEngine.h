@@ -9,6 +9,7 @@
 #import <AFNetworking/AFNetworking.h>
 
 typedef void (^RTErrorBlock)(NSError * error);
+
 @protocol RTEngineDelegate;
 
 @interface RTEngine : AFHTTPClient
