@@ -7,12 +7,14 @@
 //
 
 #import "RTCLoginWindowController.h"
+#import "RTEngine.h"
 
 @interface RTCLoginWindowController ()
 
 @end
 
 @implementation RTCLoginWindowController
+
 
 - (id)init
 {
@@ -23,15 +25,25 @@
     
     
     
-    
     return self;
 }
 
 - (IBAction)DoLogin:(id)sender{
+    RTEngine * engine = [RTEngine sharedEngine];
+    [engine
+     setUsername:_username.stringValue
+     password:_password.stringValue
+     errorBlock:^{
+         
+     }];
     
-    if ([_username.stringValue isEqualToString:@""] && _password.stringValue);
-        //Need to check for valid username and password
+ //   _username = nil;
+ //   _password = nil;
+    
 }
+    
+    
+
 
 - (IBAction)CloseLoginButton:(id)sender{
     [self close];
@@ -39,15 +51,11 @@
 }
 
 - (IBAction)EnterUsername:(id)sender{
-    NSString *user = @"";
-    user = _username.stringValue;
-    //Check for info verification
+    
 }
 
 - (IBAction)EnterPassword:(id)sender{
-    NSString *pass = @"";
-    pass = _password.stringValue;
-    //Check for info verification
+    
 }
     
 

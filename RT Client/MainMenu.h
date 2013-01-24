@@ -19,12 +19,12 @@
 @property(nonatomic,strong) NSScrollView *tickerList;
 @property(nonatomic,strong) NSScrollView *ticketMessage;
 
-- (IBAction)Replier:(id)sender;
-- (IBAction)ReplierAll:(id)sender;
-- (IBAction)Deleter:(id)sender;
-- (IBAction)NewTicket:(id)sender;
-- (IBAction)TicketLister:(id)sender;
-- (IBAction)TicketMessager:(id)sender;
+- (IBAction)replier:(id)sender;
+- (IBAction)replierAll:(id)sender;
+- (IBAction)deleter:(id)sender;
+- (IBAction)newTicket:(id)sender;
+- (IBAction)ticketLister:(id)sender;
+- (IBAction)ticketMessager:(id)sender;
 
 
 @end
