@@ -21,42 +21,6 @@
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
 
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
-{
-    RTEngine * engine = [RTEngine sharedEngine];
-    engine.delegate = self;
-    
-    [engine refreshLogin];
-}
-
-- (void)apiEngineWillAttemptLogin:(RTEngine *)engine
-{
-    NSLog(@"API Engine Will Attempt Login");
-}
-
-- (void)apiEngineDidAttemptLogin:(RTEngine *)engine
-{
-    NSLog(@"API Engine Did Attempt Login => %i", engine.isAuthenticated);
-}
-
-- (void)apiEngineWillLogout:(RTEngine *)engine
-{
-    NSLog(@"API Engine Will Logout => %i", engine.isAuthenticated);
-}
-
-- (void)apiEngineDidLogout:(RTEngine *)engine
-{
-    NSLog(@"API Engine Did Logout");
-}
-
-- (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindow *)authWindow
-{
-    NSLog(@"API Engine Requires Authentication: %p", authWindow);
-    
-    login = [[RTCLoginWindowController alloc ] initWithWindowNibName:@"RTCLoginWindowController"];
-    [NSApp beginSheet:login.window modalForWindow:self.window modalDelegate:nil didEndSelector:nil contextInfo:NULL];
-}
-
 
 
 
