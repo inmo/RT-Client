@@ -13,16 +13,17 @@
 @interface RTCAppDelegate ()
 @end
 
-@implementation RTCAppDelegate {
+@interface RTCAppDelegate () <RTEngineDelegate> {
     RTCLoginWindowController *login;
 }
+@end
+
+@implementation RTCAppDelegate
 
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
 
-<<<<<<< HEAD
-=======
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     RTEngine * engine = [RTEngine sharedEngine];
@@ -64,7 +65,6 @@
     NSLog(@"API Engine Requires Authentication");
 }
 
->>>>>>> api-engine
 
 
 

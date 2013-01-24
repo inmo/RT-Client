@@ -6,9 +6,6 @@
 //  Copyright (c) 2012 INMO. All rights reserved.
 //
 
-<<<<<<< HEAD
-#import "RTEngine.h"
-=======
 #import "RTEngine.h"
 #import "RTKeychainEntry.h"
 
@@ -198,4 +195,4 @@ static RTEngine * __staticEngine = nil;
 }
 
 @end
->>>>>>> api-engine
+

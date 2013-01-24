@@ -5,8 +5,6 @@
 //  Created by James Savage on 12/3/12.
 //  Copyright (c) 2012 INMO. All rights reserved.
 //
-<<<<<<< HEAD
-=======
 
 #import <AFNetworking/AFNetworking.h>
 
@@ -57,4 +55,4 @@
 - (void)apiEngineRequiresNetwork:(RTEngine *)engine;
 
 @end
->>>>>>> api-engine
+
