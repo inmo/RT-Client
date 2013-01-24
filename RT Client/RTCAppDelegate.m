@@ -14,7 +14,7 @@
 @end
 
 @interface RTCAppDelegate () <RTEngineDelegate> {
-    RTCLoginWindowController *login;
+    NSWindow * _loginWindow;
 }
 @end
 
@@ -27,6 +27,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     RTEngine * engine = [RTEngine sharedEngine];
+    [engine removeUsernameAndPassword];
     engine.delegate = self;
     
     [engine refreshLogin];
@@ -58,6 +59,12 @@
 - (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindow *)authWindow
 {
     NSLog(@"API Engine Requires Authentication: %p", authWindow);
+    
+    if (_loginWindow)
+        [_loginWindow close];
+    
+    _loginWindow = authWindow;
+    [NSApp beginSheet:_loginWindow modalForWindow:self.window modalDelegate:nil didEndSelector:nil contextInfo:nil];
 }
 
 - (void)apiEngineRequiresNetwork:(RTEngine *)engine

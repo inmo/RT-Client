@@ -9,6 +9,7 @@
 #import "RTEngine.h"
 #import "RTKeychainEntry.h"
 #import "RTParser.h"
+#import "RTCLoginWindowController.h"
 
 #define RT_SERVER_URL [NSURL URLWithString:@"http://sulfur.rose-hulman.edu/rt"]
 #define SAFARI_USER_AGENT @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.17 (KHTML, like Gecko) Version/6.0.2 Safari/536.26.17"
@@ -20,6 +21,8 @@
         dispatch_async(dispatch_get_main_queue(), ^{ CODE; }); \
     } else { CODE; } \
 } } while (0)
+
+#define FORCE_LOGOUT() if ((self.authenticated = YES)) { [self _logout]; }
 
 @interface RTEngine (/* Private */)
 
@@ -51,8 +54,7 @@ static RTEngine * __staticEngine = nil;
     if ((self = [super initWithBaseURL:RT_SERVER_URL]))
     {
         self->_keychainEntry = [RTKeychainEntry entryForService:@"request-tracker" account:@"default"];
-        
-        self.keychainEntry.contents = @{ @"user": @"root", @"pass": @"password" }; // DEBUG
+        FORCE_LOGOUT();
     }
     
     return self;
@@ -81,7 +83,7 @@ static RTEngine * __staticEngine = nil;
 
 - (void)setUsername:(NSString *)username password:(NSString *)password errorBlock:(RTBasicBlock)errorBlock
 {
-    NSDictionary * candidateCredentials = @{ @"user": username, @"password": password };
+    NSDictionary * candidateCredentials = @{ @"user": username, @"pass": password };
     
     [self
      _tryLoginWithCredentials:candidateCredentials
@@ -108,8 +110,8 @@ static RTEngine * __staticEngine = nil;
 
 - (void)removeUsernameAndPassword;
 {
-    [self _logout];
     self.keychainEntry.contents = nil;
+    FORCE_LOGOUT();
 }
 
 #pragma mark - Authentication (Server)
@@ -125,10 +127,9 @@ static RTEngine * __staticEngine = nil;
          // Only ask user for new credentials if the network was valid
          if (invalidCredentialsError && !networkError)
          {
-             NSWindow * aWindow = [[NSWindow alloc] init];
-             [aWindow setFrame:NSMakeRect(0, 0, 320, 320) display:YES];
+             RTCLoginWindowController * loginWindowController = [[RTCLoginWindowController alloc] init];
              
-             DISPATCH_DELEGATE([self.delegate apiEngine:self requiresAuthentication:aWindow]);
+             DISPATCH_DELEGATE([self.delegate apiEngine:self requiresAuthentication:loginWindowController.window]);
              return; // Leave -apiEngineDidAttemptLogin: sequence open, it is handled in verification
          }
          
