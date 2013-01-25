@@ -20,7 +20,7 @@
 {
     self = [super initWithWindowNibName: @"RTCLoginWindowController"];
     if (self) {
-        [NSTimer scheduledTimerWithTimeInterval:10.0 target:(self) selector:(@selector(closeLogin)) userInfo:(self) repeats:NO];
+
     }
     
     
