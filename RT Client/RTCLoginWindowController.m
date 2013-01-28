@@ -27,12 +27,32 @@
 
 - (void)validateLogin:(id)sender
 {
+    self.errorLabel.hidden = YES;
+    [self.progressIndicator startAnimation:nil];
+    
     [[RTEngine sharedEngine]
      setUsername:self.usernameField.stringValue
      password:self.passwordField.stringValue
      errorBlock:^{
          self.errorLabel.hidden = NO;
+         [self.progressIndicator stopAnimation:nil];
      }];
+}
+
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)fieldEditor doCommandBySelector:(SEL)commandSelector
+{
+    if (commandSelector == @selector(insertNewline:))
+    {
+        if (control == self.usernameField)
+            [self.passwordField becomeFirstResponder];
+        
+        else if (control == self.passwordField)
+            [self validateLogin:control];
+        
+        return YES;
+    }
+    
+    return NO;
 }
 
 @end

@@ -14,7 +14,9 @@
 @property (nonatomic, strong) IBOutlet NSButton * loginButton;
 @property (nonatomic, strong) IBOutlet NSTextField * usernameField;
 @property (nonatomic, strong) IBOutlet NSTextField * passwordField;
+
 @property (nonatomic, strong) IBOutlet NSTextField * errorLabel;
+@property (nonatomic, strong) IBOutlet NSProgressIndicator * progressIndicator;
 
 - (IBAction)validateLogin:(id)sender;
 
