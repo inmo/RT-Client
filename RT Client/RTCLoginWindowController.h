@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface RTCLoginWindowController : NSWindowController
+@interface RTCLoginWindowController : NSWindowController <NSTextFieldDelegate>
 
 @property (nonatomic, strong) IBOutlet NSButton * loginButton;
 @property (nonatomic, strong) IBOutlet NSTextField * usernameField;
