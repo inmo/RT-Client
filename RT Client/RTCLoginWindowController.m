@@ -15,58 +15,24 @@
 
 @implementation RTCLoginWindowController
 
-
 - (id)init
 {
-    self = [super initWithWindowNibName: @"RTCLoginWindowController"];
-    if (self) {
+    if ((self = [super initWithWindowNibName:@"RTCLoginWindowController"]))
+    {
 
     }
-    
-    
     
     return self;
 }
 
-- (IBAction)DoLogin:(id)sender{
-    RTEngine * engine = [RTEngine sharedEngine];
-    [engine
-     setUsername:_username.stringValue
-     password:_password.stringValue
-     errorBlock:^{
-         
-     }];
-    
- //   _username = nil;
- //   _password = nil;
-    
-}
-    
-    
-
-
-- (IBAction)CloseLoginButton:(id)sender{
-    [self close];
-    
-}
-
-- (IBAction)EnterUsername:(id)sender{
-    
-}
-
-- (IBAction)EnterPassword:(id)sender{
-    
-}
-    
-
-
-- (void)windowDidLoad
+- (void)validateLogin:(id)sender
 {
-    [super windowDidLoad];
-
-    
-    // Implement this method to handle any initialization after your
-    // window controller's window has been loaded from its nib file.
+    [[RTEngine sharedEngine]
+     setUsername:self.usernameField.stringValue
+     password:self.passwordField.stringValue
+     errorBlock:^{
+         self.errorLabel.hidden = NO;
+     }];
 }
 
 @end
