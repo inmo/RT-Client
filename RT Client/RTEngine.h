@@ -42,7 +42,7 @@
 - (void)apiEngineDidAttemptLogin:(RTEngine *)engine;
 - (void)apiEngineWillLogout:(RTEngine *)engine;
 - (void)apiEngineDidLogout:(RTEngine *)engine;
-- (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindow *)authWindow;
+- (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindowController *)authWindow;
 
 /**
  * Called when a request failed for network related reasons. Invocation of this method

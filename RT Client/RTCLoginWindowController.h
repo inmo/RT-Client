@@ -9,20 +9,13 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface RTCLoginWindowController : NSWindowController{
-     
-    
-}
-@property(nonatomic,strong) NSButton *login;
-@property(nonatomic,strong) NSButton *close;
-@property(nonatomic,strong) NSTextField *username;
-@property(nonatomic,strong) NSTextField *password;
+@interface RTCLoginWindowController : NSWindowController
 
-- (IBAction)DoLogin:(id)sender;
-- (IBAction)CloseLoginButton:(id)sender;
-- (IBAction)EnterUsername:(id)sender;
-- (IBAction)EnterPassword:(id)sender;
+@property (nonatomic, strong) IBOutlet NSButton * loginButton;
+@property (nonatomic, strong) IBOutlet NSTextField * usernameField;
+@property (nonatomic, strong) IBOutlet NSTextField * passwordField;
+@property (nonatomic, strong) IBOutlet NSTextField * errorLabel;
 
-
+- (IBAction)validateLogin:(id)sender;
 
 @end

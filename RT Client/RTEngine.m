@@ -35,15 +35,14 @@
 
 #pragma mark Singelton Instance
 
-static RTEngine * __staticEngine = nil;
-
-+ (void)initialize
-{
-    __staticEngine = [[self alloc] init];
-}
-
 + (RTEngine *)sharedEngine
 {
+    static RTEngine * __staticEngine = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        __staticEngine = [[self alloc] init];
+    });
+    
     return __staticEngine;
 }
 
@@ -129,7 +128,7 @@ static RTEngine * __staticEngine = nil;
          {
              RTCLoginWindowController * loginWindowController = [[RTCLoginWindowController alloc] init];
              
-             DISPATCH_DELEGATE([self.delegate apiEngine:self requiresAuthentication:loginWindowController.window]);
+             DISPATCH_DELEGATE([self.delegate apiEngine:self requiresAuthentication:loginWindowController]);
              return; // Leave -apiEngineDidAttemptLogin: sequence open, it is handled in verification
          }
          
