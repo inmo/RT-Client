@@ -8,3 +8,6 @@
 
 #import "RTTicket.h"
 #import "RTTicket+Extensions.h"
+
+#import "RTAttachment.h"
+#import "RTAttachment+Extensions.h"

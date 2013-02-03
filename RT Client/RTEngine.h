@@ -7,7 +7,7 @@
 //
 
 #import <AFNetworking/AFNetworking.h>
- 
+
 // Put data fetching methods in here!
 @protocol RTDataProvider
 // - (void)getTickets...
@@ -32,6 +32,7 @@
 - (NSString *)username;
 
 - (void)fetchSelfServiceTicketStubs:(RTBasicBlock)completionBlock;
+- (void)pullTicketInformation:(NSManagedObjectID *)ticketID completion:(RTBasicBlock)completion;
 
 - (void)_testHook;
 

@@ -32,6 +32,7 @@
 @property (nonatomic, assign, readwrite, getter = isAuthenticated) BOOL authenticated;
 @property (nonatomic, strong, readonly) RTKeychainEntry * keychainEntry;
 @property (nonatomic, strong) NSManagedObjectContext * apiContext;
+@property (nonatomic, strong) RTParser * responseParser;
 
 @end
 
@@ -60,6 +61,7 @@
         FORCE_LOGOUT();
         
         self.apiContext = [NSManagedObjectContext MR_contextWithParent:[NSManagedObjectContext MR_defaultContext]];
+        self.responseParser = [RTParser new];
     }
     
     return self;
@@ -80,44 +82,88 @@
     [self
      getPath:@"REST/1.0/search/ticket"
      parameters:@{
-         @"query": @"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')",
-         @"orderby": @"-Created",
-         @"format": @"l",
+        @"query": @"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')",
+        @"format": @"l",
      } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         RTParser * parser = [[RTParser alloc] init];
-         for (NSDictionary * td in [parser arrayWithString:operation.responseString])
-         {
-             RTTicket * ticket = [RTTicket createTicketFromAPIResponse:td inContext:self.apiContext];
-             
-    //         if (completionBlock)
-    //             completionBlock(ticket.objectID);
-             
-    //         NSLog(@"Parsed Ticket: %@", ticket);
-             NSLog(@"Parsed Ticket!");
-             [self
-              getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID]
-              parameters:nil
-              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                  NSDictionary * attachments = [parser dictionaryWithString:operation.responseString];
-//                  NSLog(@"Ticket Attachments: %@", attachments);
-//                  NSLog(@"Parsed Ticket Attachments!");
-                  
-                  for (NSDictionary * A in attachments[@"Attachments"])
-                  [self
-                   getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, A[@"id"]]
-                   parameters:nil
-                   success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                       NSDictionary * attachment = [parser dictionaryWithString:operation.responseString];
-//                       NSLog(@"REST/1.0/%@/attachments/%@\n%@", ticket.ticketID, A[@"id"], attachment);
-                   } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                       NSLog(@"%@", error);
-                   }];
-              } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                  NSLog(@"%@", error);
-              }];
-         }
+         NSArray * rawTickets = [self.responseParser arrayWithString:operation.responseString];
+         NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
+         
+         [scratchContext performBlock:^{
+             [rawTickets enumerateObjectsUsingBlock:^(NSDictionary * response, NSUInteger idx, BOOL *stop) {
+                 [RTTicket createTicketFromAPIResponse:response inContext:scratchContext];
+             }];
+             [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+                 if (completionBlock) completionBlock();
+             }];
+         }];
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"%@", error);
+         if (completionBlock) completionBlock();
+     }];
+}
+
+- (void)pullTicketInformation:(NSManagedObjectID *)ticketID completion:(RTBasicBlock)completionBlock;
+{
+    RTTicket * ticket = (RTTicket *)[self.apiContext objectWithID:ticketID];
+    if (!ticket)
+    {
+        if (completionBlock) completionBlock();
+        return;
+    }
+    
+    [self
+     getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID]
+     parameters:nil
+     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         NSDictionary * attachmentList = [self.responseParser dictionaryWithString:operation.responseString];
+         NSArray * attachmentStubs = attachmentList[@"Attachments"];
+         NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
+         
+         __block RTTicket * ticket = (RTTicket *)[scratchContext objectWithID:ticketID];;
+         __block NSUInteger pendingOperationsCount = attachmentStubs.count;
+         // ^^ Synchronize this with the scratchContext
+                  
+         [attachmentStubs enumerateObjectsUsingBlock:^(NSDictionary * rawAttachmentStub, NSUInteger idx, BOOL *stop) {                 
+             [self
+              getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, rawAttachmentStub[@"id"]]
+              parameters:nil
+              success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                  [scratchContext performBlock:^{
+                      if (!operation.responseString)
+                      {
+//                          [operation.responseData writeToFile:@"/Users/axiixc/Desktop/out.bin" atomically:YES];
+                          NSLog(@"Coulding extract attachment at %@", operation.request.URL);
+                      }
+                   
+                      NSDictionary * rawAttachment = [self.responseParser dictionaryWithString:operation.responseString];
+                      RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:rawAttachment inContext:scratchContext];
+                      attachment.ticket = ticket;
+                      
+//                      NSStringEncoding encoding = NULL;
+//                      NSError * __autoreleasing error = nil;
+//                      NSLog(@"%@", [[NSString alloc] initWithData:operation.responseData encoding:NSISOLatin1StringEncoding]);
+                      
+                      pendingOperationsCount--;
+                      if (pendingOperationsCount == 0)
+                      {
+                          [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+                              if (completionBlock) completionBlock();
+                          }];
+                      }
+                  }];
+              } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                  NSLog(@"%@", error);
+                  
+                  [scratchContext performBlock:^{
+                      pendingOperationsCount--;
+                      if (pendingOperationsCount == 0 && completionBlock)
+                          completionBlock();
+                  }];
+              }];
+         }];
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         NSLog(@"%@", error);
+         if (completionBlock) completionBlock();
      }];
 }
 
