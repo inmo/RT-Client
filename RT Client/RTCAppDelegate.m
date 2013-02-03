@@ -26,6 +26,8 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [MagicalRecord setupCoreDataStackWithInMemoryStore];
+    
     RTEngine * engine = [RTEngine sharedEngine];
     [engine removeUsernameAndPassword];
     engine.delegate = self;
@@ -47,7 +49,7 @@
         if (_loginWindowController)
             [_loginWindowController close];
         
-        [engine _testHook];
+        [engine fetchSelfServiceTicketStubs:nil];
     }
 }
 

@@ -31,6 +31,8 @@
 - (void)removeUsernameAndPassword;
 - (NSString *)username;
 
+- (void)fetchSelfServiceTicketStubs:(RTBasicBlock)completionBlock;
+
 - (void)_testHook;
 
 @end
