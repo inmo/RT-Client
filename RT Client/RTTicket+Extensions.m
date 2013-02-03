@@ -43,9 +43,4 @@
     return ticket;
 }
 
-- (void)sync:(BOOL)syncAssociations completion:(RTBasicBlock)completionBlock;
-{
-    
-}
-
 @end

@@ -19,7 +19,7 @@
     if (__defaultDateFormatter == nil)
     {
         __defaultDateFormatter = [[NSDateFormatter alloc] init];
-        __defaultDateFormatter.dateFormat = @"MMM dd HH:MM:ss yyyy";
+        __defaultDateFormatter.dateFormat = @"EEE, dd MMM yyyy HH:mm:ss";
         __defaultDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
     }
     
@@ -45,7 +45,7 @@
         if ([SEGMENT_DIVISION_STRING isEqualToString:line] && segmentRange.length > 0)
         {
             NSArray * segmentArray = [inputLines subarrayWithRange:segmentRange];
-            [returnArray addObject:[self dictionaryWithLinesArray:segmentArray]];
+            [returnArray addObject:[self dictionaryWithLinesArray:segmentArray]]; // TODO: missing nil check, good for debugging though
             
             segmentRange = NSMakeRange(idx + 1, 0);
         }
@@ -77,9 +77,6 @@ static NSString * kRTParserHeadersKey = @"Headers";
     {
         NSString * line = inputLines[idx];
         
-        if ([line hasPrefix:@"Content: <pre>"])
-            NSLog(@"BREAK");
-        
         // Skip newlines in input
         if ([@"" isEqualToString:line])
             continue;
@@ -109,7 +106,9 @@ static NSString * kRTParserHeadersKey = @"Headers";
             
             NSError * __autoreleasing error = nil;
             // 1: (Unnamed) (text/plain / 2b),
-            NSRegularExpression * attachmentLineRegex = [NSRegularExpression regularExpressionWithPattern:@"([0-9]+): \\(([^)]*)\\) \\(([a-zA-Z0-0_]+/[a-zA-Z0-0_]+) / ([0-9]+(\\.[0-9]+)?[a-z])\\)" options:0 error:&error];
+            
+            NSString * regex = @"^([0-9]+): (.*) \\(([a-zA-Z0-9\\._-]+/[a-zA-Z0-9\\._-]+) / ([0-9]+(\\.[0-9]+)?[a-z])\\)(,)?$";
+            NSRegularExpression * attachmentLineRegex = [NSRegularExpression regularExpressionWithPattern:regex options:0 error:&error];
             
             for (idx = idx; continueFlag && idx < inputLines.count; idx++)
             {

@@ -9,6 +9,7 @@
 #import "RTCAppDelegate.h"
 #import "RTCLoginWindowController.h"
 #import "RTEngine.h"
+#import "RTModels.h"
 
 @interface RTCAppDelegate ()
 @end
@@ -49,7 +50,13 @@
         if (_loginWindowController)
             [_loginWindowController close];
         
-        [engine fetchSelfServiceTicketStubs:nil];
+        [engine fetchSelfServiceTicketStubs:^{
+            [RTTicket.MR_findAll enumerateObjectsUsingBlock:^(RTTicket * ticket, NSUInteger idx, BOOL *stop) {
+                [engine pullTicketInformation:ticket.objectID completion:^{
+                    NSLog(@"%@", ticket);
+                }];
+            }];
+        }];
     }
 }
 

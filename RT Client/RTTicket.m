@@ -2,11 +2,12 @@
 //  RTTicket.m
 //  RT Client
 //
-//  Created by James Savage on 1/31/13.
+//  Created by James Savage on 2/3/13.
 //  Copyright (c) 2013 INMO. All rights reserved.
 //
 
 #import "RTTicket.h"
+#import "RTAttachment.h"
 
 
 @implementation RTTicket
@@ -24,9 +25,10 @@
 @dynamic requestors;
 @dynamic status;
 @dynamic subject;
+@dynamic ticketID;
 @dynamic timeEstimated;
 @dynamic timeLeft;
 @dynamic timeWorked;
-@dynamic ticketID;
+@dynamic attachments;
 
 @end
