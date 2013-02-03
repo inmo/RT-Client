@@ -6,10 +6,13 @@
 //  Copyright (c) 2012 INMO. All rights reserved.
 //
 
+#import <CoreData/CoreData.h>
+
 #import "RTEngine.h"
 #import "RTKeychainEntry.h"
 #import "RTParser.h"
 #import "RTCLoginWindowController.h"
+#import "RTModels.h"
 
 #define RT_SERVER_URL [NSURL URLWithString:@"http://sulfur.rose-hulman.edu/rt"]
 #define SAFARI_USER_AGENT @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.17 (KHTML, like Gecko) Version/6.0.2 Safari/536.26.17"
@@ -28,6 +31,7 @@
 
 @property (nonatomic, assign, readwrite, getter = isAuthenticated) BOOL authenticated;
 @property (nonatomic, strong, readonly) RTKeychainEntry * keychainEntry;
+@property (nonatomic, strong) NSManagedObjectContext * apiContext;
 
 @end
 
@@ -54,28 +58,72 @@
     {
         self->_keychainEntry = [RTKeychainEntry entryForService:@"request-tracker" account:@"default"];
         FORCE_LOGOUT();
+        
+        self.apiContext = [NSManagedObjectContext MR_contextWithParent:[NSManagedObjectContext MR_defaultContext]];
     }
     
     return self;
 }
 
+- (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters
+{
+    NSMutableURLRequest * request = [super requestWithMethod:method path:path parameters:parameters];
+    [request setTimeoutInterval:120];
+    
+    return request;
+}
+
 #pragma mark - API Endpoints
 
-- (void)_testHook
+- (void)fetchSelfServiceTicketStubs:(RTBasicBlock)completionBlock;
 {
     [self
      getPath:@"REST/1.0/search/ticket"
      parameters:@{
-        @"query": @"Status = 'new' OR Status = 'open'", // [NSString stringWithFormat:@"Owner = '%@' AND ( Status = 'new' OR Status = 'open' )", self.username],
-        @"orderby": @"-Created",
-        @"format": @"l",
-     }
-     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         @"query": @"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')",
+         @"orderby": @"-Created",
+         @"format": @"l",
+     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
          RTParser * parser = [[RTParser alloc] init];
-         NSLog(@"Parsed Response: %@", [parser arrayWithString:operation.responseString]);
+         for (NSDictionary * td in [parser arrayWithString:operation.responseString])
+         {
+             RTTicket * ticket = [RTTicket createTicketFromAPIResponse:td inContext:self.apiContext];
+             
+    //         if (completionBlock)
+    //             completionBlock(ticket.objectID);
+             
+    //         NSLog(@"Parsed Ticket: %@", ticket);
+             NSLog(@"Parsed Ticket!");
+             [self
+              getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID]
+              parameters:nil
+              success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                  NSDictionary * attachments = [parser dictionaryWithString:operation.responseString];
+//                  NSLog(@"Ticket Attachments: %@", attachments);
+//                  NSLog(@"Parsed Ticket Attachments!");
+                  
+                  for (NSDictionary * A in attachments[@"Attachments"])
+                  [self
+                   getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, A[@"id"]]
+                   parameters:nil
+                   success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                       NSDictionary * attachment = [parser dictionaryWithString:operation.responseString];
+//                       NSLog(@"REST/1.0/%@/attachments/%@\n%@", ticket.ticketID, A[@"id"], attachment);
+                   } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                       NSLog(@"%@", error);
+                   }];
+              } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                  NSLog(@"%@", error);
+              }];
+         }
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"%@", error);
      }];
+}
+
+- (void)_testHook
+{
+
 }
 
 #pragma mark - Authentication (Keychain)

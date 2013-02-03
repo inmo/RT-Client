@@ -13,6 +13,8 @@
 - (NSDictionary *)dictionaryWithString:(NSString *)inputString;
 - (NSArray *)arrayWithString:(NSString *)inputString;
 
+- (NSData *)dataWithRequestString:(NSString *)requestString;
+
 - (void)_parseTestString;
 
 @end
