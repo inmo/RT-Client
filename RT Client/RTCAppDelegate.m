@@ -10,7 +10,7 @@
 #import "RTCLoginWindowController.h"
 #import "RTEngine.h"
 #import "RTModels.h"
-#import "MainMenu.h"
+#import "RTCSelfServiceWindowController.h"
 
 @interface RTCAppDelegate ()
 @end
@@ -54,19 +54,7 @@
         if (_loginWindowController)
             [_loginWindowController close];
         
-        [engine fetchSelfServiceTicketStubs:^{
-            NSError * __autoreleasing error = nil;
-            [((MainMenu *)self.window.windowController).ticketController fetchWithRequest:nil merge:NO error:&error];
-            [((MainMenu *)self.window.windowController).ticketTableView reloadData];
-            
-            [RTTicket.MR_findAll enumerateObjectsUsingBlock:^(RTTicket * ticket, NSUInteger idx, BOOL *stop) {
-                [engine pullTicketInformation:ticket.objectID completion:^{
-                    NSError * __autoreleasing error = nil;
-                    [((MainMenu *)self.window.windowController).ticketController fetchWithRequest:nil merge:NO error:&error];
-                    [((MainMenu *)self.window.windowController).ticketTableView reloadData];
-                }];
-            }];
-        }];
+        [(RTCSelfServiceWindowController *)self.window.windowController refreshSelfServiceTickets:self];
     }
 }
 
