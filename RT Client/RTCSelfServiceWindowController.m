@@ -7,7 +7,6 @@
 //
 
 #import "RTCSelfServiceWindowController.h"
-#import "RTCTicketCellView.h"
 #import "RTModels.h"
 #import "RTEngine.h"
 
@@ -42,25 +41,6 @@
             }];
         }];
     }];
-}
-
-#pragma mark - NSTableViewDataSource
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
-{
-    return [self.ticketController.arrangedObjects count];
-}
-
-- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
-{
-    RTCTicketCellView * result = (RTCTicketCellView *)[tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
-    RTTicket * ticket = [self.ticketController.arrangedObjects objectAtIndex:row];
-    
-    result.authorLabel.stringValue = ticket.owner;
-    result.dateLabel.stringValue = ticket.stringFromCreated;
-    result.subjectLabel.stringValue = ticket.subject;
-    result.summaryLabel.stringValue = ticket.plainTextSummary;
-    return result;
 }
 
 @end
