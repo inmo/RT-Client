@@ -13,4 +13,7 @@
 + (RTTicket *)createTicketFromAPIResponse:(NSDictionary *)apiResponse;
 + (RTTicket *)createTicketFromAPIResponse:(NSDictionary *)apiResponse inContext:(NSManagedObjectContext *)context;
 
+- (NSString *)plainTextSummary;
+- (NSString *)stringFromCreated;
+
 @end

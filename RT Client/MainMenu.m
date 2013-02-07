@@ -7,6 +7,8 @@
 //
 
 #import "MainMenu.h"
+#import "RTCTicketCellView.h"
+#import "RTModels.h"
 
 @interface MainMenu ()
 
@@ -14,44 +16,28 @@
 
 @implementation MainMenu
 
-- (id)initWithWindow:(NSWindow *)window
+- (void)awakeFromNib;
 {
-    self = [super initWithWindow:window];
-    if (self) {
-        [NSTimer scheduledTimerWithTimeInterval:10.0 target:(self) selector:(@selector(closeLogin)) userInfo:(self) repeats:NO];
-    }
-    
-    return self;
-}
-- (IBAction)replier:(id)sender{
-    //Make it able to reply to a selected ticket from main receipt
+    self.ticketController.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES] ];
 }
 
-- (IBAction)replierAll:(id)sender{
-    //Make it able to reply to all party associated with ticket
-}
+#pragma mark - NSTableViewDataSource
 
-- (IBAction)deleter:(id)sender{
-    //Delete the selected ticket *WARNING* add a message box that warns the user does he want to delete ticket.
-    
-}
-
-- (IBAction)newTicket:(id)sender{
-    //The user creates a new blank ticket with multiple features.
-}
-
-- (IBAction)ticketLister:(id)sender{
-    //The list of all the tickets avaliable in that queue.
-}
-
-- (IBAction)ticketMessager:(id)sender{
-    //The message is visible by the user.
-}
-- (void)windowDidLoad
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
 {
-    [super windowDidLoad];
+    return [self.ticketController.arrangedObjects count];
+}
+
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    RTCTicketCellView * result = (RTCTicketCellView *)[tableView makeViewWithIdentifier:tableColumn.identifier owner:self];
+    RTTicket * ticket = [self.ticketController.arrangedObjects objectAtIndex:row];
     
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+    result.authorLabel.stringValue = ticket.owner;
+    result.dateLabel.stringValue = ticket.stringFromCreated;
+    result.subjectLabel.stringValue = ticket.subject;
+    result.summaryLabel.stringValue = ticket.plainTextSummary;
+    return result;
 }
 
 @end

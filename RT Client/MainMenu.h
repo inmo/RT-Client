@@ -19,6 +19,9 @@
 @property(nonatomic,strong) NSScrollView *tickerList;
 @property(nonatomic,strong) NSScrollView *ticketMessage;
 
+@property (nonatomic, strong) IBOutlet NSArrayController * ticketController;
+@property (nonatomic, strong) IBOutlet NSTableView * ticketTableView;
+
 - (IBAction)replier:(id)sender;
 - (IBAction)replierAll:(id)sender;
 - (IBAction)deleter:(id)sender;

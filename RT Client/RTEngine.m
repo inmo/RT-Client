@@ -119,7 +119,7 @@
          NSArray * attachmentStubs = attachmentList[@"Attachments"];
          NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
          
-         __block RTTicket * ticket = (RTTicket *)[scratchContext objectWithID:ticketID];;
+         __block RTTicket * ticket = (RTTicket *)[scratchContext objectWithID:ticketID];
          __block NSUInteger pendingOperationsCount = attachmentStubs.count;
          // ^^ Synchronize this with the scratchContext
                   
