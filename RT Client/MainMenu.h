@@ -12,12 +12,12 @@
 @interface MainMenu : NSWindowController{
     
 }
-@property(nonatomic,strong) NSToolbarItem *reply;
-@property(nonatomic,strong) NSToolbarItem *replyToAll;
-@property(nonatomic,strong) NSToolbarItem *deleiteIt;
-@property(nonatomic,strong) NSToolbarItem *createNew;
-@property(nonatomic,strong) NSScrollView *tickerList;
-@property(nonatomic,strong) NSScrollView *ticketMessage;
+@property (nonatomic,strong) IBOutlet NSToolbarItem *reply;
+@property (nonatomic,strong) IBOutlet NSToolbarItem *replyToAll;
+@property (nonatomic,strong) IBOutlet NSToolbarItem *deleiteIt;
+@property (nonatomic,strong) IBOutlet NSToolbarItem *createNew;
+@property (nonatomic,strong) IBOutlet NSScrollView *tickerList;
+@property (nonatomic,strong) IBOutlet NSScrollView *ticketMessage;
 
 @property (nonatomic, strong) IBOutlet NSArrayController * ticketController;
 @property (nonatomic, strong) IBOutlet NSTableView * ticketTableView;
@@ -26,8 +26,7 @@
 - (IBAction)replierAll:(id)sender;
 - (IBAction)deleter:(id)sender;
 - (IBAction)newTicket:(id)sender;
-- (IBAction)ticketLister:(id)sender;
-- (IBAction)ticketMessager:(id)sender;
+
 
 
 @end
