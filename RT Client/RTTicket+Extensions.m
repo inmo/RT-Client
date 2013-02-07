@@ -7,6 +7,7 @@
 //
 
 #import "RTTicket+Extensions.h"
+#import "RTAttachment.h"
 
 @implementation RTTicket (Extensions)
 
@@ -41,6 +42,24 @@
     ticket.ticketID = apiResponse[@"id"];
     
     return ticket;
+}
+
+- (NSString *)plainTextSummary;
+{
+    NSArray * attachments = [RTAttachment MR_findAllSortedBy:@"attachmentID" ascending:NO withPredicate:[NSPredicate predicateWithFormat:@"ticket = %@ AND parent = 0", self]];
+    
+    if (!attachments.lastObject)
+        return @"Loading…";
+    
+    NSString * rawString = [[NSString alloc] initWithData:((RTAttachment *)attachments.lastObject).content encoding:NSUTF8StringEncoding];
+    NSAttributedString * summary = [[NSAttributedString alloc] initWithHTML:[rawString dataUsingEncoding:NSUTF8StringEncoding] baseURL:[[NSBundle mainBundle] bundleURL] documentAttributes:NULL];
+    
+    return summary.string;
+}
+
+- (NSString *)stringFromCreated;
+{
+    return [NSDateFormatter localizedStringFromDate:self.created dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
 }
 
 @end
