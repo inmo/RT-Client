@@ -25,11 +25,11 @@
     
     ticket.adminCC = apiResponse[@"adminCC"];
     ticket.cc = apiResponse[@"Cc"];
-    ticket.created = [NSDate date]; // apiResponse[@"Created"];
+    ticket.created = apiResponse[@"Created"];
     ticket.creator = apiResponse[@"Creator"];
     ticket.finalPriority = @([apiResponse[@"FinalPriority"] integerValue]);
     ticket.initialPriority = @([apiResponse[@"InitialPriority"] integerValue]);
-    ticket.lastUpdated = [NSDate date]; // apiResponse[@"LastUpdated"];
+    ticket.lastUpdated = apiResponse[@"LastUpdated"];
     ticket.owner = apiResponse[@"Owner"];
     ticket.priority = @([apiResponse[@"Priority"] integerValue]);
     ticket.queue = apiResponse[@"Queue"];

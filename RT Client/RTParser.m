@@ -19,11 +19,26 @@
     if (__defaultDateFormatter == nil)
     {
         __defaultDateFormatter = [[NSDateFormatter alloc] init];
-        __defaultDateFormatter.dateFormat = @"EEE, dd MMM yyyy HH:mm:ss";
         __defaultDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
     }
     
     return __defaultDateFormatter;
+}
+
++ (NSDate *)coerceDateFromString:(NSString *)str;
+{
+    NSDateFormatter * dateFormatter = [self defaultDateFormatter];
+    dateFormatter.dateFormat = @"EEE MMM dd HH:mm:ss yyyy";
+    
+    NSDate * date = [dateFormatter dateFromString:str];
+    if (date) return date;
+    
+    dateFormatter.dateFormat = @"yyyy-mm-dd HH:mm:ss";
+    
+    date = [dateFormatter dateFromString:str];
+    if (date) return date;
+    
+    return nil;
 }
 
 - (void)_parseTestString;
@@ -145,8 +160,11 @@ static NSString * kRTParserHeadersKey = @"Headers";
         }
         else
         {
+            if ([key isEqualToString:@"LastUpdated"])
+                NSLog(@"HERE");
+            
             // TODO: Correctly parse dates
-            NSDate * dateValue = [[self.class defaultDateFormatter] dateFromString:value];
+            NSDate * dateValue = [self.class coerceDateFromString:value];
             if (dateValue != nil)
                 value = dateValue;
             

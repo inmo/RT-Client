@@ -38,8 +38,8 @@
     RTEngine * engine = [RTEngine sharedEngine];
     engine.delegate = self;
     
-    [engine removeUsernameAndPassword];
-//    [engine refreshLogin];
+//    [engine removeUsernameAndPassword];
+    [engine refreshLogin];
 }
 
 - (void)apiEngineWillAttemptLogin:(RTEngine *)engine
