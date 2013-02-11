@@ -25,7 +25,7 @@
     attachment.attachmentID = @([apiResponse[@"id"] integerValue]);
     attachment.subject = apiResponse[@"Subject"];
     attachment.creator = @([apiResponse[@"Creator"] integerValue]);
-    attachment.created = [NSDate date];
+    attachment.created = apiResponse[@"Created"];
     attachment.transaction = @([apiResponse[@"Transaction"] integerValue]);
     attachment.parent = @([apiResponse[@"Parent"] integerValue]);
     attachment.messageID = @([apiResponse[@"MessageId"] integerValue]);
