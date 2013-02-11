@@ -19,11 +19,7 @@
 
 // TODO: Docs were unclear about the validity of calling dispatch_get_current_queue() for production code.
 // Is this bad practice? Is there a better way to ensure execution on main thread?
-#define DISPATCH_DELEGATE(CODE) do { if (self.delegate) { \
-    if (dispatch_get_current_queue() != dispatch_get_main_queue()) { \
-        dispatch_async(dispatch_get_main_queue(), ^{ CODE; }); \
-    } else { CODE; } \
-} } while (0)
+#define DISPATCH_DELEGATE(CODE) if (self.delegate) { dispatch_async(dispatch_get_main_queue(), ^{ CODE; }); }
 
 #define FORCE_LOGOUT() if ((self.authenticated = YES)) { [self _logout]; }
 
@@ -205,6 +201,8 @@
 {
     self.keychainEntry.contents = nil;
     FORCE_LOGOUT();
+    
+    [self refreshLogin];
 }
 
 #pragma mark - Authentication (Server)
@@ -238,6 +236,9 @@
                     onCompletion:(void (^)(BOOL invalidCredentialsError, BOOL networkError))completionBlock;
 {
     [self _logout];
+    
+    if (!roCredentials)
+        return completionBlock(YES, NO);
     
     NSMutableDictionary * credentials = roCredentials.mutableCopy;
     credentials[@"next"] = @"c2eb5af67a20123fbac8cd57aa94e040"; // TODO: Figure this out more

@@ -10,7 +10,7 @@
 
 @interface RTKeychainEntry : NSObject
 
-+ (RTKeychainEntry *)entryForService:(NSString *)serviceName account:(NSString *)accountName;
++ (instancetype)entryForService:(NSString *)serviceName account:(NSString *)accountName;
 - (id)initWithService:(NSString *)serviceName account:(NSString *)accountName;
 
 @property (nonatomic, strong, readonly) NSString * serviceName;

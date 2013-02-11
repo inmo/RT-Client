@@ -17,7 +17,7 @@
 
 @implementation RTKeychainEntry
 
-+ (RTKeychainEntry *)entryForService:(NSString *)serviceName account:(NSString *)accountName;
++ (instancetype)entryForService:(NSString *)serviceName account:(NSString *)accountName;
 {
     return [[self alloc] initWithService:serviceName account:accountName];
 }
@@ -33,15 +33,27 @@
     return self;
 }
 
-- (NSDictionary *)contents
+- (NSMutableDictionary *)basicKeychainQuery:(BOOL)shouldReturnData
 {
     NSMutableDictionary * keychainQuery = @{
-        (__bridge_transfer NSString *)kSecClass: (__bridge_transfer NSString *)kSecClassGenericPassword,
-        (__bridge_transfer NSString *)kSecAttrService: self.serviceName,
-        (__bridge_transfer NSString *)kSecAttrAccount: self.accountName,
-        (__bridge_transfer NSString *)kSecReturnData: (__bridge_transfer NSString *)kCFBooleanTrue,
-        (__bridge_transfer NSString *)kSecMatchLimit: (__bridge_transfer NSString *)kSecMatchLimitOne,
-    }.mutableCopy;
+         (__bridge_transfer NSString *)kSecClass: (__bridge_transfer NSString *)kSecClassGenericPassword,
+         (__bridge_transfer NSString *)kSecAttrService: self.serviceName,
+         (__bridge_transfer NSString *)kSecAttrAccount: self.accountName,
+         (__bridge_transfer NSString *)kSecMatchLimit: (__bridge_transfer NSString *)kSecMatchLimitOne,
+     }.mutableCopy;
+    
+    if (shouldReturnData)
+    {
+        [keychainQuery setObject:(__bridge_transfer NSString *)kCFBooleanTrue
+                          forKey:(__bridge_transfer NSString *)kSecReturnData];
+    }
+    
+    return keychainQuery;
+}
+
+- (NSDictionary *)contents
+{
+    NSMutableDictionary * keychainQuery = [self basicKeychainQuery:YES];
     NSDictionary * contents = nil;
     
     CFTypeRef resultData = NULL;
@@ -56,25 +68,22 @@
 
 - (void)setContents:(NSDictionary *)contents
 {
-    NSMutableDictionary * keychainQuery = @{
-        (__bridge_transfer NSString *)kSecClass: (__bridge_transfer NSString *)kSecClassGenericPassword,
-        (__bridge_transfer NSString *)kSecAttrService: self.serviceName,
-        (__bridge_transfer NSString *)kSecAttrAccount: self.accountName,
-        (__bridge_transfer NSString *)kSecReturnData: (__bridge_transfer NSString *)kCFBooleanTrue,
-    }.mutableCopy;
+    NSMutableDictionary * keychainQuery = [self basicKeychainQuery:NO];
     
-    CFTypeRef resultData = NULL;
     CFDictionaryRef query = (__bridge_retained CFDictionaryRef)keychainQuery;
     
-    SecItemDelete(query);
+    OSStatus s = SecItemDelete(query);
+    NSLog(@"%@", SecCopyErrorMessageString(s, NULL));
     CFRelease(query);
     
     if (contents)
     {
+        keychainQuery = [self basicKeychainQuery:YES];
         [keychainQuery setObject:[NSKeyedArchiver archivedDataWithRootObject:contents]
                           forKey:(__bridge_transfer NSString *)kSecValueData];
         CFDictionaryRef query = (__bridge_retained CFDictionaryRef)keychainQuery;
         
+        CFTypeRef resultData = NULL;
         SecItemAdd(query, &resultData);
         CFRelease(query);
     }
