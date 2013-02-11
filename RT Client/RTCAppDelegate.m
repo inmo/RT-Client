@@ -18,6 +18,8 @@
 @interface RTCAppDelegate () <RTEngineDelegate> {
     NSWindowController * _loginWindowController;
 }
+
+@property (nonatomic, assign, readwrite) BOOL canLogout;
 @end
 
 @implementation RTCAppDelegate
@@ -34,10 +36,10 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     RTEngine * engine = [RTEngine sharedEngine];
-    [engine removeUsernameAndPassword];
     engine.delegate = self;
     
-    [engine refreshLogin];
+    [engine removeUsernameAndPassword];
+//    [engine refreshLogin];
 }
 
 - (void)apiEngineWillAttemptLogin:(RTEngine *)engine
@@ -51,6 +53,7 @@
     
     if (engine.isAuthenticated)
     {
+        self.canLogout = YES;
         if (_loginWindowController)
             [_loginWindowController close];
         
@@ -66,6 +69,7 @@
 - (void)apiEngineDidLogout:(RTEngine *)engine
 {
     NSLog(@"API Engine Did Logout");
+    self.canLogout = NO;
 }
 
 - (void)apiEngine:(RTEngine *)engine requiresAuthentication:(NSWindowController *)authWindow
@@ -73,10 +77,10 @@
     NSLog(@"API Engine Requires Authentication: %p", authWindow);
     
     if (_loginWindowController)
-        [_loginWindowController close];
+        [NSApp endSheet:_loginWindowController.window];
     
     _loginWindowController = authWindow;
-    [NSApp beginSheet:_loginWindowController.window
+    [NSApp beginSheet:authWindow.window
        modalForWindow:self.window
         modalDelegate:nil
        didEndSelector:nil
@@ -101,6 +105,11 @@
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator
 {
     return [NSPersistentStoreCoordinator MR_defaultStoreCoordinator];
+}
+
+- (void)logout:(id)sender
+{
+    [RTEngine.sharedEngine removeUsernameAndPassword];
 }
 
 @end
