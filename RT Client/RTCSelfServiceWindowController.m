@@ -10,7 +10,7 @@
 #import "RTModels.h"
 #import "RTEngine.h"
 
-@interface RTCSelfServiceWindowController ()
+@interface RTCSelfServiceWindowController () <NSTableViewDelegate>
 
 @end
 
