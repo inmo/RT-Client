@@ -21,7 +21,8 @@
     if (!apiResponse || !apiResponse[@"id"])
         return nil;
     
-    RTTicket * ticket = [self MR_createInContext:context];
+    NSArray * existingTickets = [self MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"ticketID = %@", apiResponse[@"id"]] inContext:context];
+    RTTicket * ticket = (existingTickets.count) ? existingTickets[0] : [self MR_createInContext:context];
     
     ticket.adminCC = apiResponse[@"adminCC"];
     ticket.cc = apiResponse[@"Cc"];

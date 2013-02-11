@@ -20,12 +20,13 @@
     if (!apiResponse || !apiResponse[@"id"])
         return nil;
     
-    RTAttachment * attachment = [RTAttachment MR_createInContext:context];
+    NSArray * existingAttachments = [self MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"attachmentID = %@", @([apiResponse[@"id"] integerValue])] inContext:context];
+    RTAttachment * attachment = (existingAttachments.count) ? existingAttachments[0] : [RTAttachment MR_createInContext:context];
     
     attachment.attachmentID = @([apiResponse[@"id"] integerValue]);
     attachment.subject = apiResponse[@"Subject"];
     attachment.creator = @([apiResponse[@"Creator"] integerValue]);
-    attachment.created = apiResponse[@"Created"];
+    attachment.created = ([apiResponse[@"Created"] isKindOfClass:[NSDate class]]) ?  apiResponse[@"Created"] : nil;
     attachment.transaction = @([apiResponse[@"Transaction"] integerValue]);
     attachment.parent = @([apiResponse[@"Parent"] integerValue]);
     attachment.messageID = @([apiResponse[@"MessageId"] integerValue]);
