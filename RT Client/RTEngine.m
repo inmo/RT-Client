@@ -14,7 +14,7 @@
 #import "RTCLoginWindowController.h"
 #import "RTModels.h"
 
-#define RT_SERVER_URL [NSURL URLWithString:@"http://sulfur.rose-hulman.edu/rt"]
+#define RT_SERVER_URL [NSURL URLWithString:@"http://rhit-rt.axiixc.com/"]
 #define SAFARI_USER_AGENT @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.17 (KHTML, like Gecko) Version/6.0.2 Safari/536.26.17"
 
 // TODO: Docs were unclear about the validity of calling dispatch_get_current_queue() for production code.
@@ -127,10 +127,19 @@
                   [scratchContext performBlock:^{
                       if (!operation.responseString)
                       {
-//                          [operation.responseData writeToFile:@"/Users/axiixc/Desktop/out.bin" atomically:YES];
+                          [operation.responseData writeToFile:@"/Users/axiixc/Desktop/out.bin" atomically:YES];
                           NSLog(@"Coulding extract attachment at %@", operation.request.URL);
                       }
-                   
+                      
+                    // [[NSString alloc] initWithData:(NSData *)[operation.responseData subdataWithRange:(NSRange){ 0, ((NSRange)[operation.responseData rangeOfData:[@"Content:" dataUsingEncoding:4] options:0 range:(NSRange){ 0, (NSUInteger)[operation.responseData length] }]).location }] encoding:4]
+
+                    // Retrieve the headers of invalid responses...
+//                        NSData * responseData = operation.responseData;
+//                        NSRange fullDataRange = NSMakeRange(0, responseData.length);
+//                        NSRange contentRange = [responseData rangeOfData:[@"Content:" dataUsingEncoding:NSUTF8StringEncoding] options:0 range:fullDataRange];
+//                        NSData * validResponseData = [responseData subdataWithRange:NSMakeRange(0, contentRange.location)];
+//                        NSString * partialResponseString = [[NSString alloc] initWithData:validResponseData encoding:NSUTF8StringEncoding];
+                      
                       NSDictionary * rawAttachment = [self.responseParser dictionaryWithString:operation.responseString];
                       RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:rawAttachment inContext:scratchContext];
                       attachment.ticket = ticket;
@@ -260,7 +269,9 @@
     }];
     
     [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
-        if ([request.URL.absoluteString hasSuffix:@"/rt/"])
+        // TODO: This is really the only way to grab successful logins as of this version
+        //       However, it is also a hack and should be considered for fixing if at all possible.
+        if ([request.URL isEqual:RT_SERVER_URL])
         {
             self.authenticated = YES;
             completionBlock(NO, NO);
