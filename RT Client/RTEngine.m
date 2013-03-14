@@ -109,7 +109,7 @@
     
     [self
      getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID]
-     parameters:nil
+     parameters:@{ @"foo": @"bar" }
      success:^(AFHTTPRequestOperation *operation, id responseObject) {
          NSDictionary * attachmentList = [self.responseParser dictionaryWithString:operation.responseString];
          NSArray * attachmentStubs = attachmentList[@"Attachments"];
@@ -124,31 +124,44 @@
               getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, rawAttachmentStub[@"id"]]
               parameters:nil
               success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                  [scratchContext performBlock:^{
-                      if (!operation.responseString)
-                      {
-                          [operation.responseData writeToFile:@"/Users/axiixc/Desktop/out.bin" atomically:YES];
-                          NSLog(@"Coulding extract attachment at %@", operation.request.URL);
+                  NSDictionary * rawResponse = nil;
+                  
+                  if (!operation.responseString)
+                  {
+                      NSLog(@"Coulding extract attachment at %@", operation.request.URL);
+                      [operation.responseData writeToFile:@"/Users/axiixc/Desktop/bad.bin" atomically:YES];
+                      
+                      NSData * responseData = operation.responseData;
+                      NSRange fullDataRange = NSMakeRange(0, responseData.length);
+                      NSRange contentRange = [responseData rangeOfData:[@"Content: " dataUsingEncoding:NSUTF8StringEncoding] options:0 range:fullDataRange];
+                      NSData * validResponseData = [responseData subdataWithRange:NSMakeRange(0, contentRange.location)];
+                      NSString * partialResponseString = [[NSString alloc] initWithData:validResponseData encoding:NSUTF8StringEncoding];
+                      rawResponse = [[self.responseParser dictionaryWithString:partialResponseString] mutableCopy];
+                      
+                      NSMutableData * unprocessedAttachmentData = [[responseData subdataWithRange:NSMakeRange(contentRange.location + contentRange.length, responseData.length - contentRange.location - contentRange.length)] mutableCopy];
+                      while (YES) {
+                          NSRange searchRange = NSMakeRange(0, unprocessedAttachmentData.length); // TODO: Update this so we don't search everything every time
+                          NSData * searchData = [@"         " dataUsingEncoding:NSUTF8StringEncoding];
+                          NSRange matchRange = [unprocessedAttachmentData rangeOfData:searchData options:0 range:searchRange];
+                          
+                          if (matchRange.location == NSNotFound)
+                              break;
+                          
+                          [unprocessedAttachmentData replaceBytesInRange:matchRange withBytes:NULL length:0];
                       }
-                      
-                    // [[NSString alloc] initWithData:(NSData *)[operation.responseData subdataWithRange:(NSRange){ 0, ((NSRange)[operation.responseData rangeOfData:[@"Content:" dataUsingEncoding:4] options:0 range:(NSRange){ 0, (NSUInteger)[operation.responseData length] }]).location }] encoding:4]
-
-                    // Retrieve the headers of invalid responses...
-//                        NSData * responseData = operation.responseData;
-//                        NSRange fullDataRange = NSMakeRange(0, responseData.length);
-//                        NSRange contentRange = [responseData rangeOfData:[@"Content:" dataUsingEncoding:NSUTF8StringEncoding] options:0 range:fullDataRange];
-//                        NSData * validResponseData = [responseData subdataWithRange:NSMakeRange(0, contentRange.location)];
-//                        NSString * partialResponseString = [[NSString alloc] initWithData:validResponseData encoding:NSUTF8StringEncoding];
-                      
-                      NSDictionary * rawAttachment = [self.responseParser dictionaryWithString:operation.responseString];
-                      RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:rawAttachment inContext:scratchContext];
+                      [unprocessedAttachmentData writeToFile:@"/Users/axiixc/Desktop/good.bin" atomically:YES];
+                      [(NSMutableDictionary *)rawResponse setObject:unprocessedAttachmentData forKey:@"Content"];
+                  }
+                  else
+                  {
+                      rawResponse = [self.responseParser dictionaryWithString:operation.responseString];
+                  }
+                  
+                  [scratchContext performBlock:^{
+                      RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:rawResponse inContext:scratchContext];
                       attachment.ticket = ticket;
                       
-//                      NSStringEncoding encoding = NULL;
-//                      NSError * __autoreleasing error = nil;
-//                      NSLog(@"%@", [[NSString alloc] initWithData:operation.responseData encoding:NSISOLatin1StringEncoding]);
-                      
-                      pendingOperationsCount--;
+                      pendingOperationsCount--; // TODO: This can be redone using barriers in GCD
                       if (pendingOperationsCount == 0)
                       {
                           [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
