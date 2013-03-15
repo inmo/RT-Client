@@ -73,8 +73,10 @@
     CFDictionaryRef query = (__bridge_retained CFDictionaryRef)keychainQuery;
     
     OSStatus s = SecItemDelete(query);
-    NSLog(@"%@", SecCopyErrorMessageString(s, NULL));
     CFRelease(query);
+    
+    if (s != noErr)
+        NSLog(@"%@", SecCopyErrorMessageString(s, NULL));
     
     if (contents)
     {

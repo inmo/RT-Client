@@ -8,15 +8,9 @@
 
 #import <AFNetworking/AFNetworking.h>
 
-// Put data fetching methods in here!
-@protocol RTDataProvider
-// - (void)getTickets...
-// - (void)postChanges...
-@end
-
 @protocol RTEngineDelegate;
 
-@interface RTEngine : AFHTTPClient <RTDataProvider>
+@interface RTEngine : AFHTTPClient
 
 + (RTEngine *)sharedEngine;
 
@@ -33,8 +27,6 @@
 
 - (void)fetchSelfServiceTicketStubs:(RTBasicBlock)completionBlock;
 - (void)pullTicketInformation:(NSManagedObjectID *)ticketID completion:(RTBasicBlock)completion;
-
-- (void)_testHook;
 
 @end
 

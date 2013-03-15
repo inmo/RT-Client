@@ -21,6 +21,7 @@
 		B36192D9166D7B2F00D86162 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192D8166D7B2F00D86162 /* main.m */; };
 		B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = B36192DB166D7B2F00D86162 /* Credits.rtf */; };
 		B36192E0166D7B2F00D86162 /* RTCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */; };
+		B370905A16F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = B370905916F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m */; };
 		B3A015E916B1E01700D09351 /* RTKeychainEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E516B1E01700D09351 /* RTKeychainEntry.m */; };
 		B3A015EA16B1E01700D09351 /* RTParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E716B1E01700D09351 /* RTParser.m */; };
 		B3A015EB16B1E01700D09351 /* testingString1.txt in Resources */ = {isa = PBXBuildFile; fileRef = B3A015E816B1E01700D09351 /* testingString1.txt */; };
@@ -61,6 +62,8 @@
 		B36192DC166D7B2F00D86162 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
 		B36192DE166D7B2F00D86162 /* RTCAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RTCAppDelegate.h; sourceTree = "<group>"; };
 		B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RTCAppDelegate.m; sourceTree = "<group>"; };
+		B370905816F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSHTTPCookieStorage+RequestTracker.h"; sourceTree = "<group>"; };
+		B370905916F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSHTTPCookieStorage+RequestTracker.m"; sourceTree = "<group>"; };
 		B3A015E416B1E01700D09351 /* RTKeychainEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTKeychainEntry.h; sourceTree = "<group>"; };
 		B3A015E516B1E01700D09351 /* RTKeychainEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTKeychainEntry.m; sourceTree = "<group>"; };
 		B3A015E616B1E01700D09351 /* RTParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTParser.h; sourceTree = "<group>"; };
@@ -136,6 +139,7 @@
 		B36192D2166D7B2F00D86162 /* RT Client */ = {
 			isa = PBXGroup;
 			children = (
+				B370905716F2D41200DF719B /* Categories */,
 				B3CC5C0816BAB79C005C71C4 /* Models */,
 				B3A015E416B1E01700D09351 /* RTKeychainEntry.h */,
 				B3A015E516B1E01700D09351 /* RTKeychainEntry.m */,
@@ -179,6 +183,15 @@
 				B3A015E716B1E01700D09351 /* RTParser.m */,
 			);
 			name = "API Engine";
+			sourceTree = "<group>";
+		};
+		B370905716F2D41200DF719B /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				B370905816F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.h */,
+				B370905916F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		B3CC5C0816BAB79C005C71C4 /* Models */ = {
@@ -297,6 +310,7 @@
 				B30D0F9016BE864100DAB1D3 /* RTAttachment.m in Sources */,
 				B30D0F9316BE864100DAB1D3 /* RTTicket.m in Sources */,
 				B3A6F91C16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.m in Sources */,
+				B370905A16F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

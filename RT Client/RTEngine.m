@@ -7,6 +7,7 @@
 //
 
 #import <CoreData/CoreData.h>
+#import "NSHTTPCookieStorage+RequestTracker.h"
 
 #import "RTEngine.h"
 #import "RTKeychainEntry.h"
@@ -15,12 +16,8 @@
 #import "RTModels.h"
 
 #define RT_SERVER_URL [NSURL URLWithString:@"http://rhit-rt.axiixc.com/"]
-#define SAFARI_USER_AGENT @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/536.26.17 (KHTML, like Gecko) Version/6.0.2 Safari/536.26.17"
 
-// TODO: Docs were unclear about the validity of calling dispatch_get_current_queue() for production code.
-// Is this bad practice? Is there a better way to ensure execution on main thread?
-#define DISPATCH_DELEGATE(CODE) if (self.delegate) { dispatch_async(dispatch_get_main_queue(), ^{ CODE; }); }
-
+#define SAFE_DELEGATE_CALL(CODE) if (self.delegate) { dispatch_async(dispatch_get_main_queue(), ^{ CODE; }); }
 #define FORCE_LOGOUT() if ((self.authenticated = YES)) { [self _logout]; }
 
 @interface RTEngine (/* Private */)
@@ -53,7 +50,7 @@
 {
     if ((self = [super initWithBaseURL:RT_SERVER_URL]))
     {
-        self->_keychainEntry = [RTKeychainEntry entryForService:@"request-tracker" account:@"default"];
+        self->_keychainEntry = [RTKeychainEntry entryForService:@"Request Tracker" account:@"default"];
         FORCE_LOGOUT();
         
         self.apiContext = [NSManagedObjectContext MR_contextWithParent:[NSManagedObjectContext MR_defaultContext]];
@@ -66,7 +63,7 @@
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters
 {
     NSMutableURLRequest * request = [super requestWithMethod:method path:path parameters:parameters];
-    [request setTimeoutInterval:120];
+    [request setTimeoutInterval:120]; 
     
     return request;
 }
@@ -75,25 +72,21 @@
 
 - (void)fetchSelfServiceTicketStubs:(RTBasicBlock)completionBlock;
 {
-    [self
-     getPath:@"REST/1.0/search/ticket"
-     parameters:@{
+    [self getPath:@"REST/1.0/search/ticket" parameters:@{
         @"query": @"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')",
         @"format": @"l",
      } success:^(AFHTTPRequestOperation *operation, id responseObject) {
          NSArray * rawTickets = [self.responseParser arrayWithString:operation.responseString];
-         NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
+         NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_context];
          
-         [scratchContext performBlock:^{
-             [rawTickets enumerateObjectsUsingBlock:^(NSDictionary * response, NSUInteger idx, BOOL *stop) {
-                 [RTTicket createTicketFromAPIResponse:response inContext:scratchContext];
-             }];
-             [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-                 if (completionBlock) completionBlock();
-             }];
+         [rawTickets enumerateObjectsUsingBlock:^(NSDictionary * response, NSUInteger idx, BOOL *stop) {
+             [RTTicket createTicketFromAPIResponse:response inContext:scratchContext];
+         }];
+         
+         [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+             if (completionBlock) completionBlock();
          }];
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-         NSLog(@"%@", error);
          if (completionBlock) completionBlock();
      }];
 }
@@ -107,10 +100,7 @@
         return;
     }
     
-    [self
-     getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID]
-     parameters:@{ @"foo": @"bar" }
-     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
          NSDictionary * attachmentList = [self.responseParser dictionaryWithString:operation.responseString];
          NSArray * attachmentStubs = attachmentList[@"Attachments"];
          NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
@@ -119,7 +109,7 @@
          __block NSUInteger pendingOperationsCount = attachmentStubs.count;
          // ^^ Synchronize this with the scratchContext
                   
-         [attachmentStubs enumerateObjectsUsingBlock:^(NSDictionary * rawAttachmentStub, NSUInteger idx, BOOL *stop) {                 
+         [attachmentStubs enumerateObjectsUsingBlock:^(NSDictionary * rawAttachmentStub, NSUInteger idx, BOOL *stop) {
              [self
               getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, rawAttachmentStub[@"id"]]
               parameters:nil
@@ -128,8 +118,8 @@
                   
                   if (!operation.responseString)
                   {
-                      NSLog(@"Coulding extract attachment at %@", operation.request.URL);
-                      [operation.responseData writeToFile:@"/Users/axiixc/Desktop/bad.bin" atomically:YES];
+                      // NSLog(@"Coulding extract attachment at %@", operation.request.URL);
+                      // [operation.responseData writeToFile:@"/Users/axiixc/Desktop/bad.bin" atomically:YES];
                       
                       NSData * responseData = operation.responseData;
                       NSRange fullDataRange = NSMakeRange(0, responseData.length);
@@ -149,7 +139,9 @@
                           
                           [unprocessedAttachmentData replaceBytesInRange:matchRange withBytes:NULL length:0];
                       }
-                      [unprocessedAttachmentData writeToFile:@"/Users/axiixc/Desktop/good.bin" atomically:YES];
+                      
+                      // TODO: Still not sure if the trailing 0x0A0A0A is okay to leave on...
+                      // [unprocessedAttachmentData writeToFile:@"/Users/axiixc/Desktop/good.bin" atomically:YES];
                       [(NSMutableDictionary *)rawResponse setObject:unprocessedAttachmentData forKey:@"Content"];
                   }
                   else
@@ -185,11 +177,6 @@
      }];
 }
 
-- (void)_testHook
-{
-
-}
-
 #pragma mark - Authentication (Keychain)
 
 - (void)setUsername:(NSString *)username password:(NSString *)password errorBlock:(RTBasicBlock)errorBlock
@@ -202,12 +189,12 @@
          if (!invalidCredentialsError && !networkError)
          {
              self.keychainEntry.contents = candidateCredentials;
-             DISPATCH_DELEGATE([self.delegate apiEngineDidAttemptLogin:self]);
+             SAFE_DELEGATE_CALL([self.delegate apiEngineDidAttemptLogin:self]);
              return;
          }
          
          if (networkError)
-             DISPATCH_DELEGATE([self.delegate apiEngineRequiresNetwork:self]);
+             SAFE_DELEGATE_CALL([self.delegate apiEngineRequiresNetwork:self]);
          
          if (errorBlock)
              errorBlock();
@@ -221,7 +208,7 @@
 
 - (void)removeUsernameAndPassword;
 {
-    self.keychainEntry.contents = nil;
+    self.keychainEntry.contents = @{};
     FORCE_LOGOUT();
     
     [self refreshLogin];
@@ -233,7 +220,7 @@
 {
     NSAssert(self.delegate != nil, @"RTEngine must have a delegate set before operations can take place");
     
-    DISPATCH_DELEGATE([self.delegate apiEngineWillAttemptLogin:self]);
+    SAFE_DELEGATE_CALL([self.delegate apiEngineWillAttemptLogin:self]);
     [self
      _tryLoginWithCredentials:self.keychainEntry.contents
      onCompletion:^(BOOL invalidCredentialsError, BOOL networkError) {
@@ -242,15 +229,15 @@
          {
              RTCLoginWindowController * loginWindowController = [[RTCLoginWindowController alloc] init];
              
-             DISPATCH_DELEGATE([self.delegate apiEngine:self requiresAuthentication:loginWindowController]);
+             SAFE_DELEGATE_CALL([self.delegate apiEngine:self requiresAuthentication:loginWindowController]);
              return; // Leave -apiEngineDidAttemptLogin: sequence open, it is handled in verification
          }
          
          // Otherwise, fail here. User must restart operation.
-         DISPATCH_DELEGATE([self.delegate apiEngineDidAttemptLogin:self]);
+         SAFE_DELEGATE_CALL([self.delegate apiEngineDidAttemptLogin:self]);
          
          if (networkError)
-             DISPATCH_DELEGATE([self.delegate apiEngineRequiresNetwork:self]);
+             SAFE_DELEGATE_CALL([self.delegate apiEngineRequiresNetwork:self]);
      }];
 }
 
@@ -299,20 +286,15 @@
 
 - (void)_logout;
 {
-    // If nothing will be changed, don't invoke the delegate methods
     if (!self.authenticated)
         return;
     
-    DISPATCH_DELEGATE([self.delegate apiEngineWillLogout:self]);
+    SAFE_DELEGATE_CALL([self.delegate apiEngineWillLogout:self]);
     
-    // TODO: POST to /REST/1.0/logout to clear session on the server
-    NSArray * cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:RT_SERVER_URL];
-    [cookies enumerateObjectsUsingBlock:^(NSHTTPCookie * cookie, NSUInteger idx, BOOL *stop) {
-        [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteCookie:cookie];
-    }];
+    [[NSHTTPCookieStorage sharedHTTPCookieStorage] deleteAllCookiesForURL:RT_SERVER_URL];
     
     self.authenticated = NO;
-    DISPATCH_DELEGATE([self.delegate apiEngineDidLogout:self]);
+    SAFE_DELEGATE_CALL([self.delegate apiEngineDidLogout:self]);
 }
 
 @end
