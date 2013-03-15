@@ -34,7 +34,11 @@
     attachment.contentType = apiResponse[@"ContentType"];
     attachment.contentEncoding = apiResponse[@"ContentEncoding"];
     attachment.headers = apiResponse[@"Headers"];
-    attachment.content = [(NSString *)apiResponse[@"Content"] dataUsingEncoding:NSUTF8StringEncoding];
+    
+    if ([apiResponse[@"Content"] isKindOfClass:[NSData class]])
+        attachment.content = apiResponse[@"Content"];
+    else if ([apiResponse[@"Content"] isKindOfClass:[NSString class]])
+        attachment.content = [(NSString *)apiResponse[@"Content"] dataUsingEncoding:NSUTF8StringEncoding];
     
     return attachment;
 }

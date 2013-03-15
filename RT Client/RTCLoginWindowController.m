@@ -19,10 +19,15 @@
 {
     if ((self = [super initWithWindowNibName:@"RTCLoginWindowController"]))
     {
-
+        
     }
     
     return self;
+}
+
+- (void)windowDidLoad
+{
+    self.window.preventsApplicationTerminationWhenModal = NO;
 }
 
 - (void)validateLogin:(id)sender

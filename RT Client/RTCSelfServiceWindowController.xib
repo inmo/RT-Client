@@ -1657,7 +1657,7 @@
 					<reference key="NSNextKeyView" ref="293421512"/>
 					<string key="NSReuseIdentifierKey">_NS:54</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1280, 938}}</string>
 				<string key="NSMinSize">{700, 528}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<int key="NSWindowCollectionBehavior">128</int>
@@ -2422,9 +2422,10 @@
 					<int key="connectionID">1328</int>
 				</object>
 				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
-						<string key="label">authorLabel</string>
-						<object class="NSTableCellView" key="source" id="775878088">
+					<object class="IBBindingConnection" key="connection">
+						<string key="label">value: objectValue.plainTextSum</string>
+						<reference key="source" ref="408916126"/>
+						<object class="NSTableCellView" key="destination" id="775878088">
 							<nil key="NSNextResponder"/>
 							<int key="NSvFlags">274</int>
 							<array class="NSMutableArray" key="NSSubviews">
@@ -2528,6 +2529,25 @@
 							<string key="NSFrame">{{1, 1}, {304, 79}}</string>
 							<reference key="NSNextKeyView" ref="912186333"/>
 						</object>
+						<object class="NSNibBindingConnector" key="connector">
+							<reference key="NSSource" ref="408916126"/>
+							<reference key="NSDestination" ref="775878088"/>
+							<string key="NSLabel">value: objectValue.plainTextSum</string>
+							<string key="NSBinding">value</string>
+							<string key="NSKeyPath">objectValue.plainTextSum</string>
+							<object class="NSDictionary" key="NSOptions">
+								<string key="NS.key.0">NSConditionallySetsEditable</string>
+								<boolean value="NO" key="NS.object.0"/>
+							</object>
+							<int key="NSNibBindingConnectorVersion">2</int>
+						</object>
+					</object>
+					<int key="connectionID">1349</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">authorLabel</string>
+						<reference key="source" ref="775878088"/>
 						<reference key="destination" ref="912186333"/>
 					</object>
 					<int key="connectionID">1141</int>
@@ -4541,7 +4561,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1348</int>
+			<int key="maxID">1349</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
