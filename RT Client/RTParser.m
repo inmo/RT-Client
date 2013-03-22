@@ -41,17 +41,10 @@
     return nil;
 }
 
-- (void)_parseTestString;
-{
-    NSError * unused = nil;
-    NSString * testString = [[NSString alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"testingString1" ofType:@"txt"]
-                                                            encoding:NSUTF8StringEncoding error:&unused];
-    NSLog(@"RTParser Test Parse: %@", [self arrayWithString:testString]);
-}
-
-- (NSArray *)arrayWithString:(NSString *)inputString;
+- (NSArray *)_arrayWithString:(NSString *)inputString
 {
     inputString = [inputString stringByAppendingFormat:@"\n%@", SEGMENT_DIVISION_STRING];
+    
     NSArray * inputLines = [inputString componentsSeparatedByString:@"\n"];
     NSMutableArray * returnArray = [NSMutableArray array];
     
@@ -63,19 +56,24 @@
             [returnArray addObject:[self dictionaryWithLinesArray:segmentArray]]; // TODO: missing nil check, good for debugging though
             
             segmentRange = NSMakeRange(idx + 1, 0);
+            return;
         }
-        else
-        {
-            segmentRange.length += 1;
-        }
+        
+        segmentRange.length += 1;
     }];
     
     return returnArray;
 }
 
+- (NSArray *)arrayWithData:(NSData *)data;
+{
+    NSString * inputString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return [self _arrayWithString:inputString];
+}
+
 - (NSDictionary *)dictionaryWithString:(NSString *)inputString;
 {
-    return [self arrayWithString:inputString].lastObject;
+    return [[self _arrayWithString:inputString] lastObject];
 }
 
 static NSString * kRTParserAttachmentsKey = @"Attachments";
@@ -183,13 +181,35 @@ static NSString * kRTParserHeadersKey = @"Headers";
     return returnDictionary;
 }
 
-- (NSData *)dataWithRequestString:(NSString *)requestString
+- (NSDictionary *)dictionaryWithData:(NSData *)data;
 {
-    NSArray * lines = [requestString componentsSeparatedByString:@"\n"];
-    lines = [lines subarrayWithRange:NSMakeRange(2, lines.count)];
-    requestString = [lines componentsJoinedByString:@""];
+    NSString * quickDecodeAttempt = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    if (quickDecodeAttempt)
+        return [self dictionaryWithString:quickDecodeAttempt];
     
-    return [requestString dataUsingEncoding:NSUTF8StringEncoding];
+    // TODO These are constants, so they should probably be made static eventually
+    NSData * contentRangeMarker = [@"Content: " dataUsingEncoding:NSUTF8StringEncoding];
+    NSData * attachmentLineMarker = [@"         " dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSRange rangeOfContentMarker = [data rangeOfData:contentRangeMarker options:0 range:NSMakeRange(0, data.length)];
+    NSRange rangeOfParsableData = NSMakeRange(0, rangeOfContentMarker.location);
+    
+    NSString * parsableString = [[NSString alloc] initWithData:[data subdataWithRange:rangeOfParsableData] encoding:NSUTF8StringEncoding];
+    NSMutableDictionary * resultDictionary = [[self dictionaryWithString:parsableString] mutableCopy];
+    
+    NSMutableData * attachmentData = [data mutableCopy];
+    NSRange attachmentDataRemovalRange = NSMakeRange(0, rangeOfContentMarker.location + rangeOfContentMarker.length);
+    
+    do {
+        [attachmentData replaceBytesInRange:attachmentDataRemovalRange withBytes:NULL length:0];
+        
+        NSRange attachmentDataSearchRange = NSMakeRange(attachmentDataRemovalRange.location, attachmentData.length - attachmentDataRemovalRange.location);
+        attachmentDataRemovalRange = [attachmentData rangeOfData:attachmentLineMarker options:0 range:attachmentDataSearchRange];
+    } while (attachmentDataRemovalRange.location != NSNotFound);
+    
+    // TODO There is still a trailing 0xA0A0A0 that I'm not sure if we should be removing
+    resultDictionary[@"Content"] = attachmentData;
+    return resultDictionary;
 }
 
 @end

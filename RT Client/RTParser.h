@@ -10,11 +10,7 @@
 
 @interface RTParser : NSObject
 
-- (NSDictionary *)dictionaryWithString:(NSString *)inputString;
-- (NSArray *)arrayWithString:(NSString *)inputString;
-
-- (NSData *)dataWithRequestString:(NSString *)requestString;
-
-- (void)_parseTestString;
+- (NSArray *)arrayWithData:(NSData *)data;
+- (NSDictionary *)dictionaryWithData:(NSData *)data;
 
 @end

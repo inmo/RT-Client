@@ -78,7 +78,7 @@
         @"query": @"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')",
         @"format": @"l",
      } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         NSArray * rawTickets = [self.responseParser arrayWithString:operation.responseString];
+         NSArray * rawTickets = [self.responseParser arrayWithData:operation.responseData];
          NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_context];
          
          [rawTickets enumerateObjectsUsingBlock:^(NSDictionary * response, NSUInteger idx, BOOL *stop) {
@@ -103,7 +103,7 @@
     }
     
     [self getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         NSDictionary * attachmentList = [self.responseParser dictionaryWithString:operation.responseString];
+         NSDictionary * attachmentList = [self.responseParser dictionaryWithData:operation.responseData];
          NSArray * attachmentStubs = attachmentList[@"Attachments"];
          NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
          
@@ -116,40 +116,7 @@
               getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, rawAttachmentStub[@"id"]]
               parameters:nil
               success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                  NSDictionary * rawResponse = nil;
-                  
-                  if (!operation.responseString)
-                  {
-                      // NSLog(@"Coulding extract attachment at %@", operation.request.URL);
-                      // [operation.responseData writeToFile:@"/Users/axiixc/Desktop/bad.bin" atomically:YES];
-                      
-                      NSData * responseData = operation.responseData;
-                      NSRange fullDataRange = NSMakeRange(0, responseData.length);
-                      NSRange contentRange = [responseData rangeOfData:[@"Content: " dataUsingEncoding:NSUTF8StringEncoding] options:0 range:fullDataRange];
-                      NSData * validResponseData = [responseData subdataWithRange:NSMakeRange(0, contentRange.location)];
-                      NSString * partialResponseString = [[NSString alloc] initWithData:validResponseData encoding:NSUTF8StringEncoding];
-                      rawResponse = [[self.responseParser dictionaryWithString:partialResponseString] mutableCopy];
-                      
-                      NSMutableData * unprocessedAttachmentData = [[responseData subdataWithRange:NSMakeRange(contentRange.location + contentRange.length, responseData.length - contentRange.location - contentRange.length)] mutableCopy];
-                      while (YES) {
-                          NSRange searchRange = NSMakeRange(0, unprocessedAttachmentData.length); // TODO: Update this so we don't search everything every time
-                          NSData * searchData = [@"         " dataUsingEncoding:NSUTF8StringEncoding];
-                          NSRange matchRange = [unprocessedAttachmentData rangeOfData:searchData options:0 range:searchRange];
-                          
-                          if (matchRange.location == NSNotFound)
-                              break;
-                          
-                          [unprocessedAttachmentData replaceBytesInRange:matchRange withBytes:NULL length:0];
-                      }
-                      
-                      // TODO: Still not sure if the trailing 0x0A0A0A is okay to leave on...
-                      // [unprocessedAttachmentData writeToFile:@"/Users/axiixc/Desktop/good.bin" atomically:YES];
-                      [(NSMutableDictionary *)rawResponse setObject:unprocessedAttachmentData forKey:@"Content"];
-                  }
-                  else
-                  {
-                      rawResponse = [self.responseParser dictionaryWithString:operation.responseString];
-                  }
+                  NSDictionary * rawResponse = [self.responseParser dictionaryWithData:operation.responseData];
                   
                   [scratchContext performBlock:^{
                       RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:rawResponse inContext:scratchContext];
