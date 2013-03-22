@@ -8,6 +8,10 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-@interface RT_Tests : SenTestCase
+@interface RTTests : SenTestCase
+
++ (NSData *)ticketStubResponseData;
++ (NSData *)ticketPDFAttachmentResponseData;
++ (NSData *)ticketPDFOriginalData;
 
 @end

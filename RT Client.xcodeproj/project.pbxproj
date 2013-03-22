@@ -21,7 +21,7 @@
 		B314F38116FCC7D9001928A6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B314F37916FCC67C001928A6 /* SenTestingKit.framework */; };
 		B314F38216FCC7D9001928A6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36192CC166D7B2F00D86162 /* Cocoa.framework */; };
 		B314F38816FCC7D9001928A6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B314F38616FCC7D9001928A6 /* InfoPlist.strings */; };
-		B314F38B16FCC7D9001928A6 /* RT_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = B314F38A16FCC7D9001928A6 /* RT_Tests.m */; };
+		B314F38B16FCC7D9001928A6 /* RTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B314F38A16FCC7D9001928A6 /* RTTests.m */; };
 		B314F39216FCC862001928A6 /* RTTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F9216BE864100DAB1D3 /* RTTicket.m */; };
 		B314F39316FCC862001928A6 /* RTAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F8F16BE864000DAB1D3 /* RTAttachment.m */; };
 		B314F39416FCC862001928A6 /* RTTicket+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B3CC5C0F16BAB813005C71C4 /* RTTicket+Extensions.m */; };
@@ -52,6 +52,7 @@
 		B3AB10C416AB2177004F1F17 /* RTCSelfServiceWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3AB10C316AB2177004F1F17 /* RTCSelfServiceWindowController.xib */; };
 		B3CC5C1016BAB814005C71C4 /* RTTicket+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B3CC5C0F16BAB813005C71C4 /* RTTicket+Extensions.m */; };
 		B3CC5C1916BB5F05005C71C4 /* RTRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B3CC5C1816BB5F05005C71C4 /* RTRequestOperation.m */; };
+		B3D279C116FD0EA40020E0B3 /* resources in Resources */ = {isa = PBXBuildFile; fileRef = B3D279C016FD0EA40020E0B3 /* resources */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -79,8 +80,8 @@
 		B314F38016FCC7D9001928A6 /* RT Tests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "RT Tests.octest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B314F38516FCC7D9001928A6 /* RT Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RT Tests-Info.plist"; sourceTree = "<group>"; };
 		B314F38716FCC7D9001928A6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		B314F38916FCC7D9001928A6 /* RT_Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RT_Tests.h; sourceTree = "<group>"; };
-		B314F38A16FCC7D9001928A6 /* RT_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RT_Tests.m; sourceTree = "<group>"; };
+		B314F38916FCC7D9001928A6 /* RTTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RTTests.h; sourceTree = "<group>"; };
+		B314F38A16FCC7D9001928A6 /* RTTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RTTests.m; sourceTree = "<group>"; };
 		B314F38C16FCC7D9001928A6 /* RT Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RT Tests-Prefix.pch"; sourceTree = "<group>"; };
 		B36192C8166D7B2F00D86162 /* RT Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RT Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B36192CC166D7B2F00D86162 /* Cocoa.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -111,6 +112,7 @@
 		B3CC5C0F16BAB813005C71C4 /* RTTicket+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RTTicket+Extensions.m"; sourceTree = "<group>"; };
 		B3CC5C1716BB5F05005C71C4 /* RTRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTRequestOperation.h; sourceTree = "<group>"; };
 		B3CC5C1816BB5F05005C71C4 /* RTRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTRequestOperation.m; sourceTree = "<group>"; };
+		B3D279C016FD0EA40020E0B3 /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resources; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,8 +145,9 @@
 		B314F38316FCC7D9001928A6 /* Unit Tests */ = {
 			isa = PBXGroup;
 			children = (
-				B314F38916FCC7D9001928A6 /* RT_Tests.h */,
-				B314F38A16FCC7D9001928A6 /* RT_Tests.m */,
+				B3D279C016FD0EA40020E0B3 /* resources */,
+				B314F38916FCC7D9001928A6 /* RTTests.h */,
+				B314F38A16FCC7D9001928A6 /* RTTests.m */,
 				B314F38416FCC7D9001928A6 /* Supporting Files */,
 			);
 			name = "Unit Tests";
@@ -377,6 +380,7 @@
 				0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */,
 				B3AB10C416AB2177004F1F17 /* RTCSelfServiceWindowController.xib in Resources */,
 				B3A015EB16B1E01700D09351 /* testingString1.txt in Resources */,
+				B3D279C116FD0EA40020E0B3 /* resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,7 +436,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B314F38B16FCC7D9001928A6 /* RT_Tests.m in Sources */,
+				B314F38B16FCC7D9001928A6 /* RTTests.m in Sources */,
 				B314F39216FCC862001928A6 /* RTTicket.m in Sources */,
 				B314F39316FCC862001928A6 /* RTAttachment.m in Sources */,
 				B314F39416FCC862001928A6 /* RTTicket+Extensions.m in Sources */,

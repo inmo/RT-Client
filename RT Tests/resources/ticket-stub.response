@@ -1,0 +1,24 @@
+RT/4.0.10 200 Ok
+
+id: ticket/1
+Queue: General
+Owner: root
+Creator: root
+Subject: My First Ticket
+Status: new
+Priority: 0
+InitialPriority: 0
+FinalPriority: 0
+Requestors: root@localhost
+Cc:
+AdminCc:
+Created: Thu Mar 14 17:15:05 2013
+Starts: Not set
+Started: Not set
+Due: Not set
+Resolved: Not set
+Told: Not set
+LastUpdated: Thu Mar 14 17:15:17 2013
+TimeEstimated: 0
+TimeWorked: 0
+TimeLeft: 0
