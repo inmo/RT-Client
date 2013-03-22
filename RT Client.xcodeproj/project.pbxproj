@@ -10,7 +10,6 @@
 		0A0211A316A606EC00054395 /* RT_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0A0211A116A606EC00054395 /* RT_Client.xcdatamodeld */; };
 		0A0211A816A6077F00054395 /* RTCSelfServiceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0211A616A6077F00054395 /* RTCSelfServiceWindowController.m */; };
 		0A31CC7416FA3C7500D24256 /* RTCSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A31CC7216FA3C7500D24256 /* RTCSender.m */; };
-		0A31CC7516FA3C7500D24256 /* RTCTestTicketDetails.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A31CC7316FA3C7500D24256 /* RTCTestTicketDetails.m */; };
 		0A393BA416824C1500DEAFE2 /* RTEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A393BA316824C1500DEAFE2 /* RTEngine.m */; };
 		0A393BA8168255CC00DEAFE2 /* RTCLoginWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A393BA6168255CC00DEAFE2 /* RTCLoginWindowController.m */; };
 		0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A393BA7168255CC00DEAFE2 /* RTCLoginWindowController.xib */; };
@@ -18,6 +17,7 @@
 		B30D0F8D16BE6C5800DAB1D3 /* RTAttachment+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F8C16BE6C5800DAB1D3 /* RTAttachment+Extensions.m */; };
 		B30D0F9016BE864100DAB1D3 /* RTAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F8F16BE864000DAB1D3 /* RTAttachment.m */; };
 		B30D0F9316BE864100DAB1D3 /* RTTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F9216BE864100DAB1D3 /* RTTicket.m */; };
+		B314F37A16FCC67C001928A6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B314F37916FCC67C001928A6 /* SenTestingKit.framework */; };
 		B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36192CC166D7B2F00D86162 /* Cocoa.framework */; };
 		B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B36192D5166D7B2F00D86162 /* InfoPlist.strings */; };
 		B36192D9166D7B2F00D86162 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192D8166D7B2F00D86162 /* main.m */; };
@@ -56,6 +56,7 @@
 		B30D0F8F16BE864000DAB1D3 /* RTAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTAttachment.m; sourceTree = "<group>"; };
 		B30D0F9116BE864100DAB1D3 /* RTTicket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTTicket.h; sourceTree = "<group>"; };
 		B30D0F9216BE864100DAB1D3 /* RTTicket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTTicket.m; sourceTree = "<group>"; };
+		B314F37916FCC67C001928A6 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		B36192C8166D7B2F00D86162 /* RT Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RT Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B36192CC166D7B2F00D86162 /* Cocoa.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B36192CF166D7B2F00D86162 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -92,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B314F37A16FCC67C001928A6 /* SenTestingKit.framework in Frameworks */,
 				B3A015F116B1E06600D09351 /* Security.framework in Frameworks */,
 				B3A015F016B1E05D00D09351 /* SystemConfiguration.framework in Frameworks */,
 				B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */,
@@ -123,6 +125,7 @@
 		B36192CB166D7B2F00D86162 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B314F37916FCC67C001928A6 /* SenTestingKit.framework */,
 				B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */,
 				B3A015ED16B1E05100D09351 /* Security.framework */,
 				B36192CC166D7B2F00D86162 /* Cocoa.framework */,
@@ -322,7 +325,6 @@
 				B3A6F91C16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.m in Sources */,
 				B370905A16F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m in Sources */,
 				0A31CC7416FA3C7500D24256 /* RTCSender.m in Sources */,
-				0A31CC7516FA3C7500D24256 /* RTCTestTicketDetails.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,6 +408,10 @@
 			baseConfigurationReference = 442FCCFAA48F4502B8382CCF /* Pods.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RT Client/RT Client-Prefix.pch";
 				INFOPLIST_FILE = "RT Client/RT Client-Info.plist";
@@ -427,6 +433,10 @@
 			baseConfigurationReference = 442FCCFAA48F4502B8382CCF /* Pods.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "RT Client/RT Client-Prefix.pch";
 				INFOPLIST_FILE = "RT Client/RT Client-Info.plist";

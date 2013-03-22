@@ -11,8 +11,11 @@
 #import "RTParser.m"
 
 @implementation RTCTestTicketDetails
--(void) testadminCC:(RTTicket *)adminCC{
-    RTTicket *expectedadminCC = [[[[RTParser alloc]init]arrayWithString:]];
+
+- (void)testadminCC:(RTTicket *)adminCC;
+{
+    RTTicket * expectedadminCC = nil;
     STAssertEquals(expectedadminCC, adminCC, @"The adminCC are what we expected");
 }
+
 @end

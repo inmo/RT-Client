@@ -7,9 +7,7 @@
 //
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "RTTicket.h"
-@interface RTCTestTicketDetails : SenTestCase
 
--(void) testadminCC:(RTTicket*) adminCC;
+@interface RTCTestTicketDetails : NSObject
 
 @end
