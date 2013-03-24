@@ -12,7 +12,7 @@ NSString *displayText;
 NSString *BodyText;
 NSString *from;
 NSString *reciver;
-NSString *date;
+NSString *dateText;
 NSString *priority;
 NSString *subject;
 
@@ -25,8 +25,6 @@ NSString *subject;
 -(void)SetTextfrom:(NSString*) newText;
 -(void)SetTextreciver:(NSString*) newText;
 -(void)SetTextdate:(NSString*) newText;
--(void)SetTextdateWithInt:(double) timeStamp;
-
 -(void)SetTextpriority:(NSString*) newText;
 -(void)SetTextsubject:(NSString*) newText;
 

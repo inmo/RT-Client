@@ -12,6 +12,8 @@
 @implementation RTCTicketCell
 @synthesize tableText;
 
+
+
 -(void)SetTextBody:(NSString*) newText{
     BodyText =newText;
     [self UpdateDisplayText];
@@ -31,7 +33,7 @@
     
 }
 -(void)SetTextdate:(NSString*) newText{
-    date =newText;
+    dateText =newText;
     [self UpdateDisplayText];
 
     
@@ -48,19 +50,51 @@
     
     
 }
--(void)SetTextdateWithInt:(double) timeStamp{
-    
+
     
 }
 
 
 -(void)UpdateDisplayText{
+    NSMutableString *tempDisplayText;
+    tempDisplayText=[tempDisplayText init];
+    if ([from length]==0) {
+        [tempDisplayText appendString:@"From: "];
+        [tempDisplayText appendString:from];
+        [tempDisplayText appendString:@"\n"];
+    }
+    if ([reciver length]==0) {
+        [tempDisplayText appendString:@"to: "];
+        [tempDisplayText appendString:reciver];
+        [tempDisplayText appendString:@"\n"];
+    }
+    if ([dateText length]==0) {
+        [tempDisplayText appendString:@"date: "];
+        [tempDisplayText appendString:dateText];
+        [tempDisplayText appendString:@"\n"];
+    }
+    if ([priority length]==0) {
+        [tempDisplayText appendString:@"priority: "];
+        [tempDisplayText appendString:priority];
+        [tempDisplayText appendString:@"\n"];
+    }
+    if ([subject length]==0) {
+        [tempDisplayText appendString:subject];
+        [tempDisplayText appendString:@"\n"];
+    }
+    if ([BodyText length]==0) {
+        [tempDisplayText appendString:BodyText];
+    }
+    
+    displayText=tempDisplayText;
+
+    
     
 }
 
 
 -(NSString *)getText{
-    
+    return displayText;
     
 }
 
