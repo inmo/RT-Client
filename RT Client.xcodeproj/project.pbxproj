@@ -54,7 +54,7 @@
 		B3AB10C416AB2177004F1F17 /* RTCSelfServiceWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3AB10C316AB2177004F1F17 /* RTCSelfServiceWindowController.xib */; };
 		B3CC5C1016BAB814005C71C4 /* RTTicket+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B3CC5C0F16BAB813005C71C4 /* RTTicket+Extensions.m */; };
 		B3CC5C1916BB5F05005C71C4 /* RTRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B3CC5C1816BB5F05005C71C4 /* RTRequestOperation.m */; };
-		B3D279C116FD0EA40020E0B3 /* resources in Resources */ = {isa = PBXBuildFile; fileRef = B3D279C016FD0EA40020E0B3 /* resources */; };
+		B3D279C41700FD620020E0B3 /* resources in Resources */ = {isa = PBXBuildFile; fileRef = B3D279C016FD0EA40020E0B3 /* resources */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -180,7 +180,7 @@
 		B36192BD166D7B2F00D86162 = {
 			isa = PBXGroup;
 			children = (
-				B36192D2166D7B2F00D86162 /* RT Client */,
+				B36192D2166D7B2F00D86162 /* Application */,
 				B314F38316FCC7D9001928A6 /* Unit Tests */,
 				B36192CB166D7B2F00D86162 /* Frameworks */,
 				B36192C9166D7B2F00D86162 /* Products */,
@@ -222,7 +222,7 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		B36192D2166D7B2F00D86162 /* RT Client */ = {
+		B36192D2166D7B2F00D86162 /* Application */ = {
 			isa = PBXGroup;
 			children = (
 				B370905716F2D41200DF719B /* Categories */,
@@ -250,6 +250,7 @@
 				B314F39116FCC7E8001928A6 /* Unit Tests */,
 				B36192D3166D7B2F00D86162 /* Supporting Files */,
 			);
+			name = Application;
 			path = "RT Client";
 			sourceTree = "<group>";
 		};
@@ -378,6 +379,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B314F38816FCC7D9001928A6 /* InfoPlist.strings in Resources */,
+				B3D279C41700FD620020E0B3 /* resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,7 +392,6 @@
 				0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */,
 				B3AB10C416AB2177004F1F17 /* RTCSelfServiceWindowController.xib in Resources */,
 				B3A015EB16B1E01700D09351 /* testingString1.txt in Resources */,
-				B3D279C116FD0EA40020E0B3 /* resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

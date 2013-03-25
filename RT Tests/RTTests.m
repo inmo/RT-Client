@@ -7,52 +7,69 @@
 //
 
 #import "RTTests.h"
-#import "RTParser.m"
+#import "RTParser.h"
 
+
+@interface RTTests ()
+
+@property (nonatomic, strong) RTParser * parser;
+
+@end
 
 @implementation RTTests
 
 + (NSData *)ticketStubResponseData;
 {
-    return [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ticket-stub" ofType:@"response" inDirectory:@"resources"]];
+    return [NSData dataWithContentsOfFile:@"RT Tests/resources/ticket-stub.response"];
 }
 
 + (NSData *)ticketPDFAttachmentResponseData;
 {
-    return [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test-file-1.pdf" ofType:@"response" inDirectory:@"resources"]];
+    return [NSData dataWithContentsOfFile:@"RT Tests/resources/test-file-1.pdf.response"];
 }
 
 + (NSData *)ticketPDFOriginalData;
 {
-    return [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test-file-1" ofType:@"pdf" inDirectory:@"resources"]];
+    return [NSData dataWithContentsOfFile:@"RT Tests/resources/test-file-1.pdf"];
 }
 
+#pragma mark - Begin Unit Tests
 
-
-
-- (void)testExample
+- (void)setUp
 {
-  STAssertTrue(YES, @"HI");
+    self.parser = [[RTParser alloc] init];
 }
 
--(void) testStubResponseData
+- (void)testParsingSearchAPIResponse
 {
-    NSDictionary * attachment = [RTParser dictionaryWithData:[RTTests ticketStubResponseData]];
-
-    STAssertEquals(attachment,  , @"The ticket stub is equivalent");
-}
-
--(void) testPDFAttachmentResponseData
-{
-    NSArray * responseData = [RTParser arrayWithData:[RTTests ticketPDFAttachmentResponseData]];
+    NSArray * parsedResponse = [self.parser arrayWithData:RTTests.ticketStubResponseData];
     
-    STAssertEquals(responseData, , @"The ResponseData is equivalent");
-}
--(void) testTicketPDFOriginalData
-{
-    NSDictionary *pdf = [RTParser dictionaryWithData:[RTTests ticketPDFOriginalData]];
+    STAssertNotNil(parsedResponse, @"Parsed response was nil");
+    STAssertEquals(parsedResponse.count, (NSUInteger) 1, @"Parsed response did not return enough entries");
     
-    STAssertEquals(pdf, <#a2#>, @"The Ticket PDF original Data is equivalent");
+    NSDictionary * aTicket = [parsedResponse lastObject];
+    
+    NSDate * correctCreatedDate = [NSDate dateWithString:@"2013-03-14 17:15:05 +0000"];
+    STAssertTrue([parsedResponse[0][@"Created"] isKindOfClass:[NSDate class]], @"Created date not parsed");
+    STAssertEqualObjects(aTicket[@"Created"], correctCreatedDate, @"Created date incorrectly parsed");
+    
+    NSDate * correctLastUpdatedDate = [NSDate dateWithString:@"2013-03-14 17:15:17 +0000"];
+    STAssertTrue([parsedResponse[0][@"LastUpdated"] isKindOfClass:[NSDate class]], @"Last updated date not parsed");
+    STAssertEqualObjects(aTicket[@"LastUpdated"], correctLastUpdatedDate, @"Last updated date incorrectly parsed");
+}
+
+- (void)testParsingIndividualTicketAttachment
+{
+    NSDictionary * parsedResponse = [self.parser dictionaryWithData:RTTests.ticketPDFAttachmentResponseData];
+    
+    STAssertNotNil(parsedResponse, @"Parsed response was nil");
+    STAssertEqualObjects(parsedResponse[@"Content"], RTTests.ticketPDFOriginalData, @"Attachment data extracted was incorrect");
+    
+    NSDate * correctCreatedDate = [NSDate dateWithString:@"2013-01-14 21:15:05 +0000"];
+    STAssertTrue([parsedResponse[@"Created"] isKindOfClass:[NSDate class]], @"Created date not parsed");
+    STAssertEqualObjects(parsedResponse[@"Created"], correctCreatedDate, @"Created date incorrectly parsed");
+    
+    STAssertTrue([parsedResponse[@"Headers"] isKindOfClass:[NSDictionary class]], @"Headers were not parsed as dictionary");
 }
 
 @end

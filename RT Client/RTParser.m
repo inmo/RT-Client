@@ -158,6 +158,7 @@ static NSString * kRTParserHeadersKey = @"Headers";
     // TODO These are constants, so they should probably be made static eventually
     NSData * contentRangeMarker = [@"Content: " dataUsingEncoding:NSUTF8StringEncoding];
     NSData * attachmentLineMarker = [@"         " dataUsingEncoding:NSUTF8StringEncoding];
+    NSData * attachmentTrailerMarker = [NSData dataWithBytes:(char[]){0x0A, 0x0A, 0x0A} length:3];
     
     NSRange rangeOfContentMarker = [data rangeOfData:contentRangeMarker options:0 range:NSMakeRange(0, data.length)];
     NSRange rangeOfParsableData = NSMakeRange(0, rangeOfContentMarker.location);
@@ -167,15 +168,20 @@ static NSString * kRTParserHeadersKey = @"Headers";
     
     NSMutableData * attachmentData = [data mutableCopy];
     NSRange attachmentDataRemovalRange = NSMakeRange(0, rangeOfContentMarker.location + rangeOfContentMarker.length);
+    NSRange attachmentDataSearchRange = NSMakeRange(NSNotFound, 0);
     
     do {
         [attachmentData replaceBytesInRange:attachmentDataRemovalRange withBytes:NULL length:0];
         
-        NSRange attachmentDataSearchRange = NSMakeRange(attachmentDataRemovalRange.location, attachmentData.length - attachmentDataRemovalRange.location);
+        attachmentDataSearchRange = NSMakeRange(attachmentDataRemovalRange.location, attachmentData.length - attachmentDataRemovalRange.location);
         attachmentDataRemovalRange = [attachmentData rangeOfData:attachmentLineMarker options:0 range:attachmentDataSearchRange];
     } while (attachmentDataRemovalRange.location != NSNotFound);
     
-    // TODO There is still a trailing 0xA0A0A0 that I'm not sure if we should be removing
+    NSRange attachmentTrailerCheckRange = NSMakeRange(attachmentData.length - attachmentTrailerMarker.length, attachmentTrailerMarker.length);
+    NSData * foundAttachmentTrailer = [attachmentData subdataWithRange:attachmentTrailerCheckRange];
+    if ([attachmentTrailerMarker isEqualToData:foundAttachmentTrailer])
+        [attachmentData replaceBytesInRange:attachmentTrailerCheckRange withBytes:NULL length:0];
+    
     resultDictionary[@"Content"] = attachmentData;
     return resultDictionary;
 }
