@@ -37,9 +37,9 @@
 
 -(void) testStubResponseData
 {
-    NSDictionary * attachment = [RTParser dictionaryWithData:[RTTests ticketPDFAttachmentResponseData]];
+    NSDictionary * attachment = [RTParser dictionaryWithData:[RTTests ticketStubResponseData]];
 
-    STAssertEquals((NSData)ticketStubResponseData, (NSArray *)arrayWithData:(NSData *) data , @"The ticket stub is equivalent");
+    STAssertEquals(attachment,  , @"The ticket stub is equivalent");
 }
 
 @end
