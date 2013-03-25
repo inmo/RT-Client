@@ -7,7 +7,7 @@
 //
 
 #import "RTTests.h"
-#import "RTParser.h"
+#import "RTParser.m"
 
 
 @implementation RTTests
@@ -28,6 +28,8 @@
 }
 
 
+
+
 - (void)testExample
 {
   STAssertTrue(YES, @"HI");
@@ -35,9 +37,9 @@
 
 -(void) testStubResponseData
 {
-    NSDictionary * attachment = [RTParser :[RTTests ticketStubResponseData]];
+    NSDictionary * attachment = [RTParser dictionaryWithData:[RTTests ticketPDFAttachmentResponseData]];
 
-    STAssertEquals(attachment,  , @"The ticket stub is equivalent");
+    STAssertEquals((NSData)ticketStubResponseData, (NSArray *)arrayWithData:(NSData *) data , @"The ticket stub is equivalent");
 }
 
 @end
