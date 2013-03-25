@@ -10,5 +10,7 @@
 
 int main(int argc, char *argv[])
 {
+    [MagicalRecord setupCoreDataStackWithInMemoryStore];
+    
     return NSApplicationMain(argc, (const char **)argv);
 }

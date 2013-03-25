@@ -28,11 +28,6 @@
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize managedObjectContext = _managedObjectContext;
 
-+ (void)initialize
-{
-    [MagicalRecord setupCoreDataStackWithInMemoryStore];
-}
-
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     RTEngine * engine = [RTEngine sharedEngine];
