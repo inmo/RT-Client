@@ -15,6 +15,7 @@
 		0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A393BA7168255CC00DEAFE2 /* RTCLoginWindowController.xib */; };
 		0AAAB1CA16FEAB150001A35E /* RTCTicketCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AAAB1C916FEAB150001A35E /* RTCTicketCell.m */; };
 		0AAAB1CD16FEC9240001A35E /* RTCTicketDisplayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AAAB1CC16FEC9240001A35E /* RTCTicketDisplayer.m */; };
+		0AE8ADF116FFEA78007519CB /* RTParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E716B1E01700D09351 /* RTParser.m */; };
 		46E2F687D9E9466DAA81F80A /* libPods-RT Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65A87782D79E4217A0F30C99 /* libPods-RT Tests.a */; };
 		75152FD39F7642488E1B9FB1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB1DB00277340CC97CD8018 /* libPods.a */; };
 		B30D0F8D16BE6C5800DAB1D3 /* RTAttachment+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F8C16BE6C5800DAB1D3 /* RTAttachment+Extensions.m */; };
@@ -31,7 +32,6 @@
 		B314F39616FCC862001928A6 /* RTKeychainEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E516B1E01700D09351 /* RTKeychainEntry.m */; };
 		B314F39716FCC862001928A6 /* RTEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A393BA316824C1500DEAFE2 /* RTEngine.m */; };
 		B314F39816FCC862001928A6 /* RTRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B3CC5C1816BB5F05005C71C4 /* RTRequestOperation.m */; };
-		B314F39916FCC862001928A6 /* RTParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E716B1E01700D09351 /* RTParser.m */; };
 		B314F39A16FCC862001928A6 /* RTCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */; };
 		B314F39B16FCC862001928A6 /* RTCSelfServiceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0211A616A6077F00054395 /* RTCSelfServiceWindowController.m */; };
 		B314F39C16FCC862001928A6 /* RTCTicketStubTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A6F91B16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.m */; };
@@ -454,12 +454,12 @@
 				B314F39616FCC862001928A6 /* RTKeychainEntry.m in Sources */,
 				B314F39716FCC862001928A6 /* RTEngine.m in Sources */,
 				B314F39816FCC862001928A6 /* RTRequestOperation.m in Sources */,
-				B314F39916FCC862001928A6 /* RTParser.m in Sources */,
 				B314F39A16FCC862001928A6 /* RTCAppDelegate.m in Sources */,
 				B314F39B16FCC862001928A6 /* RTCSelfServiceWindowController.m in Sources */,
 				B314F39C16FCC862001928A6 /* RTCTicketStubTableCellView.m in Sources */,
 				B314F39D16FCC862001928A6 /* RTCLoginWindowController.m in Sources */,
 				B314F39E16FCC862001928A6 /* RTCSender.m in Sources */,
+				0AE8ADF116FFEA78007519CB /* RTParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

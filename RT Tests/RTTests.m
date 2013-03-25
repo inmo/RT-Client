@@ -2,11 +2,13 @@
 //  RT_Tests.m
 //  RT Tests
 //
-//  Created by James Savage on 3/22/13.
+//  Created by James Savage and Thomas Morris on 3/22/13.
 //  Copyright (c) 2013 INMO. All rights reserved.
 //
 
 #import "RTTests.h"
+#import "RTParser.m"
+
 
 @implementation RTTests
 
@@ -25,23 +27,19 @@
     return [NSData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"test-file-1" ofType:@"pdf" inDirectory:@"resources"]];
 }
 
-- (void)setUp
-{
-    [super setUp];
-    
-    // Set-up code here.
-}
 
-- (void)tearDown
-{
-    // Tear-down code here.
-    
-    [super tearDown];
-}
+
 
 - (void)testExample
 {
-    STAssertTrue(YES, @"HI");
+  STAssertTrue(YES, @"HI");
+}
+
+-(void) testStubResponseData
+{
+    NSDictionary * attachment = [RTParser dictionaryWithData:[RTTests ticketPDFAttachmentResponseData]];
+
+    STAssertEquals((NSData)ticketStubResponseData, (NSArray *)arrayWithData:(NSData *) data , @"The ticket stub is equivalent");
 }
 
 @end
