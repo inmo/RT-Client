@@ -13,34 +13,6 @@
 
 @implementation RTParser
 
-+ (NSDateFormatter *)defaultDateFormatter;
-{
-    static NSDateFormatter * __defaultDateFormatter = nil;
-    if (__defaultDateFormatter == nil)
-    {
-        __defaultDateFormatter = [[NSDateFormatter alloc] init];
-        __defaultDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-    }
-    
-    return __defaultDateFormatter;
-}
-
-+ (NSDate *)coerceDateFromString:(NSString *)str;
-{
-    NSDateFormatter * dateFormatter = [self defaultDateFormatter];
-    dateFormatter.dateFormat = @"EEE MMM dd HH:mm:ss yyyy";
-    
-    NSDate * date = [dateFormatter dateFromString:str];
-    if (date) return date;
-    
-    dateFormatter.dateFormat = @"yyyy-mm-dd HH:mm:ss";
-    
-    date = [dateFormatter dateFromString:str];
-    if (date) return date;
-    
-    return nil;
-}
-
 - (NSArray *)_arrayWithString:(NSString *)inputString
 {
     inputString = [inputString stringByAppendingFormat:@"\n%@", SEGMENT_DIVISION_STRING];
@@ -158,11 +130,7 @@ static NSString * kRTParserHeadersKey = @"Headers";
         }
         else
         {
-            if ([key isEqualToString:@"LastUpdated"])
-                NSLog(@"HERE");
-            
-            // TODO: Correctly parse dates
-            NSDate * dateValue = [self.class coerceDateFromString:value];
+            NSDate * dateValue = [self coerceDateFromString:value];
             if (dateValue != nil)
                 value = dateValue;
             
@@ -210,6 +178,36 @@ static NSString * kRTParserHeadersKey = @"Headers";
     // TODO There is still a trailing 0xA0A0A0 that I'm not sure if we should be removing
     resultDictionary[@"Content"] = attachmentData;
     return resultDictionary;
+}
+
+#pragma mark - Date Parsing
+
++ (NSDateFormatter *)defaultDateFormatter;
+{
+    static NSDateFormatter * __defaultDateFormatter = nil;
+    if (__defaultDateFormatter == nil)
+    {
+        __defaultDateFormatter = [[NSDateFormatter alloc] init];
+        __defaultDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    }
+    
+    return __defaultDateFormatter;
+}
+
+- (NSDate *)coerceDateFromString:(NSString *)str;
+{
+    NSDateFormatter * dateFormatter = [self.class defaultDateFormatter];
+    dateFormatter.dateFormat = @"EEE MMM dd HH:mm:ss yyyy";
+    
+    NSDate * date = [dateFormatter dateFromString:str];
+    if (date) return date;
+    
+    dateFormatter.dateFormat = @"yyyy-mm-dd HH:mm:ss";
+    
+    date = [dateFormatter dateFromString:str];
+    if (date) return date;
+    
+    return nil;
 }
 
 @end

@@ -23,7 +23,8 @@
 
 - (void)setUsername:(NSString *)username password:(NSString *)password errorBlock:(RTBasicBlock)errorBlock;
 - (void)removeUsernameAndPassword;
-- (NSString *)username;
+
+@property (nonatomic, strong, readonly) NSString * username;
 
 - (void)fetchSelfServiceTicketStubs:(RTBasicBlock)completionBlock;
 - (void)pullTicketInformation:(NSManagedObjectID *)ticketID completion:(RTBasicBlock)completion;
