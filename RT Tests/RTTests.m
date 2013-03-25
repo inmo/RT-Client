@@ -42,4 +42,17 @@
     STAssertEquals(attachment,  , @"The ticket stub is equivalent");
 }
 
+-(void) testPDFAttachmentResponseData
+{
+    NSArray * responseData = [RTParser arrayWithData:[RTTests ticketPDFAttachmentResponseData]];
+    
+    STAssertEquals(responseData, , @"The ResponseData is equivalent");
+}
+-(void) testTicketPDFOriginalData
+{
+    NSDictionary *pdf = [RTParser dictionaryWithData:[RTTests ticketPDFOriginalData]];
+    
+    STAssertEquals(pdf, <#a2#>, @"The Ticket PDF original Data is equivalent");
+}
+
 @end
