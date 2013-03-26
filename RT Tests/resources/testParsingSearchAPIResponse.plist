@@ -3,10 +3,6 @@
 <plist version="1.0">
 <array>
 	<dict>
-		<key>AdminCc</key>
-		<string></string>
-		<key>Cc</key>
-		<string></string>
 		<key>Created</key>
 		<date>2013-03-14T17:15:05Z</date>
 		<key>Creator</key>

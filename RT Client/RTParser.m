@@ -8,24 +8,30 @@
 
 #import "RTParser.h"
 
-#define SEGMENT_DIVISION_STRING @"--"
-#define SEGMENT_NOT_SET_MARKER @"Not set"
+static NSString * kRTParserAttachmentsKey = @"Attachments";
+static NSString * kRTParserHeadersKey = @"Headers";
+
+static NSString * kRTParserEmptyLineValue = @"";
+static NSString * kRTParserKeyNotSetValue = @"Not set";
+static NSString * kRTParserContinueLastKeyMarker = @"";
+static NSString * kRTParserSegmentDivisionMarker = @"--";
+static NSString * kRTParserKeyValueDivisionMarker = @": ";
 
 @implementation RTParser
 
 - (NSArray *)_arrayWithString:(NSString *)inputString
 {
-    inputString = [inputString stringByAppendingFormat:@"\n%@", SEGMENT_DIVISION_STRING];
+    inputString = [inputString stringByAppendingFormat:@"\n%@", kRTParserSegmentDivisionMarker];
     
     NSArray * inputLines = [inputString componentsSeparatedByString:@"\n"];
     NSMutableArray * returnArray = [NSMutableArray array];
     
     __block NSRange segmentRange = NSMakeRange(0, 0);
     [inputLines enumerateObjectsUsingBlock:^(NSString * line, NSUInteger idx, BOOL *stop) {
-        if ([SEGMENT_DIVISION_STRING isEqualToString:line] && segmentRange.length > 0)
+        if ([kRTParserSegmentDivisionMarker isEqualToString:line] && segmentRange.length > 0)
         {
             NSArray * segmentArray = [inputLines subarrayWithRange:segmentRange];
-            [returnArray addObject:[self dictionaryWithLinesArray:segmentArray]]; // TODO: missing nil check, good for debugging though
+            [returnArray addObject:[self _parseTextualResponseLines:segmentArray]]; // TODO: missing nil check, good for debugging though
             
             segmentRange = NSMakeRange(idx + 1, 0);
             return;
@@ -48,73 +54,45 @@
     return [[self _arrayWithString:inputString] lastObject];
 }
 
-static NSString * kRTParserAttachmentsKey = @"Attachments";
-static NSString * kRTParserHeadersKey = @"Headers";
-
-- (NSDictionary *)dictionaryWithLinesArray:(NSArray *)inputLines;
+- (NSDictionary *)_parseTextualResponseLines:(NSArray *)lines;
 {
-    NSMutableDictionary * returnDictionary = [NSMutableDictionary dictionaryWithCapacity:inputLines.count];
-    
-    NSCharacterSet * keyValueDividerSet = [NSCharacterSet characterSetWithCharactersInString:@":"];
+    NSMutableDictionary * returnDictionary = [NSMutableDictionary dictionaryWithCapacity:lines.count];
     NSString * lastKey = nil;
     
-    for (NSUInteger idx = 0; idx < inputLines.count; idx++)
+    for (NSUInteger idx = 0; idx < lines.count; idx++)
     {
-        NSString * line = inputLines[idx];
+        NSString * line = lines[idx];
         
-        // Skip newlines in input
-        if ([@"" isEqualToString:line])
+        if ([kRTParserEmptyLineValue isEqualToString:line])
             continue;
         
-        if (lastKey && [line hasPrefix:@" "])
+        BOOL candidateContinuationLine = (lastKey && [line hasPrefix:kRTParserContinueLastKeyMarker]);
+        BOOL canAppendToLastKey = [returnDictionary[lastKey] isKindOfClass:[NSString class]];
+        BOOL enoughCharactersInCurrentLine = (line.length >= lastKey.length + 2);
+        
+        if (candidateContinuationLine && canAppendToLastKey && enoughCharactersInCurrentLine)
         {
-            if (line.length < lastKey.length + 2)
-                continue; // Error: Cannot extract key.
-            
-            if ([returnDictionary[lastKey] isKindOfClass:[NSString class]])
-                returnDictionary[lastKey] = [(NSString *)returnDictionary[lastKey] stringByAppendingFormat:@"\n%@", [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+            NSString * trimmedAddition = [line stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            returnDictionary[lastKey] = [(NSString *)returnDictionary[lastKey] stringByAppendingFormat:@"\n%@", trimmedAddition];
             continue;
         }
         
+        NSRange keyValueDivisionRange = [line rangeOfString:kRTParserKeyValueDivisionMarker];
+        NSUInteger keyValueDivisionRangeEnd = keyValueDivisionRange.location + keyValueDivisionRange.length;
         
-        NSRange dividerRange = [line rangeOfCharacterFromSet:keyValueDividerSet];
-        if (dividerRange.location == NSNotFound)
+        if (keyValueDivisionRange.location == NSNotFound || keyValueDivisionRangeEnd >= line.length)
             continue;
         
-        NSString * key = [line substringToIndex:dividerRange.location];
-        id value = (line.length > dividerRange.location + 2) ? [line substringFromIndex:dividerRange.location + 2] : @"";
+        NSString * key = [line substringToIndex:keyValueDivisionRange.location];
+        id value = [self _parseLineForGenericKey:[line substringFromIndex:keyValueDivisionRangeEnd]];;
         
         if ([key isEqualToString:kRTParserAttachmentsKey])
-        {
-            value = [self _parseLinesForAttachmentsKey:inputLines index:&idx];
-        }
-        else if ([key isEqualToString:kRTParserHeadersKey])
-        {
-            NSMutableArray * headers = [NSMutableArray array];
-            
-            for (idx = idx; idx < inputLines.count; idx++)
-            {
-                line = inputLines[idx];
-                if ([line isEqualToString:@""] && line.length < kRTParserHeadersKey.length + 2)
-                    break;
-                
-                [headers addObject:[line substringFromIndex:kRTParserHeadersKey.length + 2]];
-            }
-            
-            value = [self dictionaryWithLinesArray:headers];
-        }
-        else
-        {
-            NSDate * dateValue = [self coerceDateFromString:value];
-            if (dateValue != nil)
-                value = dateValue;
-            
-            // Unset values are treated as returning nil by the dictionary
-            if ([SEGMENT_NOT_SET_MARKER isEqualToString:value])
-                value = nil;
-        }
+            value = [self _parseLinesForAttachmentsKey:lines index:&idx];
         
-        if (value != nil)
+        if ([key isEqualToString:kRTParserHeadersKey])
+            value = [self _parseLinesForHeadersKey:lines index:&idx];
+        
+        if (value)
         {
             returnDictionary[key] = value;
             lastKey = key;
@@ -136,7 +114,11 @@ static NSString * kRTParserHeadersKey = @"Headers";
     NSRegularExpression * attachmentLineRegex = [NSRegularExpression regularExpressionWithPattern:regex options:0 error:&error];
     
     if (error)
-        @throw @"Failed to create regex: could not parse nested value";
+    {
+        @throw [NSException exceptionWithName:@"Parse Error"
+                                       reason:@"Could not create regular expression"
+                                     userInfo:@{ @"lines": lines, @"index": @(*idx) }];
+    }
     
     NSMutableArray * attachments = [NSMutableArray array];
     for (NULL; *idx < lines.count; *idx += 1)
@@ -145,7 +127,11 @@ static NSString * kRTParserHeadersKey = @"Headers";
         
         NSTextCheckingResult * regexResult = [[attachmentLineRegex matchesInString:line options:0 range:NSMakeRange(0, line.length)] lastObject];
         if (!regexResult.numberOfRanges)
-            @throw @"Malformed expression: could not parse nested value";
+        {
+            @throw [NSException exceptionWithName:@"Parse Error"
+                                           reason:@"Malformed expression in attachment value"
+                                         userInfo:@{ @"lines": lines, @"index": @(*idx) }];
+        }
         
         [attachments addObject:@{
          @"id": [line substringWithRange:[regexResult rangeAtIndex:1]],
@@ -160,9 +146,39 @@ static NSString * kRTParserHeadersKey = @"Headers";
     return attachments;
 }
 
+- (NSDictionary *)_parseLinesForHeadersKey:(NSArray *)lines index:(NSUInteger *)idx
+{
+    NSMutableArray * headers = [NSMutableArray array];
+    
+    for (NULL; *idx < lines.count; *idx += 1)
+    {
+        NSString * line = lines[*idx];
+        
+        if ([line isEqualToString:@""] && line.length < kRTParserHeadersKey.length + 2)
+            break;
+        
+        [headers addObject:[line substringFromIndex:kRTParserHeadersKey.length + 2]];
+    }
+    
+    return [self _parseTextualResponseLines:headers];
+}
+
+- (id)_parseLineForGenericKey:(NSString *)line
+{
+    NSDate * dateValue = [self coerceDateFromString:line];
+    if (dateValue != nil)
+        return dateValue;
+    
+    if ([kRTParserKeyNotSetValue isEqualToString:line])
+        return nil;
+    
+    return line;
+}
+
 - (NSDictionary *)dictionaryWithData:(NSData *)data;
 {
     NSString * quickDecodeAttempt = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
     if (quickDecodeAttempt)
         return [self dictionaryWithString:quickDecodeAttempt];
     
