@@ -8,14 +8,15 @@
 
 #import "RTCSender.h"
 #import "RTTicket+Extensions.h"
-#import "RTTicket+Extensions.h"
+#import "RTAttachment+Extensions.h"
+#import "RTKeychainEntry.h"
 
 @implementation RTCSender
 
 - (void)sendTicketWithAttachments:(NSString *) senderAddress Address:(NSString *) toAddress Subject:(NSString *) subject Body:(NSString *) bodyText {
     NSString *mailtoAddress = [[NSString stringWithFormat:@"mailto:%@?Subject=%@&body=%@",toAddress,subject,bodyText] stringByReplacingOccurrencesOfString:@" " withString:@"%20"];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:mailtoAddress]];
-    NSLog(@"Mailto:%@",mailtoAddress);
+    NSLog(@"Mailto:%@default.yahoo.com",mailtoAddress);
 }
 
 - (bool) sendTicket:(NSTask *) task toAddress:(NSString *) toAddress withSubject:(NSString *) subject Attachments:(NSArray *) attachments {
