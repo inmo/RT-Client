@@ -55,6 +55,7 @@
 		B3CC5C1016BAB814005C71C4 /* RTTicket+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B3CC5C0F16BAB813005C71C4 /* RTTicket+Extensions.m */; };
 		B3CC5C1916BB5F05005C71C4 /* RTRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B3CC5C1816BB5F05005C71C4 /* RTRequestOperation.m */; };
 		B3D279C41700FD620020E0B3 /* resources in Resources */ = {isa = PBXBuildFile; fileRef = B3D279C016FD0EA40020E0B3 /* resources */; };
+		B3D279C717011F820020E0B3 /* RTKeychainEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B3D279C617011F820020E0B3 /* RTKeychainEntryTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -119,6 +120,8 @@
 		B3CC5C1716BB5F05005C71C4 /* RTRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTRequestOperation.h; sourceTree = "<group>"; };
 		B3CC5C1816BB5F05005C71C4 /* RTRequestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTRequestOperation.m; sourceTree = "<group>"; };
 		B3D279C016FD0EA40020E0B3 /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = resources; sourceTree = "<group>"; };
+		B3D279C517011F820020E0B3 /* RTKeychainEntryTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTKeychainEntryTests.h; sourceTree = "<group>"; };
+		B3D279C617011F820020E0B3 /* RTKeychainEntryTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTKeychainEntryTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +157,8 @@
 				B3D279C016FD0EA40020E0B3 /* resources */,
 				B314F38916FCC7D9001928A6 /* RTTests.h */,
 				B314F38A16FCC7D9001928A6 /* RTTests.m */,
+				B3D279C517011F820020E0B3 /* RTKeychainEntryTests.h */,
+				B3D279C617011F820020E0B3 /* RTKeychainEntryTests.m */,
 				B314F38416FCC7D9001928A6 /* Supporting Files */,
 			);
 			name = "Unit Tests";
@@ -461,6 +466,7 @@
 				B314F39D16FCC862001928A6 /* RTCLoginWindowController.m in Sources */,
 				B314F39E16FCC862001928A6 /* RTCSender.m in Sources */,
 				0AE8ADF116FFEA78007519CB /* RTParser.m in Sources */,
+				B3D279C717011F820020E0B3 /* RTKeychainEntryTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

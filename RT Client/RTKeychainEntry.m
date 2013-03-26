@@ -39,7 +39,6 @@
          (__bridge_transfer NSString *)kSecClass: (__bridge_transfer NSString *)kSecClassGenericPassword,
          (__bridge_transfer NSString *)kSecAttrService: self.serviceName,
          (__bridge_transfer NSString *)kSecAttrAccount: self.accountName,
-         (__bridge_transfer NSString *)kSecMatchLimit: (__bridge_transfer NSString *)kSecMatchLimitOne,
      }.mutableCopy;
     
     if (shouldReturnData)
@@ -54,11 +53,13 @@
 - (NSDictionary *)contents
 {
     NSMutableDictionary * keychainQuery = [self basicKeychainQuery:YES];
-    NSDictionary * contents = nil;
+    keychainQuery[(__bridge_transfer NSString *)kSecReturnData] = (__bridge_transfer NSString *)kCFBooleanTrue;
+    keychainQuery[(__bridge_transfer NSString *)kSecMatchLimit] = (__bridge_transfer NSString *)kSecMatchLimitOne;
     
     CFTypeRef resultData = NULL;
     CFDictionaryRef query = (__bridge_retained CFDictionaryRef)keychainQuery;
     
+    NSDictionary * contents = nil;
     if (SecItemCopyMatching(query, (CFTypeRef *)&resultData) == noErr && resultData)
         contents = [NSKeyedUnarchiver unarchiveObjectWithData:(__bridge NSData *)(resultData)];
     

@@ -33,7 +33,6 @@
     RTEngine * engine = [RTEngine sharedEngine];
     engine.delegate = self;
     
-//    [engine removeUsernameAndPassword];
     [engine refreshLogin];
 }
 
