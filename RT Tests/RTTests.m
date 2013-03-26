@@ -18,31 +18,20 @@
 
 @implementation RTTests
 
-+ (NSData *)ticketStubResponseData;
-{
-    return [NSData dataWithContentsOfFile:@"RT Tests/resources/ticket-stub.response"];
-}
-
-+ (NSData *)ticketPDFAttachmentResponseData;
-{
-    return [NSData dataWithContentsOfFile:@"RT Tests/resources/test-file-1.pdf.response"];
-}
-
-+ (NSData *)ticketPDFOriginalData;
-{
-    return [NSData dataWithContentsOfFile:@"RT Tests/resources/test-file-1.pdf"];
-}
-
-#pragma mark - Begin Unit Tests
-
 - (void)setUp
 {
     self.parser = [[RTParser alloc] init];
 }
 
+#define TEST_FILE(SEL, TYPE) [NSString stringWithFormat:@"RT Tests/resources/%@.%@", NSStringFromSelector(SEL), @#TYPE]
+#define BIN_FILE TEST_FILE(_cmd, bin)
+#define CHK_FILE TEST_FILE(_cmd, plist)
+
 - (void)testParsingSearchAPIResponse
 {
-    NSArray * parsedResponse = [self.parser arrayWithData:RTTests.ticketStubResponseData];
+    NSData * responseData = [NSData dataWithContentsOfFile:BIN_FILE];
+    NSArray * parsedResponse = [self.parser arrayWithData:responseData];
+//    [parsedResponse writeToFile:CHK_FILE atomically:YES];
     
     STAssertNotNil(parsedResponse, @"Parsed response was nil");
     STAssertEquals(parsedResponse.count, (NSUInteger) 1, @"Parsed response did not return enough entries");
@@ -56,20 +45,42 @@
     NSDate * correctLastUpdatedDate = [NSDate dateWithString:@"2013-03-14 17:15:17 +0000"];
     STAssertTrue([parsedResponse[0][@"LastUpdated"] isKindOfClass:[NSDate class]], @"Last updated date not parsed");
     STAssertEqualObjects(aTicket[@"LastUpdated"], correctLastUpdatedDate, @"Last updated date incorrectly parsed");
+    
+    NSArray * correctResponse = [NSArray arrayWithContentsOfFile:CHK_FILE];
+    STAssertEqualObjects(parsedResponse, correctResponse, @"Master check failed.");
+}
+
+- (void)testParsingIndividualTicketAttachmentList
+{
+    NSData * responseData = [NSData dataWithContentsOfFile:BIN_FILE];
+    NSDictionary * parsedResponse = [self.parser dictionaryWithData:responseData];
+//    [parsedResponse writeToFile:CHK_FILE atomically:YES];
+    
+    STAssertNotNil(parsedResponse, @"Parsed response was nil");
+    
+    NSDictionary * correctResponse = [NSDictionary dictionaryWithContentsOfFile:CHK_FILE];
+    STAssertEqualObjects(parsedResponse, correctResponse, @"Master check failed.");
 }
 
 - (void)testParsingIndividualTicketAttachment
 {
-    NSDictionary * parsedResponse = [self.parser dictionaryWithData:RTTests.ticketPDFAttachmentResponseData];
+    NSData * responseData = [NSData dataWithContentsOfFile:BIN_FILE];
+    NSDictionary * parsedResponse = [self.parser dictionaryWithData:responseData];
+//    [parsedResponse writeToFile:CHK_FILE atomically:YES];
     
     STAssertNotNil(parsedResponse, @"Parsed response was nil");
-    STAssertEqualObjects(parsedResponse[@"Content"], RTTests.ticketPDFOriginalData, @"Attachment data extracted was incorrect");
+    
+    NSData * correctContent = [NSData dataWithContentsOfFile:@"RT Tests/resources/test-file-1.pdf"];
+    STAssertEqualObjects(parsedResponse[@"Content"], correctContent, @"Attachment data extracted was incorrect");
     
     NSDate * correctCreatedDate = [NSDate dateWithString:@"2013-01-14 21:15:05 +0000"];
     STAssertTrue([parsedResponse[@"Created"] isKindOfClass:[NSDate class]], @"Created date not parsed");
     STAssertEqualObjects(parsedResponse[@"Created"], correctCreatedDate, @"Created date incorrectly parsed");
     
     STAssertTrue([parsedResponse[@"Headers"] isKindOfClass:[NSDictionary class]], @"Headers were not parsed as dictionary");
+    
+    NSDictionary * correctResponse = [NSDictionary dictionaryWithContentsOfFile:CHK_FILE];
+    STAssertEqualObjects(parsedResponse, correctResponse, @"Master check failed.");
 }
 
 @end

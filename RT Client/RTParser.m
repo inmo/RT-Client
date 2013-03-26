@@ -86,32 +86,7 @@ static NSString * kRTParserHeadersKey = @"Headers";
         
         if ([key isEqualToString:kRTParserAttachmentsKey])
         {
-            NSMutableArray * attachments = [NSMutableArray array];
-            BOOL continueFlag = YES;
-            
-            NSError * __autoreleasing error = nil;
-            // 1: (Unnamed) (text/plain / 2b),
-            
-            NSString * regex = @"^([0-9]+): (.*) \\(([a-zA-Z0-9\\._-]+/[a-zA-Z0-9\\._-]+) / ([0-9]+(\\.[0-9]+)?[a-z])\\)(,)?$";
-            NSRegularExpression * attachmentLineRegex = [NSRegularExpression regularExpressionWithPattern:regex options:0 error:&error];
-            
-            for (idx = idx; continueFlag && idx < inputLines.count; idx++)
-            {
-                line = [inputLines[idx] substringFromIndex:kRTParserAttachmentsKey.length + 2];
-                continueFlag = [line hasSuffix:@","];
-                
-                NSTextCheckingResult * result = [[attachmentLineRegex matchesInString:line options:0 range:NSMakeRange(0, line.length)] lastObject];
-                if (!result.numberOfRanges)
-                    return nil; // Malformed Expression!
-                
-                [attachments addObject:@{
-                 @"id": [line substringWithRange:[result rangeAtIndex:1]],
-                 @"name": [line substringWithRange:[result rangeAtIndex:2]],
-                 @"mimeType": [line substringWithRange:[result rangeAtIndex:3]],
-                 @"byteSize": [line substringWithRange:[result rangeAtIndex:4]]}];
-            }
-            
-            value = attachments;
+            value = [self _parseLinesForAttachmentsKey:inputLines index:&idx];
         }
         else if ([key isEqualToString:kRTParserHeadersKey])
         {
@@ -147,6 +122,42 @@ static NSString * kRTParserHeadersKey = @"Headers";
     }
     
     return returnDictionary;
+}
+
+- (NSArray *)_parseLinesForAttachmentsKey:(NSArray *)lines index:(NSUInteger *)idx
+{
+    // This is the syntax this regex matches...
+    // 1: (Unnamed) (text/plain / 2b),
+    // 2: somefile.type (foo/bar / 12k),
+    // 3: even spaces really.stuff (foo/bar / 1342m)
+    
+    NSError * __autoreleasing error = nil;
+    NSString * regex = @"^([0-9]+): (.*) \\(([a-zA-Z0-9\\._-]+/[a-zA-Z0-9\\._-]+) / ([0-9]+(\\.[0-9]+)?[a-z])\\)(,)?$";
+    NSRegularExpression * attachmentLineRegex = [NSRegularExpression regularExpressionWithPattern:regex options:0 error:&error];
+    
+    if (error)
+        @throw @"Failed to create regex: could not parse nested value";
+    
+    NSMutableArray * attachments = [NSMutableArray array];
+    for (NULL; *idx < lines.count; *idx += 1)
+    {
+        NSString * line = [lines[*idx] substringFromIndex:kRTParserAttachmentsKey.length + 2];
+        
+        NSTextCheckingResult * regexResult = [[attachmentLineRegex matchesInString:line options:0 range:NSMakeRange(0, line.length)] lastObject];
+        if (!regexResult.numberOfRanges)
+            @throw @"Malformed expression: could not parse nested value";
+        
+        [attachments addObject:@{
+         @"id": [line substringWithRange:[regexResult rangeAtIndex:1]],
+         @"name": [line substringWithRange:[regexResult rangeAtIndex:2]],
+         @"mimeType": [line substringWithRange:[regexResult rangeAtIndex:3]],
+         @"byteSize": [line substringWithRange:[regexResult rangeAtIndex:4]]}];
+        
+        if (![line hasSuffix:@","])
+            break;
+    }
+    
+    return attachments;
 }
 
 - (NSDictionary *)dictionaryWithData:(NSData *)data;
