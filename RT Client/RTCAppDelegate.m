@@ -24,10 +24,6 @@
 
 @implementation RTCAppDelegate
 
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize managedObjectContext = _managedObjectContext;
-
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     RTEngine * engine = [RTEngine sharedEngine];

@@ -22,6 +22,3 @@
 - (IBAction)logout:(id)sender;
 
 @end
-
-//@[@3, @"hi", 3<-- doesnt work since you have to wrap it around something"
-
