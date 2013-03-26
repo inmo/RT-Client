@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Attachments</key>
+	<array>
+		<dict>
+			<key>byteSize</key>
+			<string>0b</string>
+			<key>id</key>
+			<string>1</string>
+			<key>mimeType</key>
+			<string>multipart/mixed</string>
+			<key>name</key>
+			<string>(Unnamed)</string>
+		</dict>
+		<dict>
+			<key>byteSize</key>
+			<string>71b</string>
+			<key>id</key>
+			<string>2</string>
+			<key>mimeType</key>
+			<string>text/html</string>
+			<key>name</key>
+			<string>(Unnamed)</string>
+		</dict>
+		<dict>
+			<key>byteSize</key>
+			<string>10.7k</string>
+			<key>id</key>
+			<string>3</string>
+			<key>mimeType</key>
+			<string>application/pdf</string>
+			<key>name</key>
+			<string>test-file-1.pdf</string>
+		</dict>
+		<dict>
+			<key>byteSize</key>
+			<string>105b</string>
+			<key>id</key>
+			<string>4</string>
+			<key>mimeType</key>
+			<string>text/plain</string>
+			<key>name</key>
+			<string>(Unnamed)</string>
+		</dict>
+	</array>
+	<key>id</key>
+	<string>ticket/1/attachments</string>
+</dict>
+</plist>

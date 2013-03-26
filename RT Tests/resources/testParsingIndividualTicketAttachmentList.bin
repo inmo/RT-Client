@@ -1,0 +1,10 @@
+RT/4.0.10 200 Ok
+
+id: ticket/1/attachments
+
+Attachments: 1: (Unnamed) (multipart/mixed / 0b),
+             2: (Unnamed) (text/html / 71b),
+             3: test-file-1.pdf (application/pdf / 10.7k),
+             4: (Unnamed) (text/plain / 105b)
+
+
