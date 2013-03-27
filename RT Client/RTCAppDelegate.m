@@ -48,6 +48,8 @@
             [_loginWindowController close];
         
         [(RTCSelfServiceWindowController *)self.window.windowController refreshSelfServiceTickets:self];
+        
+        
     }
 }
 

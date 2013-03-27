@@ -73,10 +73,11 @@
          success:(void (^)(AFHTTPRequestOperation *, id))success
          failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
 {
+    path = @"/Rest/1.0/ticket/1/comment";
     NSMutableDictionary * newParams = [parameters mutableCopy];
     [newParams addEntriesFromDictionary:self.keychainEntry.contents];
     
-    [super postPath:<#path#> parameters:nil success:<#success#> failure:<#failure#>];
+    [super postPath:path parameters:newParams success:success failure:failure];
     
 }
 
