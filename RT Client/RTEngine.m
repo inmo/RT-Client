@@ -69,6 +69,16 @@
     
     return request;
 }
+-(void) postPath:(NSString *)path parameters:(NSDictionary *)parameters
+         success:(void (^)(AFHTTPRequestOperation *, id))success
+         failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
+{
+    NSMutableDictionary * newParams = [parameters mutableCopy];
+    [newParams addEntriesFromDictionary:self.keychainEntry.contents];
+    
+    [super postPath:<#path#> parameters:nil success:<#success#> failure:<#failure#>];
+    
+}
 
 #pragma mark - API Endpoints
 

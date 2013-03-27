@@ -26,6 +26,7 @@
 
 @property (nonatomic, strong, readonly) NSString * username;
 
+
 - (void)fetchSelfServiceTicketStubs:(RTBasicBlock)completionBlock;
 - (void)pullTicketInformation:(NSManagedObjectID *)ticketID completion:(RTBasicBlock)completion;
 

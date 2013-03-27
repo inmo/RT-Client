@@ -10,6 +10,7 @@
 #import "RTTicket+Extensions.h"
 #import "RTAttachment+Extensions.h"
 #import "RTKeychainEntry.h"
+#import "RTEngine.h"
 
 @implementation RTCSender
 
@@ -19,61 +20,71 @@
     NSLog(@"Mailto:%@default.yahoo.com",mailtoAddress);
 }
 
-- (bool) sendTicket:(NSTask *) task toAddress:(NSString *) toAddress withSubject:(NSString *) subject Attachments:(NSArray *) attachments {
+-(void)fetchTicketHistoryReply:(RTBasicBlock)completionBlock{
+    [[RTEngine sharedEngine] postPath:
+     parameters:(NSDictionary *) success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         NSMutable
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         <#code#>
+     } {
     
-    NSLog(@"Trying to send message");
-    //Set up Tickets to be sent as messages
-    NSString *username = @"";
-    NSString *hostname = @"";
-    NSString *port = @"";
-    NSString *fromAddress = @"";
-    NSString *bodyText = @"Body text \n\r";
-    NSMutableArray *arguments = [NSMutableArray arrayWithObjects:
-                                 username,
-                                 hostname,
-                                 port,
-                                 fromAddress,
-                                 toAddress,
-                                 subject,
-                                 bodyText,
-                                 nil];
-    for (int i = 0; i < [attachments count]; i++) {
-        [arguments addObject:[attachments objectAtIndex:i]];
     }
-    
-    NSData *passwordData = [@"" dataUsingEncoding:NSUTF8StringEncoding];
-    
-    
-    NSDictionary *environment = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 @"", @"",
-                                 @"", @"",
-                                 nil];
-    [task setEnvironment:environment];
-    [task setLaunchPath:@""];
-    
-    [task setArguments:arguments];
-    
-    NSPipe *stdinPipe = [NSPipe pipe];
-    [task setStandardInput:stdinPipe];
-    
-    [task launch];
-    
-    [[stdinPipe fileHandleForReading] closeFile];
-    NSFileHandle *stdinFH = [stdinPipe fileHandleForWriting];
-    [stdinFH writeData:passwordData];
-    [stdinFH writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding]];
-    [stdinFH writeData:[@"Description" dataUsingEncoding:NSUTF8StringEncoding]];
-    [stdinFH closeFile];
-    
-    [task waitUntilExit];
-    
-    if ([task terminationStatus] == 0) {
-        NSLog(@"Message successfully sent");
-        return YES;
-    } else {
-        NSLog(@"Message not sent");
-        return NO;
-    }
-}
+     }
+//- (bool) sendTicket:(NSTask *) task InfoData: (RTEngine*) data toAddress:(NSString *) toAddress withSubject:(NSString *) subject Attachments:(NSArray *) attachments {
+//    
+//    
+//    NSLog(@"Trying to send message");
+//    //Set up Tickets to be sent as messages
+//    NSString *username = data.username;
+//    NSString *hostname = @"";
+//    NSString *port = @"";
+//    NSString *fromAddress = @"";
+//    NSString *bodyText = @"Body text \n\r";
+//    NSMutableArray *arguments = [NSMutableArray arrayWithObjects:
+//                                 username,
+//                                 hostname,
+//                                 port,
+//                                 fromAddress,
+//                                 toAddress,
+//                                 subject,
+//                                 bodyText,
+//                                 nil];
+//    for (int i = 0; i < [attachments count]; i++) {
+//        [arguments addObject:[attachments objectAtIndex:i]];
+//    }
+//    
+//    
+//    
+//    
+//    NSDictionary *environment = [NSDictionary dictionaryWithObjectsAndKeys:
+//                                 @"", @"",
+//                                 @"", @"",
+//                                 nil];
+//    [task setEnvironment:environment];
+//    [task setLaunchPath:@""];
+//    
+//    [task setArguments:arguments];
+//    
+//    NSPipe *stdinPipe = [NSPipe pipe];
+//    [task setStandardInput:stdinPipe];
+//    
+//    [task launch];
+//    
+//    [[stdinPipe fileHandleForReading] closeFile];
+//    NSFileHandle *stdinFH = [stdinPipe fileHandleForWriting];
+//    [stdinFH writeData:passwordData];
+//    [stdinFH writeData:[@"\n" dataUsingEncoding:NSUTF8StringEncoding]];
+//    [stdinFH writeData:[@"Description" dataUsingEncoding:NSUTF8StringEncoding]];
+//    [stdinFH closeFile];
+//    
+//    [task waitUntilExit];
+//    
+//    if ([task terminationStatus] == 0) {
+//        NSLog(@"Message successfully sent");
+//        return YES;
+//    } else {
+//        NSLog(@"Message not sent");
+//        return NO;
+
 
 @end
