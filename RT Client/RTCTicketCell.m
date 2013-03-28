@@ -12,7 +12,10 @@
 @implementation RTCTicketCell
 @synthesize tableText;
 
-
+-(void)viewWillDraw{
+    [tableText setStringValue:@"value"];
+    
+}
 
 -(void)SetTextBody:(NSString*) newText{
     BodyText =newText;
@@ -87,7 +90,7 @@
     }
     
     displayText=tempDisplayText;
-
+    [tableText setStringValue:displayText];
     
     
 }

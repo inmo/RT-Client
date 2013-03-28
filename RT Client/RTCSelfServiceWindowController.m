@@ -19,6 +19,7 @@
 @implementation RTCSelfServiceWindowController
 
 @synthesize ticketTableView;
+@synthesize otherTickView;
 
 - (void)awakeFromNib;
 {
@@ -48,13 +49,15 @@
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification{
+    
+    printf("\n\n\n\n test change\n\n\n\n");
     NSInteger selectedrow= [ticketTableView selectedRow];
     RTCTicketStubTableCellView *selecedcell= [ticketTableView rowViewAtRow:selectedrow makeIfNecessary:NO];
     selectedSubject = [[selecedcell subjectLabel] stringValue];
     selectedBody=[[selecedcell summaryLabel] stringValue];
     selectedDate=[[selecedcell dateLabel] stringValue];
     selectedAuthor= [[selecedcell authorLabel] stringValue];
-    
+    [otherTickView reloadData];
    // NSCell selectedCell= [ticketTableView
     
 }
@@ -65,11 +68,9 @@
 
 @implementation RTCTicketTableController
 
-
 - (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex{
-    if ([aTableColumn value]!=0) {
-        return NULL;
-    }
+   
+    printf("\n\n\n\n test\n\n\n\n");
     RTCTicketCell *newcell;
     newcell= [newcell init];
     [newcell SetTextBody:selectedBody];
@@ -82,9 +83,14 @@
     
 }
 
+
+
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView{
     
-    return 1;
+    return 3;
+}
+-(void)RTCTicketTableController:causeUpdate{
+    [self reloadData];
 }
 
 
