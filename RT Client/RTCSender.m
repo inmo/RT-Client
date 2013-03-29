@@ -21,10 +21,10 @@
 }
 
 -(void) sendTicketPost: (RTEngine*) sender{
-    [sender postPath:
-     parameters:<#(NSDictionary *)#>
-     success:<#^(AFHTTPRequestOperation *operation, id responseObject)success#>
-     failure:<#^(AFHTTPRequestOperation *operation, NSError *error)failure#>]
+//    [sender postPath:
+//     parameters:<#(NSDictionary *)#>
+//     success:<#^(AFHTTPRequestOperation *operation, id responseObject)success#>
+//     failure:<#^(AFHTTPRequestOperation *operation, NSError *error)failure#>]
     }
 
 - (bool) sendTicket:(NSTask *) task InfoData: (RTEngine*) data toAddress:(NSString *) toAddress withSubject:(NSString *) subject Attachments:(NSArray *) attachments {
