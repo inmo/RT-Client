@@ -47,7 +47,6 @@
 		B36192E0166D7B2F00D86162 /* RTCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */; };
 		B370905A16F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = B370905916F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m */; };
 		B3A015E916B1E01700D09351 /* RTKeychainEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E516B1E01700D09351 /* RTKeychainEntry.m */; };
-		B3A015EB16B1E01700D09351 /* testingString1.txt in Resources */ = {isa = PBXBuildFile; fileRef = B3A015E816B1E01700D09351 /* testingString1.txt */; };
 		B3A015F016B1E05D00D09351 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */; };
 		B3A015F116B1E06600D09351 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015ED16B1E05100D09351 /* Security.framework */; };
 		B3A6F91C16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A6F91B16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.m */; };
@@ -108,7 +107,6 @@
 		B3A015E516B1E01700D09351 /* RTKeychainEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTKeychainEntry.m; sourceTree = "<group>"; };
 		B3A015E616B1E01700D09351 /* RTParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTParser.h; sourceTree = "<group>"; };
 		B3A015E716B1E01700D09351 /* RTParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTParser.m; sourceTree = "<group>"; };
-		B3A015E816B1E01700D09351 /* testingString1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = testingString1.txt; sourceTree = "<group>"; };
 		B3A015ED16B1E05100D09351 /* Security.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B3A6F91A16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCTicketStubTableCellView.h; sourceTree = "<group>"; };
@@ -173,13 +171,6 @@
 				B314F38C16FCC7D9001928A6 /* RT Tests-Prefix.pch */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		B314F39116FCC7E8001928A6 /* Unit Tests */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "Unit Tests";
 			sourceTree = "<group>";
 		};
 		B329A4CD171360A600B8AF48 /* Core Data */ = {
@@ -247,7 +238,6 @@
 				B3CC5C0816BAB79C005C71C4 /* Models */,
 				B3A015E416B1E01700D09351 /* RTKeychainEntry.h */,
 				B3A015E516B1E01700D09351 /* RTKeychainEntry.m */,
-				B3A015E816B1E01700D09351 /* testingString1.txt */,
 				B36192FF166D7FEA00D86162 /* API Engine */,
 				B36192DE166D7B2F00D86162 /* RTCAppDelegate.h */,
 				B36192DF166D7B2F00D86162 /* RTCAppDelegate.m */,
@@ -265,7 +255,6 @@
 				0A393BA7168255CC00DEAFE2 /* RTCLoginWindowController.xib */,
 				0A31CC7016FA3C7500D24256 /* RTCSender.h */,
 				0A31CC7216FA3C7500D24256 /* RTCSender.m */,
-				B314F39116FCC7E8001928A6 /* Unit Tests */,
 				B36192D3166D7B2F00D86162 /* Supporting Files */,
 			);
 			name = Application;
@@ -404,7 +393,6 @@
 				B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */,
 				0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */,
 				B3AB10C416AB2177004F1F17 /* RTCSelfServiceWindowController.xib in Resources */,
-				B3A015EB16B1E01700D09351 /* testingString1.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
