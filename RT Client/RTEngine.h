@@ -18,15 +18,14 @@
 
 @property (nonatomic, readonly, getter = isAuthenticated) BOOL authenticated;
 @property (nonatomic, readonly) BOOL hasCredentials;
+@property (nonatomic, strong, readonly) NSString * username;
 
 - (void)refreshLogin;
 
 - (void)setUsername:(NSString *)username password:(NSString *)password errorBlock:(RTBasicBlock)errorBlock;
 - (void)removeUsernameAndPassword;
 
-@property (nonatomic, strong, readonly) NSString * username;
-
-- (void)fetchSelfServiceTicketStubs:(RTBasicBlock)completionBlock;
+- (void)refreshSelfServiceQueue;
 - (void)pullTicketInformation:(NSManagedObjectID *)ticketID completion:(RTBasicBlock)completion;
 
 @end

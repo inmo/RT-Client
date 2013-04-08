@@ -47,7 +47,7 @@
         if (_loginWindowController)
             [_loginWindowController close];
         
-        [(RTCSelfServiceWindowController *)self.window.windowController refreshSelfServiceTickets:self];
+        [[RTEngine sharedEngine] refreshSelfServiceQueue];
     }
 }
 

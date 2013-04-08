@@ -72,11 +72,15 @@
 
 #pragma mark - API Endpoints
 
-- (void)fetchSelfServiceTicketStubs:(RTBasicBlock)completionBlock;
+- (void)refreshSelfServiceQueue;
+{
+    [self _fetchSearchResultsForQuery:@"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')" completionBlock:nil];
+}
+
+- (void)_fetchSearchResultsForQuery:(NSString *)query completionBlock:(RTBasicBlock)completionBlock
 {
     [self getPath:@"REST/1.0/search/ticket" parameters:@{
-        @"query": @"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')",
-        @"format": @"l",
+        @"query": query, @"format": @"l",
      } success:^(AFHTTPRequestOperation *operation, id responseObject) {
          NSArray * rawTickets = [self.responseParser arrayWithData:operation.responseData];
          NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_context];
