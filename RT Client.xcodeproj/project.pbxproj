@@ -182,6 +182,19 @@
 			name = "Unit Tests";
 			sourceTree = "<group>";
 		};
+		B329A4CD171360A600B8AF48 /* Core Data */ = {
+			isa = PBXGroup;
+			children = (
+				0A0211A116A606EC00054395 /* RT_Client.xcdatamodeld */,
+				B30D0F9116BE864100DAB1D3 /* RTTicket.h */,
+				B30D0F9216BE864100DAB1D3 /* RTTicket.m */,
+				B30D0F8E16BE864000DAB1D3 /* RTAttachment.h */,
+				B30D0F8F16BE864000DAB1D3 /* RTAttachment.m */,
+				B3CC5C0C16BAB7C8005C71C4 /* RTModels.h */,
+			);
+			name = "Core Data";
+			sourceTree = "<group>";
+		};
 		B36192BD166D7B2F00D86162 = {
 			isa = PBXGroup;
 			children = (
@@ -296,12 +309,7 @@
 		B3CC5C0816BAB79C005C71C4 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				0A0211A116A606EC00054395 /* RT_Client.xcdatamodeld */,
-				B30D0F9116BE864100DAB1D3 /* RTTicket.h */,
-				B30D0F9216BE864100DAB1D3 /* RTTicket.m */,
-				B30D0F8E16BE864000DAB1D3 /* RTAttachment.h */,
-				B30D0F8F16BE864000DAB1D3 /* RTAttachment.m */,
-				B3CC5C0C16BAB7C8005C71C4 /* RTModels.h */,
+				B329A4CD171360A600B8AF48 /* Core Data */,
 				B3CC5C0E16BAB813005C71C4 /* RTTicket+Extensions.h */,
 				B3CC5C0F16BAB813005C71C4 /* RTTicket+Extensions.m */,
 				B30D0F8B16BE6C5800DAB1D3 /* RTAttachment+Extensions.h */,
