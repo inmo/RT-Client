@@ -69,6 +69,17 @@
     
     return request;
 }
+-(void) postPath:(NSString *)path parameters:(NSDictionary *)parameters
+         success:(void (^)(AFHTTPRequestOperation *, id))success
+         failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
+{
+    path = @"/Rest/1.0/ticket/1/comment";
+    NSMutableDictionary * newParams = [parameters mutableCopy];
+    [newParams addEntriesFromDictionary:self.keychainEntry.contents];
+    
+    [super postPath:path parameters:newParams success:success failure:failure];
+    
+}
 
 #pragma mark - API Endpoints
 
@@ -97,6 +108,57 @@
      }];
 }
 
+- (void)pullTicketAttachmentStubs:(NSManagedObjectID *)ticketID scratchContext:(NSManagedObjectContext *)scratchContext attachmentStubs:(NSArray *)attachmentStubs completionBlock:(RTBasicBlock)completionBlock
+{
+    __block RTTicket * ticket = (RTTicket *)[scratchContext objectWithID:ticketID];
+    __block NSUInteger pendingOperationsCount = attachmentStubs.count;
+    // ^^ Synchronize this with the scratchContext
+    
+    [attachmentStubs enumerateObjectsUsingBlock:^(NSDictionary * rawAttachmentStub, NSUInteger idx, BOOL *stop) {
+        [self
+         getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, rawAttachmentStub[@"id"]]
+         parameters:nil
+         success:^(AFHTTPRequestOperation *operation, id responseObject) {
+             NSDictionary * rawResponse = [self.responseParser dictionaryWithData:operation.responseData];
+             
+             [scratchContext performBlock:^{
+                 RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:rawResponse inContext:scratchContext];
+                 attachment.ticket = ticket;
+                 
+                 pendingOperationsCount--; // TODO: This can be redone using barriers in GCD
+                 if (pendingOperationsCount == 0)
+                 {
+                     [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+                         if (completionBlock) completionBlock();
+                     }];
+                 }
+             }];
+         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+             NSLog(@"%@", error);
+             
+             [scratchContext performBlock:^{
+                 pendingOperationsCount--;
+                 if (pendingOperationsCount == 0 && completionBlock)
+                     completionBlock();
+             }];
+         }];
+    }];
+}
+
+- (void)pullTicketPathStuff:(RTBasicBlock)completionBlock ticketID:(NSManagedObjectID *)ticketID ticket:(RTTicket *)ticket
+{
+    [self getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSDictionary * attachmentList = [self.responseParser dictionaryWithData:operation.responseData];
+        NSArray * attachmentStubs = attachmentList[@"Attachments"];
+        NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
+        
+        [self pullTicketAttachmentStubs:ticketID scratchContext:scratchContext attachmentStubs:attachmentStubs completionBlock:completionBlock];
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", error);
+        if (completionBlock) completionBlock();
+    }];
+}
+
 - (void)pullTicketInformation:(NSManagedObjectID *)ticketID completion:(RTBasicBlock)completionBlock;
 {
     RTTicket * ticket = (RTTicket *)[self.apiContext objectWithID:ticketID];
@@ -106,48 +168,7 @@
         return;
     }
     
-    [self getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         NSDictionary * attachmentList = [self.responseParser dictionaryWithData:operation.responseData];
-         NSArray * attachmentStubs = attachmentList[@"Attachments"];
-         NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
-         
-         __block RTTicket * ticket = (RTTicket *)[scratchContext objectWithID:ticketID];
-         __block NSUInteger pendingOperationsCount = attachmentStubs.count;
-         // ^^ Synchronize this with the scratchContext
-                  
-         [attachmentStubs enumerateObjectsUsingBlock:^(NSDictionary * rawAttachmentStub, NSUInteger idx, BOOL *stop) {
-             [self
-              getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, rawAttachmentStub[@"id"]]
-              parameters:nil
-              success:^(AFHTTPRequestOperation *operation, id responseObject) {
-                  NSDictionary * rawResponse = [self.responseParser dictionaryWithData:operation.responseData];
-                  
-                  [scratchContext performBlock:^{
-                      RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:rawResponse inContext:scratchContext];
-                      attachment.ticket = ticket;
-                      
-                      pendingOperationsCount--; // TODO: This can be redone using barriers in GCD
-                      if (pendingOperationsCount == 0)
-                      {
-                          [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-                              if (completionBlock) completionBlock();
-                          }];
-                      }
-                  }];
-              } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-                  NSLog(@"%@", error);
-                  
-                  [scratchContext performBlock:^{
-                      pendingOperationsCount--;
-                      if (pendingOperationsCount == 0 && completionBlock)
-                          completionBlock();
-                  }];
-              }];
-         }];
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-         NSLog(@"%@", error);
-         if (completionBlock) completionBlock();
-     }];
+    [self pullTicketPathStuff:completionBlock ticketID:ticketID ticket:ticket];
 }
 
 - (void)_testHook
