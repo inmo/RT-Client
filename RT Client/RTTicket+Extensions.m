@@ -45,6 +45,15 @@
     return ticket;
 }
 
+- (NSArray *)chronologicallySortedTopLevelAttachments;
+{
+    NSPredicate * topLevelPredicate = [NSPredicate predicateWithFormat:@"parent = 0"];
+    NSArray * sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]];
+
+    return [[self.attachments filteredSetUsingPredicate:topLevelPredicate]
+            sortedArrayUsingDescriptors:sortDescriptors];
+}
+
 - (NSString *)plainTextSummary;
 {
     NSArray * attachments = [RTAttachment MR_findAllSortedBy:@"attachmentID" ascending:NO withPredicate:[NSPredicate predicateWithFormat:@"ticket = %@ AND parent = 0", self]];

@@ -12,18 +12,66 @@
 #import "RTCTicketStubTableCellView.h"
 #import "RTCTicketCell.h"
 
-@interface RTCSelfServiceWindowController () <NSTableViewDelegate>
+@interface RTCSelfServiceWindowController () <NSTableViewDelegate, NSTableViewDataSource>
+
+@property (nonatomic, strong) IBOutlet NSArrayController * ticketController;
+@property (nonatomic, strong) IBOutlet NSTableView * ticketTableView;
+@property (nonatomic, strong) IBOutlet NSTableView * ticketDetailView;
+
+@property (nonatomic, strong) RTTicket * selectedTicket;
+@property (nonatomic, strong) NSArray * selectedTicketAttachments;
+
+- (IBAction)refreshSelfServiceTickets:(id)sender;
 
 @end
 
 @implementation RTCSelfServiceWindowController
 
-@synthesize ticketTableView;
-@synthesize otherTickView;
-
 - (void)awakeFromNib;
 {
     self.ticketController.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]];
+    [self.ticketController addObserver:self forKeyPath:@"selectionIndex" options:NULL context:NULL];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"selectionIndex"] && object == self.ticketController)
+    {
+        if (self.ticketController.selectionIndex == NSNotFound)
+            return;
+        
+        self.selectedTicket = self.ticketController.arrangedObjects[self.ticketController.selectionIndex];
+        self.selectedTicketAttachments = [self.selectedTicket chronologicallySortedTopLevelAttachments];
+        [self.ticketDetailView reloadData];
+        
+        return;
+    }
+    
+    if ([keyPath isEqualToString:@"attachments"] && object == self.selectedTicket)
+    {
+        if (self.ticketController.selectionIndex == NSNotFound)
+            return;
+        
+        self.selectedTicketAttachments = [self.selectedTicket chronologicallySortedTopLevelAttachments];
+        
+        [self.ticketDetailView reloadData];
+        [self.ticketTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:self.ticketController.selectionIndex]
+                                        columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+        
+        return;
+    }
+    
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
+#pragma mark - Setters & Getters
+
+- (void)setSelectedTicket:(RTTicket *)selectedTicket
+{
+    [self.selectedTicket removeObserver:self forKeyPath:@"attachments"];
+    
+    if ((self->_selectedTicket = selectedTicket))
+        [self.selectedTicket addObserver:self forKeyPath:@"attachments" options:NULL context:NULL];
 }
 
 #pragma mark - Toolbar Actions
@@ -33,51 +81,25 @@
     [[RTEngine sharedEngine] refreshSelfServiceQueue];
 }
 
-- (void)tableViewSelectionDidChange:(NSNotification *)aNotification{
-    
-    printf("\n\n\n\n test change\n\n\n\n");
-    NSInteger selectedrow= [ticketTableView selectedRow];
-    RTCTicketStubTableCellView *selecedcell= [ticketTableView rowViewAtRow:selectedrow makeIfNecessary:NO];
-    selectedSubject = [[selecedcell subjectLabel] stringValue];
-    selectedBody=[[selecedcell summaryLabel] stringValue];
-    selectedDate=[[selecedcell dateLabel] stringValue];
-    selectedAuthor= [[selecedcell authorLabel] stringValue];
-    [otherTickView reloadData];
-   // NSCell selectedCell= [ticketTableView
-    
+#pragma mark - NSTableViewDelegate
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    return self.selectedTicketAttachments.count;
 }
 
-
-@end
-
-
-@implementation RTCTicketTableController
-
-- (id)tableView:(NSTableView *)aTableView objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex{
-   
-    printf("\n\n\n\n test\n\n\n\n");
-    RTCTicketCell *newcell;
-    newcell= [newcell init];
-    [newcell SetTextBody:selectedBody];
-    [newcell SetTextdate:selectedDate];
-    [newcell SetTextfrom:selectedAuthor];
-    [newcell SetTextsubject:selectedSubject];
+- (NSView *)tableView:(NSTableView *)tableView
+   viewForTableColumn:(NSTableColumn *)tableColumn
+                  row:(NSInteger)row
+{
+    static NSString * const TicketCellIdentifier = @"ticketCell";
     
-    return newcell;
+    RTCTicketCell * cell = [tableView makeViewWithIdentifier:TicketCellIdentifier owner:self];
+    cell = (cell) ?: [[RTCTicketCell alloc] initWithIdentifier:TicketCellIdentifier];
     
+    [cell configureWithAttachment:self.selectedTicketAttachments[row]];
     
+    return cell;
 }
-
-
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView{
-    
-    return 3;
-}
--(void)RTCTicketTableController:causeUpdate{
-    [self reloadData];
-}
-
-
 
 @end

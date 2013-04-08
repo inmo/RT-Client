@@ -17,12 +17,7 @@
 
 - (id)init
 {
-    if ((self = [super initWithWindowNibName:@"RTCLoginWindowController"]))
-    {
-        
-    }
-    
-    return self;
+    return [super initWithWindowNibName:@"RTCLoginWindowController"];
 }
 
 - (void)windowDidLoad

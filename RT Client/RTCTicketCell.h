@@ -8,27 +8,14 @@
 
 #import <Cocoa/Cocoa.h>
 
-NSString *displayText;
-NSString *BodyText;
-NSString *from;
-NSString *reciver;
-NSString *dateText;
-NSString *priority;
-NSString *subject;
-
+@class RTAttachment;
 
 @interface RTCTicketCell : NSTableCellView
 
-@property (nonatomic, strong) IBOutlet NSTextField * tableText;
+@property (nonatomic, strong) IBOutlet NSTextField * descriptionLabel;
 
--(void)SetTextBody:(NSString*) newText;
--(void)SetTextfrom:(NSString*) newText;
--(void)SetTextreciver:(NSString*) newText;
--(void)SetTextdate:(NSString*) newText;
--(void)SetTextpriority:(NSString*) newText;
--(void)SetTextsubject:(NSString*) newText;
+- (id)initWithIdentifier:(NSString *)identifier;
 
--(void)UpdateDisplayText;
--(NSString *)getText;
+- (void)configureWithAttachment:(RTAttachment *)attachment;
 
 @end

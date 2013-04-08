@@ -69,11 +69,11 @@
     
     return request;
 }
--(void) postPath:(NSString *)path parameters:(NSDictionary *)parameters
+
+- (void)postPath:(NSString *)path parameters:(NSDictionary *)parameters
          success:(void (^)(AFHTTPRequestOperation *, id))success
          failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
 {
-    path = @"/Rest/1.0/ticket/1/comment";
     NSMutableDictionary * newParams = [parameters mutableCopy];
     [newParams addEntriesFromDictionary:self.keychainEntry.contents];
     
@@ -94,13 +94,19 @@
         @"query": query, @"format": @"l",
      } success:^(AFHTTPRequestOperation *operation, id responseObject) {
          NSArray * rawTickets = [self.responseParser arrayWithData:operation.responseData];
+         NSMutableArray * createdTickets = [NSMutableArray arrayWithCapacity:rawTickets.count];
          NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_context];
          
          [rawTickets enumerateObjectsUsingBlock:^(NSDictionary * response, NSUInteger idx, BOOL *stop) {
-             [RTTicket createTicketFromAPIResponse:response inContext:scratchContext];
+             RTTicket * ticket = [RTTicket createTicketFromAPIResponse:response inContext:scratchContext];
+             [createdTickets addObject:ticket];
          }];
          
          [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+             [createdTickets enumerateObjectsUsingBlock:^(RTTicket * ticket, NSUInteger idx, BOOL *stop) {
+                 [self pullTicketInformation:ticket.objectID completion:nil];
+             }];
+             
              if (completionBlock) completionBlock();
          }];
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
