@@ -40,6 +40,7 @@
 		B314F39E16FCC862001928A6 /* RTCSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A31CC7216FA3C7500D24256 /* RTCSender.m */; };
 		B314F3A016FCC872001928A6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */; };
 		B314F3A116FCC875001928A6 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015ED16B1E05100D09351 /* Security.framework */; };
+		B329A4CE17137DC000B8AF48 /* RTCTicketCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AAAB1C916FEAB150001A35E /* RTCTicketCell.m */; };
 		B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36192CC166D7B2F00D86162 /* Cocoa.framework */; };
 		B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B36192D5166D7B2F00D86162 /* InfoPlist.strings */; };
 		B36192D9166D7B2F00D86162 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192D8166D7B2F00D86162 /* main.m */; };
@@ -463,6 +464,7 @@
 				B314F39E16FCC862001928A6 /* RTCSender.m in Sources */,
 				0AE8ADF116FFEA78007519CB /* RTParser.m in Sources */,
 				B3D279C717011F820020E0B3 /* RTKeychainEntryTests.m in Sources */,
+				B329A4CE17137DC000B8AF48 /* RTCTicketCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

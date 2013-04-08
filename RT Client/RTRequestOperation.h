@@ -10,4 +10,7 @@
 
 @interface RTRequestOperation : AFHTTPRequestOperation
 
+@property (nonatomic, strong, readonly) NSDictionary * responseDictionary;
+@property (nonatomic, strong, readonly) NSArray * responseArray;
+
 @end

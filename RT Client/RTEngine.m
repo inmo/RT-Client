@@ -13,6 +13,7 @@
 #import "RTKeychainEntry.h"
 #import "RTParser.h"
 #import "RTCLoginWindowController.h"
+#import "RTRequestOperation.h"
 #import "RTModels.h"
 
 #define RT_SERVER_URL [NSURL URLWithString:@"http://rhit-rt.axiixc.com/"]
@@ -57,6 +58,8 @@
         
         self.apiContext = [NSManagedObjectContext MR_contextWithParent:[NSManagedObjectContext MR_defaultContext]];
         self.responseParser = [RTParser new];
+        
+        [self registerHTTPOperationClass:[RTRequestOperation class]];
     }
     
     return self;
@@ -85,10 +88,10 @@
 
 - (void)refreshSelfServiceQueue;
 {
-    [self _fetchSearchResultsForQuery:@"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')" completionBlock:nil];
+    [self fetchSearchResultsForQuery:@"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')" getAllTicketInformation:YES];
 }
 
-- (void)_fetchSearchResultsForQuery:(NSString *)query completionBlock:(RTBasicBlock)completionBlock
+- (void)fetchSearchResultsForQuery:(NSString *)query getAllTicketInformation:(BOOL)allInfo
 {
     [self getPath:@"REST/1.0/search/ticket" parameters:@{
         @"query": query, @"format": @"l",
@@ -103,15 +106,14 @@
          }];
          
          [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
+             if (!allInfo)
+                 return;
+             
              [createdTickets enumerateObjectsUsingBlock:^(RTTicket * ticket, NSUInteger idx, BOOL *stop) {
                  [self pullTicketInformation:ticket.objectID completion:nil];
              }];
-             
-             if (completionBlock) completionBlock();
          }];
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-         if (completionBlock) completionBlock();
-     }];
+     } failure:nil];
 }
 
 - (void)pullTicketAttachmentStubs:(NSManagedObjectID *)ticketID scratchContext:(NSManagedObjectContext *)scratchContext attachmentStubs:(NSArray *)attachmentStubs completionBlock:(RTBasicBlock)completionBlock
@@ -175,11 +177,6 @@
     }
     
     [self pullTicketPathStuff:completionBlock ticketID:ticketID ticket:ticket];
-}
-
-- (void)_testHook
-{
-
 }
 
 #pragma mark - Authentication (Keychain)

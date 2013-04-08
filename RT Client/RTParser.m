@@ -19,6 +19,59 @@ static NSString * kRTParserKeyValueDivisionMarker = @": ";
 
 @implementation RTParser
 
+#pragma mark - Dictionary Parsing
+
+- (NSDictionary *)dictionaryWithData:(NSData *)data;
+{
+    NSString * quickDecodeAttempt = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
+    if (quickDecodeAttempt)
+        return [self _dictionaryWithString:quickDecodeAttempt];
+    
+    // TODO These are constants, so they should probably be made static eventually
+    NSData * contentRangeMarker = [@"Content: " dataUsingEncoding:NSUTF8StringEncoding];
+    NSData * attachmentLineMarker = [@"         " dataUsingEncoding:NSUTF8StringEncoding];
+    NSData * attachmentTrailerMarker = [NSData dataWithBytes:(char[]){0x0A, 0x0A, 0x0A} length:3];
+    
+    NSRange rangeOfContentMarker = [data rangeOfData:contentRangeMarker options:0 range:NSMakeRange(0, data.length)];
+    NSRange rangeOfParsableData = NSMakeRange(0, rangeOfContentMarker.location);
+    
+    NSString * parsableString = [[NSString alloc] initWithData:[data subdataWithRange:rangeOfParsableData] encoding:NSUTF8StringEncoding];
+    NSMutableDictionary * resultDictionary = [[self _dictionaryWithString:parsableString] mutableCopy];
+    
+    NSMutableData * attachmentData = [data mutableCopy];
+    NSRange attachmentDataRemovalRange = NSMakeRange(0, rangeOfContentMarker.location + rangeOfContentMarker.length);
+    NSRange attachmentDataSearchRange = NSMakeRange(NSNotFound, 0);
+    
+    do {
+        [attachmentData replaceBytesInRange:attachmentDataRemovalRange withBytes:NULL length:0];
+        
+        attachmentDataSearchRange = NSMakeRange(attachmentDataRemovalRange.location, attachmentData.length - attachmentDataRemovalRange.location);
+        attachmentDataRemovalRange = [attachmentData rangeOfData:attachmentLineMarker options:0 range:attachmentDataSearchRange];
+    } while (attachmentDataRemovalRange.location != NSNotFound);
+    
+    NSRange attachmentTrailerCheckRange = NSMakeRange(attachmentData.length - attachmentTrailerMarker.length, attachmentTrailerMarker.length);
+    NSData * foundAttachmentTrailer = [attachmentData subdataWithRange:attachmentTrailerCheckRange];
+    if ([attachmentTrailerMarker isEqualToData:foundAttachmentTrailer])
+        [attachmentData replaceBytesInRange:attachmentTrailerCheckRange withBytes:NULL length:0];
+    
+    resultDictionary[@"Content"] = attachmentData;
+    return resultDictionary;
+}
+
+- (NSDictionary *)_dictionaryWithString:(NSString *)inputString;
+{
+    return [[self _arrayWithString:inputString] lastObject];
+}
+
+#pragma mark - Array Parsing
+
+- (NSArray *)arrayWithData:(NSData *)data;
+{
+    NSString * inputString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return [self _arrayWithString:inputString];
+}
+
 - (NSArray *)_arrayWithString:(NSString *)inputString
 {
     inputString = [inputString stringByAppendingFormat:@"\n%@", kRTParserSegmentDivisionMarker];
@@ -43,16 +96,7 @@ static NSString * kRTParserKeyValueDivisionMarker = @": ";
     return returnArray;
 }
 
-- (NSArray *)arrayWithData:(NSData *)data;
-{
-    NSString * inputString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    return [self _arrayWithString:inputString];
-}
-
-- (NSDictionary *)dictionaryWithString:(NSString *)inputString;
-{
-    return [[self _arrayWithString:inputString] lastObject];
-}
+#pragma mark - Private Parser Subroutines
 
 - (NSDictionary *)_parseTextualResponseLines:(NSArray *)lines;
 {
@@ -175,54 +219,16 @@ static NSString * kRTParserKeyValueDivisionMarker = @": ";
     return line;
 }
 
-- (NSDictionary *)dictionaryWithData:(NSData *)data;
-{
-    NSString * quickDecodeAttempt = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    
-    if (quickDecodeAttempt)
-        return [self dictionaryWithString:quickDecodeAttempt];
-    
-    // TODO These are constants, so they should probably be made static eventually
-    NSData * contentRangeMarker = [@"Content: " dataUsingEncoding:NSUTF8StringEncoding];
-    NSData * attachmentLineMarker = [@"         " dataUsingEncoding:NSUTF8StringEncoding];
-    NSData * attachmentTrailerMarker = [NSData dataWithBytes:(char[]){0x0A, 0x0A, 0x0A} length:3];
-    
-    NSRange rangeOfContentMarker = [data rangeOfData:contentRangeMarker options:0 range:NSMakeRange(0, data.length)];
-    NSRange rangeOfParsableData = NSMakeRange(0, rangeOfContentMarker.location);
-    
-    NSString * parsableString = [[NSString alloc] initWithData:[data subdataWithRange:rangeOfParsableData] encoding:NSUTF8StringEncoding];
-    NSMutableDictionary * resultDictionary = [[self dictionaryWithString:parsableString] mutableCopy];
-    
-    NSMutableData * attachmentData = [data mutableCopy];
-    NSRange attachmentDataRemovalRange = NSMakeRange(0, rangeOfContentMarker.location + rangeOfContentMarker.length);
-    NSRange attachmentDataSearchRange = NSMakeRange(NSNotFound, 0);
-    
-    do {
-        [attachmentData replaceBytesInRange:attachmentDataRemovalRange withBytes:NULL length:0];
-        
-        attachmentDataSearchRange = NSMakeRange(attachmentDataRemovalRange.location, attachmentData.length - attachmentDataRemovalRange.location);
-        attachmentDataRemovalRange = [attachmentData rangeOfData:attachmentLineMarker options:0 range:attachmentDataSearchRange];
-    } while (attachmentDataRemovalRange.location != NSNotFound);
-    
-    NSRange attachmentTrailerCheckRange = NSMakeRange(attachmentData.length - attachmentTrailerMarker.length, attachmentTrailerMarker.length);
-    NSData * foundAttachmentTrailer = [attachmentData subdataWithRange:attachmentTrailerCheckRange];
-    if ([attachmentTrailerMarker isEqualToData:foundAttachmentTrailer])
-        [attachmentData replaceBytesInRange:attachmentTrailerCheckRange withBytes:NULL length:0];
-    
-    resultDictionary[@"Content"] = attachmentData;
-    return resultDictionary;
-}
-
 #pragma mark - Date Parsing
 
 + (NSDateFormatter *)defaultDateFormatter;
 {
     static NSDateFormatter * __defaultDateFormatter = nil;
-    if (__defaultDateFormatter == nil)
-    {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
         __defaultDateFormatter = [[NSDateFormatter alloc] init];
         __defaultDateFormatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
-    }
+    });
     
     return __defaultDateFormatter;
 }
