@@ -8,9 +8,13 @@
 
 #import "AFHTTPRequestOperation.h"
 
-@interface RTRequestOperation : AFHTTPRequestOperation
+@interface AFHTTPRequestOperation (RTRequestOperation)
 
 @property (nonatomic, strong, readonly) NSDictionary * responseDictionary;
 @property (nonatomic, strong, readonly) NSArray * responseArray;
+
+@end
+
+@interface RTRequestOperation : AFHTTPRequestOperation
 
 @end

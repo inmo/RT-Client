@@ -11,7 +11,6 @@
 
 #import "RTEngine.h"
 #import "RTKeychainEntry.h"
-#import "RTParser.h"
 #import "RTCLoginWindowController.h"
 #import "RTRequestOperation.h"
 #import "RTModels.h"
@@ -19,16 +18,12 @@
 #define RT_SERVER_URL [NSURL URLWithString:@"http://rhit-rt.axiixc.com/"]
 
 #define SAFE_DELEGATE_CALL(CODE) if (self.delegate) { dispatch_async(dispatch_get_main_queue(), ^{ CODE; }); }
-#define FORCE_LOGOUT() if ((self.authenticated = YES)) { [self _logout]; }
-
-#define FORCE_LOGOUT() if ((self.authenticated = YES)) { [self _logout]; }
 
 @interface RTEngine (/* Private */)
 
 @property (nonatomic, assign, readwrite, getter = isAuthenticated) BOOL authenticated;
-@property (nonatomic, strong, readonly) RTKeychainEntry * keychainEntry;
+@property (nonatomic, strong, readwrite) RTKeychainEntry * keychainEntry;
 @property (nonatomic, strong) NSManagedObjectContext * apiContext;
-@property (nonatomic, strong) RTParser * responseParser;
 
 @end
 
@@ -53,17 +48,18 @@
 {
     if ((self = [super initWithBaseURL:RT_SERVER_URL]))
     {
-        self->_keychainEntry = [RTKeychainEntry entryForService:@"Request Tracker" account:@"default"];
-        FORCE_LOGOUT();
+        [self registerHTTPOperationClass:[RTRequestOperation class]];
+        
+        self.keychainEntry = [RTKeychainEntry entryForService:@"Request Tracker" account:@"default"];
+        [self _forcedLogout];
         
         self.apiContext = [NSManagedObjectContext MR_contextWithParent:[NSManagedObjectContext MR_defaultContext]];
-        self.responseParser = [RTParser new];
-        
-        [self registerHTTPOperationClass:[RTRequestOperation class]];
     }
     
     return self;
 }
+
+#pragma mark - AFHTTPClient Overrides
 
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters
 {
@@ -95,8 +91,8 @@
 {
     [self getPath:@"REST/1.0/search/ticket" parameters:@{
         @"query": query, @"format": @"l",
-     } success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         NSArray * rawTickets = [self.responseParser arrayWithData:operation.responseData];
+     } success:^(AFHTTPRequestOperation * operation, id responseObject) {
+         NSArray * rawTickets = [operation responseArray];
          NSMutableArray * createdTickets = [NSMutableArray arrayWithCapacity:rawTickets.count];
          NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_context];
          
@@ -127,7 +123,7 @@
          getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, rawAttachmentStub[@"id"]]
          parameters:nil
          success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSDictionary * rawResponse = [self.responseParser dictionaryWithData:operation.responseData];
+             NSDictionary * rawResponse = operation.responseDictionary;
              
              [scratchContext performBlock:^{
                  RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:rawResponse inContext:scratchContext];
@@ -156,7 +152,7 @@
 - (void)pullTicketPathStuff:(RTBasicBlock)completionBlock ticketID:(NSManagedObjectID *)ticketID ticket:(RTTicket *)ticket
 {
     [self getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSDictionary * attachmentList = [self.responseParser dictionaryWithData:operation.responseData];
+        NSDictionary * attachmentList = operation.responseDictionary;
         NSArray * attachmentStubs = attachmentList[@"Attachments"];
         NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
         
@@ -211,7 +207,7 @@
 - (void)removeUsernameAndPassword;
 {
     self.keychainEntry.contents = @{};
-    FORCE_LOGOUT();
+    [self _forcedLogout];
     
     [self refreshLogin];
 }
@@ -246,7 +242,7 @@
 - (void)_tryLoginWithCredentials:(NSDictionary *)roCredentials
                     onCompletion:(void (^)(BOOL invalidCredentialsError, BOOL networkError))completionBlock;
 {
-    [self _logout];
+    [self _logoutIfAuthenticated];
     
     if (!roCredentials)
         return completionBlock(YES, NO);
@@ -286,7 +282,13 @@
     [self enqueueHTTPRequestOperation:operation];
 }
 
-- (void)_logout;
+- (void)_forcedLogout;
+{
+    self.authenticated = YES;
+    [self _logoutIfAuthenticated];
+}
+
+- (void)_logoutIfAuthenticated;
 {
     if (!self.authenticated)
         return;

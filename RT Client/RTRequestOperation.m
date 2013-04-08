@@ -9,6 +9,13 @@
 #import "RTRequestOperation.h"
 #import "RTParser.h"
 
+@implementation AFHTTPRequestOperation (RTRequestOperation)
+
+- (NSDictionary *)responseDictionary; { return nil; }
+- (NSArray *)responseArray; { return nil; }
+
+@end
+
 @interface RTRequestOperation ()
 
 @property (nonatomic, strong) RTParser * responseParser;
