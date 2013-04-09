@@ -9,6 +9,7 @@
 #import <AFNetworking/AFNetworking.h>
 
 @protocol RTEngineDelegate;
+@class RTTicket;
 
 @interface RTEngine : AFHTTPClient
 
@@ -26,7 +27,9 @@
 - (void)removeUsernameAndPassword;
 
 - (void)refreshSelfServiceQueue;
-- (void)pullTicketInformation:(NSManagedObjectID *)ticketID completion:(RTBasicBlock)completion;
+
+- (void)fetchSearchResultsForQuery:(NSString *)query getAllTicketInformation:(BOOL)allInfo;
+- (void)fetchAttachmentsForTicket:(RTTicket *)ticket;
 
 @end
 

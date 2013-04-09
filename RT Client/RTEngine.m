@@ -84,7 +84,8 @@
 
 - (void)refreshSelfServiceQueue;
 {
-    [self fetchSearchResultsForQuery:@"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')" getAllTicketInformation:YES];
+    [self fetchSearchResultsForQuery:@"(Owner = '__CurrentUser__') AND (Status = 'new' OR Status = 'open')"
+             getAllTicketInformation:YES];
 }
 
 - (void)fetchSearchResultsForQuery:(NSString *)query getAllTicketInformation:(BOOL)allInfo
@@ -105,74 +106,52 @@
              if (!allInfo)
                  return;
              
-             [createdTickets enumerateObjectsUsingBlock:^(RTTicket * ticket, NSUInteger idx, BOOL *stop) {
-                 [self pullTicketInformation:ticket.objectID completion:nil];
-             }];
+             for (RTTicket * ticket in (allInfo ? createdTickets : nil))
+                 [self fetchAttachmentsForTicket:ticket];
          }];
      } failure:nil];
 }
 
-- (void)pullTicketAttachmentStubs:(NSManagedObjectID *)ticketID scratchContext:(NSManagedObjectContext *)scratchContext attachmentStubs:(NSArray *)attachmentStubs completionBlock:(RTBasicBlock)completionBlock
+- (void)fetchAttachmentsForTicket:(RTTicket *)ticket
 {
-    __block RTTicket * ticket = (RTTicket *)[scratchContext objectWithID:ticketID];
-    __block NSUInteger pendingOperationsCount = attachmentStubs.count;
-    // ^^ Synchronize this with the scratchContext
+    NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
+    ticket = (RTTicket *)[scratchContext objectWithID:ticket.objectID];
     
-    [attachmentStubs enumerateObjectsUsingBlock:^(NSDictionary * rawAttachmentStub, NSUInteger idx, BOOL *stop) {
-        [self
-         getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, rawAttachmentStub[@"id"]]
-         parameters:nil
-         success:^(AFHTTPRequestOperation *operation, id responseObject) {
-             NSDictionary * rawResponse = operation.responseDictionary;
-             
-             [scratchContext performBlock:^{
-                 RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:rawResponse inContext:scratchContext];
-                 attachment.ticket = ticket;
-                 
-                 pendingOperationsCount--; // TODO: This can be redone using barriers in GCD
-                 if (pendingOperationsCount == 0)
-                 {
-                     [scratchContext MR_saveToPersistentStoreWithCompletion:^(BOOL success, NSError *error) {
-                         if (completionBlock) completionBlock();
-                     }];
-                 }
-             }];
-         } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-             NSLog(@"%@", error);
-             
-             [scratchContext performBlock:^{
-                 pendingOperationsCount--;
-                 if (pendingOperationsCount == 0 && completionBlock)
-                     completionBlock();
-             }];
-         }];
-    }];
-}
-
-- (void)pullTicketPathStuff:(RTBasicBlock)completionBlock ticketID:(NSManagedObjectID *)ticketID ticket:(RTTicket *)ticket
-{
-    [self getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID] parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSDictionary * attachmentList = operation.responseDictionary;
-        NSArray * attachmentStubs = attachmentList[@"Attachments"];
-        NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
-        
-        [self pullTicketAttachmentStubs:ticketID scratchContext:scratchContext attachmentStubs:attachmentStubs completionBlock:completionBlock];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", error);
-        if (completionBlock) completionBlock();
-    }];
-}
-
-- (void)pullTicketInformation:(NSManagedObjectID *)ticketID completion:(RTBasicBlock)completionBlock;
-{
-    RTTicket * ticket = (RTTicket *)[self.apiContext objectWithID:ticketID];
-    if (!ticket)
-    {
-        if (completionBlock) completionBlock();
+    if (!ticket.ticketID)
         return;
-    }
     
-    [self pullTicketPathStuff:completionBlock ticketID:ticketID ticket:ticket];
+    [self
+     getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID]
+     parameters:nil
+     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+          NSArray * stubs = operation.responseDictionary[@"Attachments"];
+         
+         __block NSUInteger pendingOperations = stubs.count;
+         void (^saveBlock)() = [^{
+             [scratchContext performBlockAndWait:^{
+                 if (--pendingOperations == 0)
+                     [scratchContext MR_saveToPersistentStoreAndWait];
+             }];
+         } copy];
+         
+         for (NSDictionary * stub in stubs)
+             [self _fetchAttachmentID:stub[@"id"] associatedWithTicket:ticket saveBlock:saveBlock];
+     } failure:nil];
+}
+
+- (void)_fetchAttachmentID:(id)attachmentID associatedWithTicket:(RTTicket *)ticket saveBlock:(void (^)())saveBlock
+{
+    [self
+     getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, attachmentID]
+     parameters:nil
+     success:^(AFHTTPRequestOperation *operation, id responseObject) {
+         RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:operation.responseDictionary inContext:ticket.managedObjectContext];
+         attachment.ticket = ticket;
+         
+         saveBlock();
+     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+         saveBlock();
+     }];
 }
 
 #pragma mark - Authentication (Keychain)
@@ -254,7 +233,7 @@
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation * operation, id responseObject) {
-        // If no redirect is found, credentials must have failed
+        // If no redirect is given, credentials must have failed
         completionBlock(YES, NO);
     } failure:^(AFHTTPRequestOperation * operation, NSError * error) {
         // Upon success, the redirection handler invalidates the request, so it technically "errors"
@@ -262,12 +241,11 @@
         if (self.authenticated)
             return;
         
-        // Classify all other failures as network errors
         completionBlock(NO, YES);
     }];
     
     [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
-        // TODO: This is really the only way to grab successful logins as of this version
+        // NOTE: This is really the only way to grab successful logins as of this version
         //       However, it is also a hack and should be considered for fixing if at all possible.
         if ([request.URL isEqual:RT_SERVER_URL])
         {
@@ -302,4 +280,3 @@
 }
 
 @end
-

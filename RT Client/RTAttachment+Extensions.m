@@ -20,8 +20,9 @@
     if (!apiResponse || !apiResponse[@"id"])
         return nil;
     
-    NSArray * existingAttachments = [self MR_findAllWithPredicate:[NSPredicate predicateWithFormat:@"attachmentID = %@", @([apiResponse[@"id"] integerValue])] inContext:context];
-    RTAttachment * attachment = (existingAttachments.count) ? existingAttachments[0] : [RTAttachment MR_createInContext:context];
+    NSPredicate * existingPredicate = [NSPredicate predicateWithFormat:@"attachmentID = %@", @([apiResponse[@"id"] integerValue])];
+    RTAttachment * attachment = [[self MR_findAllWithPredicate:existingPredicate inContext:context] lastObject];
+    attachment = (attachment) ?: [RTAttachment MR_createInContext:context];
     
     attachment.attachmentID = @([apiResponse[@"id"] integerValue]);
     attachment.subject = apiResponse[@"Subject"];
