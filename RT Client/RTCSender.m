@@ -27,7 +27,7 @@
 //     failure:<#^(AFHTTPRequestOperation *operation, NSError *error)failure#>]
     }
 
-- (bool) sendTicket:(NSTask *) task InfoData: (RTEngine*) data toAddress:(NSString *) toAddress withSubject:(NSString *) subject Attachments:(NSArray *) attachments {
+- (bool) sendTicket:(NSTask *) task InfoData: (RTEngine*) data toAddress:(NSString *) toAddress withSubject:(NSString *) subject Attachments:(RTAttachment*) attachments {
     
     
     NSLog(@"Trying to send message");
@@ -44,9 +44,9 @@
                                  subject,
                                  bodyText,
                                  nil];
-    for (int i = 0; i < [attachments count]; i++) {
-        [arguments addObject:[attachments objectAtIndex:i]];
-    }
+   
+    [arguments addObject:[attachments]];
+    
     
     
     
