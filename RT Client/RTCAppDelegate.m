@@ -10,7 +10,9 @@
 #import "RTCLoginWindowController.h"
 #import "RTEngine.h"
 #import "RTModels.h"
+
 #import "RTCSelfServiceWindowController.h"
+#import "RTCReplyComposerWindowController.h"
 
 @interface RTCAppDelegate ()
 @end
@@ -20,6 +22,7 @@
 }
 
 @property (nonatomic, assign, readwrite) BOOL canLogout;
+
 @end
 
 @implementation RTCAppDelegate
@@ -81,6 +84,16 @@
 {
     NSLog(@"API Engine Requires Authentication");
 }
+
+#pragma mark - Top Level Actions
+
+- (void)openReplyComposerForTicket:(RTTicket *)ticket;
+{
+    RTCReplyComposerWindowController * composer = [[RTCReplyComposerWindowController alloc] initWithTicket:ticket];
+    [composer showWindow:self];
+}
+
+#pragma mark - Accessors for CoreData
 
 - (NSManagedObjectContext *)managedObjectContext
 {

@@ -41,6 +41,10 @@
 		B314F3A016FCC872001928A6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */; };
 		B314F3A116FCC875001928A6 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015ED16B1E05100D09351 /* Security.framework */; };
 		B329A4CE17137DC000B8AF48 /* RTCTicketCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AAAB1C916FEAB150001A35E /* RTCTicketCell.m */; };
+		B329A4D21716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */; };
+		B329A4D31716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */; };
+		B329A4D41716296200B8AF48 /* RTCReplyComposerWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */; };
+		B329A4D51716296200B8AF48 /* RTCReplyComposerWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */; };
 		B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36192CC166D7B2F00D86162 /* Cocoa.framework */; };
 		B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B36192D5166D7B2F00D86162 /* InfoPlist.strings */; };
 		B36192D9166D7B2F00D86162 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192D8166D7B2F00D86162 /* main.m */; };
@@ -90,6 +94,9 @@
 		B314F38916FCC7D9001928A6 /* RTTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RTTests.h; sourceTree = "<group>"; };
 		B314F38A16FCC7D9001928A6 /* RTTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RTTests.m; sourceTree = "<group>"; };
 		B314F38C16FCC7D9001928A6 /* RT Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RT Tests-Prefix.pch"; sourceTree = "<group>"; };
+		B329A4CF1716296200B8AF48 /* RTCReplyComposerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCReplyComposerWindowController.h; sourceTree = "<group>"; };
+		B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTCReplyComposerWindowController.m; sourceTree = "<group>"; };
+		B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RTCReplyComposerWindowController.xib; sourceTree = "<group>"; };
 		B36192C8166D7B2F00D86162 /* RT Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RT Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B36192CC166D7B2F00D86162 /* Cocoa.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B36192CF166D7B2F00D86162 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -254,6 +261,9 @@
 				0A393BA5168255CC00DEAFE2 /* RTCLoginWindowController.h */,
 				0A393BA6168255CC00DEAFE2 /* RTCLoginWindowController.m */,
 				0A393BA7168255CC00DEAFE2 /* RTCLoginWindowController.xib */,
+				B329A4CF1716296200B8AF48 /* RTCReplyComposerWindowController.h */,
+				B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */,
+				B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */,
 				0A31CC7016FA3C7500D24256 /* RTCSender.h */,
 				0A31CC7216FA3C7500D24256 /* RTCSender.m */,
 				B36192D3166D7B2F00D86162 /* Supporting Files */,
@@ -383,6 +393,7 @@
 			files = (
 				B314F38816FCC7D9001928A6 /* InfoPlist.strings in Resources */,
 				B3D279C41700FD620020E0B3 /* resources in Resources */,
+				B329A4D51716296200B8AF48 /* RTCReplyComposerWindowController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,6 +405,7 @@
 				B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */,
 				0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */,
 				B3AB10C416AB2177004F1F17 /* RTCSelfServiceWindowController.xib in Resources */,
+				B329A4D41716296200B8AF48 /* RTCReplyComposerWindowController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -465,6 +477,7 @@
 				0AE8ADF116FFEA78007519CB /* RTParser.m in Sources */,
 				B3D279C717011F820020E0B3 /* RTKeychainEntryTests.m in Sources */,
 				B329A4CE17137DC000B8AF48 /* RTCTicketCell.m in Sources */,
+				B329A4D31716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,6 +503,7 @@
 				0AAAB1CA16FEAB150001A35E /* RTCTicketCell.m in Sources */,
 				0AAAB1CD16FEC9240001A35E /* RTCTicketDisplayer.m in Sources */,
 				0AE8AE0316FFEF74007519CB /* RTParser.m in Sources */,
+				B329A4D21716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

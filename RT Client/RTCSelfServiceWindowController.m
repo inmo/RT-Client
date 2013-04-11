@@ -11,6 +11,7 @@
 #import "RTEngine.h"
 #import "RTCTicketStubTableCellView.h"
 #import "RTCTicketCell.h"
+#import "RTCAppDelegate.h"
 
 @interface RTCSelfServiceWindowController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -20,8 +21,6 @@
 
 @property (nonatomic, strong) RTTicket * selectedTicket;
 @property (nonatomic, strong) NSArray * selectedTicketAttachments;
-
-- (IBAction)refreshSelfServiceTickets:(id)sender;
 
 @end
 
@@ -79,6 +78,12 @@
 - (IBAction)refreshSelfServiceTickets:(id)sender;
 {
     [[RTEngine sharedEngine] refreshSelfServiceQueue];
+}
+
+- (IBAction)replyToSelectedTicket:(id)sender
+{
+    [(RTCAppDelegate *)[[NSApplication sharedApplication] delegate]
+     openReplyComposerForTicket:self.selectedTicket];
 }
 
 #pragma mark - NSTableViewDelegate

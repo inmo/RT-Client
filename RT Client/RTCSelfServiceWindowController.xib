@@ -1474,6 +1474,7 @@
 													<array class="NSMutableArray" key="NSSubviews"/>
 													<string key="NSFrameSize">{304, 450}</string>
 													<reference key="NSSuperview" ref="854297745"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="775878088"/>
 													<string key="NSReuseIdentifierKey">_NS:13</string>
 													<bool key="NSEnabled">YES</bool>
@@ -1576,6 +1577,7 @@
 											</array>
 											<string key="NSFrameSize">{304, 450}</string>
 											<reference key="NSSuperview" ref="936833632"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="508672336"/>
 											<string key="NSReuseIdentifierKey">_NS:11</string>
 											<reference key="NSDocView" ref="508672336"/>
@@ -1587,6 +1589,7 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{288, 0}, {16, 450}}</string>
 											<reference key="NSSuperview" ref="936833632"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="850785853"/>
 											<string key="NSReuseIdentifierKey">_NS:58</string>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -1599,6 +1602,7 @@
 											<int key="NSvFlags">256</int>
 											<string key="NSFrame">{{0, 434}, {304, 16}}</string>
 											<reference key="NSSuperview" ref="936833632"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="523011880"/>
 											<string key="NSReuseIdentifierKey">_NS:60</string>
 											<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -1610,6 +1614,7 @@
 									</array>
 									<string key="NSFrameSize">{304, 450}</string>
 									<reference key="NSSuperview" ref="293421512"/>
+									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="854297745"/>
 									<string key="NSReuseIdentifierKey">_NS:9</string>
 									<int key="NSsFlags">133168</int>
@@ -1639,6 +1644,7 @@
 															<array class="NSMutableArray" key="NSSubviews"/>
 															<string key="NSFrameSize">{395, 450}</string>
 															<reference key="NSSuperview" ref="659291575"/>
+															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="499210292"/>
 															<string key="NSReuseIdentifierKey">_NS:13</string>
 															<bool key="NSEnabled">YES</bool>
@@ -1702,6 +1708,7 @@
 													</array>
 													<string key="NSFrameSize">{395, 450}</string>
 													<reference key="NSSuperview" ref="334335929"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="735295417"/>
 													<string key="NSReuseIdentifierKey">_NS:11</string>
 													<reference key="NSDocView" ref="735295417"/>
@@ -1713,6 +1720,7 @@
 													<int key="NSvFlags">-2147483392</int>
 													<string key="NSFrame">{{224, 17}, {15, 102}}</string>
 													<reference key="NSSuperview" ref="334335929"/>
+													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="522900481"/>
 													<string key="NSReuseIdentifierKey">_NS:58</string>
 													<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
@@ -1725,6 +1733,8 @@
 													<int key="NSvFlags">-2147483392</int>
 													<string key="NSFrame">{{0, 434}, {395, 16}}</string>
 													<reference key="NSSuperview" ref="334335929"/>
+													<reference key="NSWindow"/>
+													<reference key="NSNextKeyView"/>
 													<string key="NSReuseIdentifierKey">_NS:60</string>
 													<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 													<int key="NSsFlags">1</int>
@@ -1735,6 +1745,7 @@
 											</array>
 											<string key="NSFrameSize">{395, 450}</string>
 											<reference key="NSSuperview" ref="850785853"/>
+											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="659291575"/>
 											<string key="NSReuseIdentifierKey">_NS:9</string>
 											<int key="NSsFlags">133680</int>
@@ -1749,6 +1760,7 @@
 									</array>
 									<string key="NSFrame">{{305, 0}, {395, 450}}</string>
 									<reference key="NSSuperview" ref="293421512"/>
+									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="334335929"/>
 									<string key="NSReuseIdentifierKey">_NS:13</string>
 									<string key="NSClassName">NSView</string>
@@ -1756,6 +1768,7 @@
 							</array>
 							<string key="NSFrameSize">{700, 450}</string>
 							<reference key="NSSuperview" ref="54526467"/>
+							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="936833632"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSIsVertical">YES</bool>
@@ -1768,6 +1781,7 @@
 					</array>
 					<string key="NSFrameSize">{700, 450}</string>
 					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="293421512"/>
 					<string key="NSReuseIdentifierKey">_NS:54</string>
 				</object>
@@ -2502,6 +2516,14 @@
 						<reference key="destination" ref="735295417"/>
 					</object>
 					<int key="connectionID">1436</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">replyToSelectedTicket:</string>
+						<reference key="source" ref="912671859"/>
+						<reference key="destination" ref="435798278"/>
+					</object>
+					<int key="connectionID">1449</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -4995,9 +5017,142 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1448</int>
+			<int key="maxID">1457</int>
 		</object>
-		<object class="IBClassDescriber" key="IBDocument.Classes"/>
+		<object class="IBClassDescriber" key="IBDocument.Classes">
+			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
+				<object class="IBPartialClassDescription">
+					<string key="className">NSLayoutConstraint</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/NSLayoutConstraint.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">RTCAppDelegate</string>
+					<string key="superclassName">NSObject</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="logout:">id</string>
+						<string key="saveAction:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="logout:">
+							<string key="name">logout:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="saveAction:">
+							<string key="name">saveAction:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">window</string>
+						<string key="NS.object.0">NSWindow</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">window</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">window</string>
+							<string key="candidateClassName">NSWindow</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/RTCAppDelegate.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">RTCSelfServiceWindowController</string>
+					<string key="superclassName">NSWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">refreshSelfServiceTickets:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">refreshSelfServiceTickets:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">refreshSelfServiceTickets:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="ticketController">NSArrayController</string>
+						<string key="ticketDetailView">NSTableView</string>
+						<string key="ticketTableView">NSTableView</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="ticketController">
+							<string key="name">ticketController</string>
+							<string key="candidateClassName">NSArrayController</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="ticketDetailView">
+							<string key="name">ticketDetailView</string>
+							<string key="candidateClassName">NSTableView</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="ticketTableView">
+							<string key="name">ticketTableView</string>
+							<string key="candidateClassName">NSTableView</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/RTCSelfServiceWindowController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">RTCTicketCell</string>
+					<string key="superclassName">NSTableCellView</string>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">descriptionLabel</string>
+						<string key="NS.object.0">NSTextField</string>
+					</object>
+					<object class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<string key="NS.key.0">descriptionLabel</string>
+						<object class="IBToOneOutletInfo" key="NS.object.0">
+							<string key="name">descriptionLabel</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/RTCTicketCell.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">RTCTicketStubTableCellView</string>
+					<string key="superclassName">NSTableCellView</string>
+					<dictionary class="NSMutableDictionary" key="outlets">
+						<string key="authorLabel">NSTextField</string>
+						<string key="dateLabel">NSTextField</string>
+						<string key="subjectLabel">NSTextField</string>
+						<string key="summaryLabel">NSTextField</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="toOneOutletInfosByName">
+						<object class="IBToOneOutletInfo" key="authorLabel">
+							<string key="name">authorLabel</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="dateLabel">
+							<string key="name">dateLabel</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="subjectLabel">
+							<string key="name">subjectLabel</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+						<object class="IBToOneOutletInfo" key="summaryLabel">
+							<string key="name">summaryLabel</string>
+							<string key="candidateClassName">NSTextField</string>
+						</object>
+					</dictionary>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/RTCTicketStubTableCellView.h</string>
+					</object>
+				</object>
+			</array>
+		</object>
 		<int key="IBDocument.localizationMode">0</int>
 		<string key="IBDocument.TargetRuntimeIdentifier">IBCocoaFramework</string>
 		<bool key="IBDocument.PluginDeclaredDependenciesTrackSystemTargetVersion">YES</bool>

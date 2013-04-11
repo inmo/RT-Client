@@ -8,17 +8,21 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class RTTicket;
+
 @interface RTCAppDelegate : NSObject <NSApplicationDelegate>
 
-@property (assign) IBOutlet NSWindow *window;
+@property (assign) IBOutlet NSWindow * window;
 
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-@property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (nonatomic, strong, readonly) NSManagedObjectModel *managedObjectModel;
+@property (nonatomic, strong, readonly) NSManagedObjectContext *managedObjectContext;
 
 - (IBAction)saveAction:(id)sender;
 
 @property (nonatomic, assign, readonly) BOOL canLogout;
 - (IBAction)logout:(id)sender;
+
+- (void)openReplyComposerForTicket:(RTTicket *)ticket;
 
 @end
