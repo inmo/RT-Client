@@ -32,14 +32,12 @@
     
     NSLog(@"Trying to send message");
     //Set up Tickets to be sent as messages
-    NSString *username = @"";
-    NSString *hostname = @"";
+    NSString *username = data.username;
     NSString *port = @"";
     NSString *fromAddress = @"";
     NSString *bodyText = @"Body text \n\r";
     NSMutableArray *arguments = [NSMutableArray arrayWithObjects:
                                  username,
-                                 hostname,
                                  port,
                                  fromAddress,
                                  toAddress,
