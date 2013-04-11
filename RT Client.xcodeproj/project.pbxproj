@@ -45,6 +45,7 @@
 		B329A4D31716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */; };
 		B329A4D41716296200B8AF48 /* RTCReplyComposerWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */; };
 		B329A4D51716296200B8AF48 /* RTCReplyComposerWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */; };
+		B329A4D71716FDA400B8AF48 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B329A4D61716FDA400B8AF48 /* WebKit.framework */; };
 		B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36192CC166D7B2F00D86162 /* Cocoa.framework */; };
 		B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B36192D5166D7B2F00D86162 /* InfoPlist.strings */; };
 		B36192D9166D7B2F00D86162 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B36192D8166D7B2F00D86162 /* main.m */; };
@@ -97,6 +98,7 @@
 		B329A4CF1716296200B8AF48 /* RTCReplyComposerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCReplyComposerWindowController.h; sourceTree = "<group>"; };
 		B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTCReplyComposerWindowController.m; sourceTree = "<group>"; };
 		B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RTCReplyComposerWindowController.xib; sourceTree = "<group>"; };
+		B329A4D61716FDA400B8AF48 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		B36192C8166D7B2F00D86162 /* RT Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "RT Client.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B36192CC166D7B2F00D86162 /* Cocoa.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B36192CF166D7B2F00D86162 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -135,6 +137,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B329A4D71716FDA400B8AF48 /* WebKit.framework in Frameworks */,
 				B314F38116FCC7D9001928A6 /* SenTestingKit.framework in Frameworks */,
 				B314F38216FCC7D9001928A6 /* Cocoa.framework in Frameworks */,
 				B314F3A016FCC872001928A6 /* SystemConfiguration.framework in Frameworks */,
@@ -197,6 +200,7 @@
 		B36192BD166D7B2F00D86162 = {
 			isa = PBXGroup;
 			children = (
+				B329A4D61716FDA400B8AF48 /* WebKit.framework */,
 				B36192D2166D7B2F00D86162 /* Application */,
 				B314F38316FCC7D9001928A6 /* Unit Tests */,
 				B36192CB166D7B2F00D86162 /* Frameworks */,

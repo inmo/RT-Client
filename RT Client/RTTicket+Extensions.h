@@ -14,6 +14,8 @@
 + (RTTicket *)createTicketFromAPIResponse:(NSDictionary *)apiResponse inContext:(NSManagedObjectContext *)context;
 
 - (NSArray *)chronologicallySortedTopLevelAttachments;
+- (NSAttributedString *)stringForReplyComposer;
+- (NSString *)HTMLStringForReplyComposer;
 
 - (NSString *)plainTextSummary;
 - (NSString *)stringFromCreated;

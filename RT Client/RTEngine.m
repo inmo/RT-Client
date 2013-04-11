@@ -23,7 +23,8 @@
 
 @property (nonatomic, assign, readwrite, getter = isAuthenticated) BOOL authenticated;
 @property (nonatomic, strong, readwrite) RTKeychainEntry * keychainEntry;
-@property (nonatomic, strong) NSManagedObjectContext * apiContext;
+
+@property (nonatomic) dispatch_queue_t saveSyncQueue;
 
 @end
 
@@ -53,10 +54,22 @@
         self.keychainEntry = [RTKeychainEntry entryForService:@"Request Tracker" account:@"default"];
         [self _forcedLogout];
         
-        self.apiContext = [NSManagedObjectContext MR_contextWithParent:[NSManagedObjectContext MR_defaultContext]];
+        self.saveSyncQueue = dispatch_queue_create("com.inmo.RTEngine", NULL);
     }
     
     return self;
+}
+
+- (RTBasicBlock)saveHandlerForContext:(NSManagedObjectContext *)context numberOfObjects:(NSInteger)numberOfObjects;
+{
+    __block NSInteger pendingObjects = numberOfObjects;
+    return [^{
+        dispatch_sync(self.saveSyncQueue, ^{
+            pendingObjects -= 1;
+            if (pendingObjects == 0)
+                [context MR_saveToPersistentStoreAndWait];
+        });
+    } copy];
 }
 
 #pragma mark - AFHTTPClient Overrides
@@ -114,7 +127,7 @@
 
 - (void)fetchAttachmentsForTicket:(RTTicket *)ticket
 {
-    NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_contextWithParent:self.apiContext];
+    NSManagedObjectContext * scratchContext = [NSManagedObjectContext MR_context];
     ticket = (RTTicket *)[scratchContext objectWithID:ticket.objectID];
     
     if (!ticket.ticketID)
@@ -124,18 +137,12 @@
      getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments", ticket.ticketID]
      parameters:nil
      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-          NSArray * stubs = operation.responseDictionary[@"Attachments"];
+         NSArray * stubs = operation.responseDictionary[@"Attachments"];
+         RTBasicBlock saveBlock = [self saveHandlerForContext:scratchContext numberOfObjects:stubs.count];
          
-         __block NSUInteger pendingOperations = stubs.count;
-         void (^saveBlock)() = [^{
-             [scratchContext performBlockAndWait:^{
-                 if (--pendingOperations == 0)
-                     [scratchContext MR_saveToPersistentStoreAndWait];
-             }];
-         } copy];
-         
-         for (NSDictionary * stub in stubs)
+         [stubs enumerateObjectsUsingBlock:^(NSDictionary * stub, NSUInteger idx, BOOL *stop) {
              [self _fetchAttachmentID:stub[@"id"] associatedWithTicket:ticket saveBlock:saveBlock];
+         }];
      } failure:nil];
 }
 
@@ -145,7 +152,8 @@
      getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, attachmentID]
      parameters:nil
      success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:operation.responseDictionary inContext:ticket.managedObjectContext];
+         RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:operation.responseDictionary
+                                                                         inContext:ticket.managedObjectContext];
          attachment.ticket = ticket;
          
          saveBlock();

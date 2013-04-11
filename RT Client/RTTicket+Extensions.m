@@ -7,7 +7,7 @@
 //
 
 #import "RTTicket+Extensions.h"
-#import "RTAttachment.h"
+#import "RTAttachment+Extensions.h"
 
 @implementation RTTicket (Extensions)
 
@@ -52,6 +52,53 @@
 
     return [[self.attachments filteredSetUsingPredicate:topLevelPredicate]
             sortedArrayUsingDescriptors:sortDescriptors];
+}
+
+- (NSAttributedString *)stringForReplyComposer;
+{
+    NSMutableParagraphStyle * style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+    style.paragraphSpacing = style.paragraphSpacingBefore = 5.0f;
+    
+    NSMutableAttributedString * composerReply = [NSMutableAttributedString new];
+    [composerReply addAttribute:NSParagraphStyleAttributeName value:style range:NSMakeRange(0, 0)];
+    NSArray * attachments = self.chronologicallySortedTopLevelAttachments;
+    
+    [attachments enumerateObjectsUsingBlock:^(RTAttachment * attachment, NSUInteger idx, BOOL *stop) {
+        NSMutableAttributedString * attachmentContents = [[attachment attributedStringContents] mutableCopy];
+        if (!attachmentContents)
+            return;
+        
+        style.firstLineHeadIndent = style.headIndent = 10.0 * (CGFloat)(attachments.count - idx);
+        
+        [attachmentContents setAttributes:@{
+            NSParagraphStyleAttributeName: [style copy],
+           NSForegroundColorAttributeName: [NSColor blueColor]
+         } range:NSMakeRange(0, attachmentContents.length)];
+        
+        [composerReply insertAttributedString:[[NSAttributedString alloc] initWithString:@"\n"] atIndex:0];
+        [composerReply insertAttributedString:attachmentContents atIndex:0];
+    }];
+    
+    style.firstLineHeadIndent = style.headIndent = 0.0;
+    
+    NSAttributedString * header = [[NSAttributedString alloc] initWithString:@"\n" attributes:@{ NSParagraphStyleAttributeName : [NSParagraphStyle defaultParagraphStyle] }];
+    [composerReply insertAttributedString:header atIndex:0];
+    
+    return composerReply;
+}
+
+- (NSString *)HTMLStringForReplyComposer;
+{
+    NSMutableString * string = [NSMutableString new];
+    
+    [self.chronologicallySortedTopLevelAttachments enumerateObjectsUsingBlock:^(RTAttachment * attachment, NSUInteger idx, BOOL *stop) {
+        [string insertString:[attachment HTMLString] atIndex:0];
+        [string insertString:@"<blockquote>" atIndex:0];
+        [string appendFormat:@"</blockquote>"];
+    }];
+    
+    [string insertString:@"<p></p>" atIndex:0];
+    return string;
 }
 
 - (NSString *)plainTextSummary;

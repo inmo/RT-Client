@@ -44,4 +44,14 @@
     return attachment;
 }
 
+- (NSAttributedString *)attributedStringContents;
+{
+    return [[NSAttributedString alloc] initWithHTML:self.content documentAttributes:nil];
+}
+
+- (NSString *)HTMLString
+{
+    return [[NSString alloc] initWithData:self.content encoding:NSUTF8StringEncoding];
+}
+
 @end
