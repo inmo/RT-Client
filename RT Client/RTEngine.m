@@ -206,6 +206,25 @@
 //    [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:request success:success failure:error]];
 }
 
+#pragma mark - Add Comment
+-(void) addComment:(NSDictionary *)parameters sendTicket:(RTTicket *)ticket;
+{
+    NSMutableString *addContent = [NSMutableString new];
+    [addContent appendFormat:@"id: %@\n", ticket.ticketID];
+    [addContent appendFormat:@"Action: comment\n"];
+    [addContent appendFormat:@"Text: %@\n", parameters[@"body"]];
+    [addContent appendFormat:@"Attachment: message.html\n"];
+    
+    NSString * requestPath = [NSString stringWithFormat:@"/REST/1.0/%@/comment", ticket.ticketID];
+    
+    [self postPath:requestPath parameters:@{@"contents": addContent} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"op: %@", operation.responseString);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", error);
+    }];
+
+}
+
 #pragma mark - Authentication (Keychain)
 
 - (void)setUsername:(NSString *)username password:(NSString *)password errorBlock:(RTBasicBlock)errorBlock
