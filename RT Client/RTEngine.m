@@ -170,18 +170,19 @@
     [encodedContent appendFormat:@"id: %@\n", ticket.ticketID];
     [encodedContent appendFormat:@"Action: correspond\n"];
     
+    NSString * santizedBody = [parameters[@"body"] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    [encodedContent appendFormat:@"Text: %@\n", santizedBody];
+    
     if (parameters[@"cc"])
         [encodedContent appendFormat:@"Cc: %@", parameters[@"cc"]];
     
     if (parameters[@"bcc"])
         [encodedContent appendFormat:@"Bcc: %@", parameters[@"bcc"]];
     
-    [encodedContent appendFormat:@"Text: %@\n", parameters[@"body"]];
-    [encodedContent appendFormat:@"Attachment: message.html\n"];
+//    [encodedContent appendFormat:@"Attachment: message.html\n"];
     
     NSString * requestPath = [NSString stringWithFormat:@"/REST/1.0/%@/comment", ticket.ticketID];
-    
-    [self postPath:requestPath parameters:@{@"contents": encodedContent} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+    [self postPath:requestPath parameters:@{@"content": encodedContent} success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"op: %@", operation.responseString);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         NSLog(@"%@", error);
