@@ -90,14 +90,12 @@
 - (NSString *)HTMLStringForReplyComposer;
 {
     NSMutableString * string = [NSMutableString new];
-    
     [self.chronologicallySortedTopLevelAttachments enumerateObjectsUsingBlock:^(RTAttachment * attachment, NSUInteger idx, BOOL *stop) {
         [string insertString:[attachment HTMLString] atIndex:0];
         [string insertString:@"<blockquote>" atIndex:0];
         [string appendFormat:@"</blockquote>"];
     }];
     
-    [string insertString:@"<p></p>" atIndex:0];
     return string;
 }
 
