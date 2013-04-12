@@ -162,6 +162,49 @@
      }];
 }
 
+#pragma mark - Ticket Replies
+
+- (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket;
+{
+    NSMutableString * encodedContent = [NSMutableString new];
+    [encodedContent appendFormat:@"id: %@\n", ticket.ticketID];
+    [encodedContent appendFormat:@"Action: correspond\n"];
+    
+    if (parameters[@"cc"])
+        [encodedContent appendFormat:@"Cc: %@", parameters[@"cc"]];
+    
+    if (parameters[@"bcc"])
+        [encodedContent appendFormat:@"Bcc: %@", parameters[@"bcc"]];
+    
+    [encodedContent appendFormat:@"Text: %@\n", parameters[@"body"]];
+    [encodedContent appendFormat:@"Attachment: message.html\n"];
+    
+    NSString * requestPath = [NSString stringWithFormat:@"/REST/1.0/%@/comment", ticket.ticketID];
+    
+    [self postPath:requestPath parameters:@{@"contents": encodedContent} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"op: %@", operation.responseString);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", error);
+    }];
+    
+//    Still fighting the API
+//    id constructor = ^(id<AFMultipartFormData> formData) {
+//        [formData appendPartWithFileData:[parameters[@"body"] dataUsingEncoding:NSUTF8StringEncoding] name:@"attachment_1" fileName:@"message.html" mimeType:@"text/html"];
+//    };
+//    
+//    NSMutableURLRequest * request = [self multipartFormRequestWithMethod:@"POST" path:requestPath parameters:@{@"contents" : encodedContent} constructingBodyWithBlock:constructor];
+//    
+//    id success = ^(AFHTTPRequestOperation * op, id responseObject) {
+//        NSLog(@"op: %@", op.responseString);
+//    };
+//    
+//    id error = ^(AFHTTPRequestOperation * op, NSError * error) {
+//        NSLog(@"%@", error);
+//    };
+//    
+//    [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:request success:success failure:error]];
+}
+
 #pragma mark - Authentication (Keychain)
 
 - (void)setUsername:(NSString *)username password:(NSString *)password errorBlock:(RTBasicBlock)errorBlock

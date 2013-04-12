@@ -31,6 +31,8 @@
 - (void)fetchSearchResultsForQuery:(NSString *)query getAllTicketInformation:(BOOL)allInfo;
 - (void)fetchAttachmentsForTicket:(RTTicket *)ticket;
 
+- (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket;
+
 @end
 
 @protocol RTEngineDelegate <NSObject>

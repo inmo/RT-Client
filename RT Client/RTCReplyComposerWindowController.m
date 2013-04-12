@@ -9,6 +9,7 @@
 #import <WebKit/WebKit.h>
 
 #import "RTCReplyComposerWindowController.h"
+#import "RTEngine.h"
 #import "RTModels.h"
 
 @interface RTCReplyComposerWindowController () <NSTextViewDelegate>
@@ -88,7 +89,21 @@
 
 - (IBAction)sendDraft:(id)sender
 {
-    // TODO: Interface with RTEngine
+    NSMutableDictionary * params = [NSMutableDictionary new];
+    
+    void (^setParam)(NSString *, NSTextField *) = ^(NSString * key, NSTextField * field) {
+        if (![@"" isEqualToString:field.stringValue])
+            params[key] = field.stringValue;
+    };
+    
+    setParam(@"cc", self.ccField);
+    setParam(@"bcc", self.bccField);
+    setParam(@"subject", self.subjectField);
+    
+    params[@"body"] = [self.webView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML"];
+    
+    [[RTEngine sharedEngine] postReply:params toTicket:self.ticket];
+    
     // TODO: Define async wait interface for composer window
 }
 
