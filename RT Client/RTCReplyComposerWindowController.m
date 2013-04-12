@@ -91,7 +91,7 @@
 
 - (IBAction)sendDraft:(id)sender
 {
-<<<<<<< HEAD
+
     NSMutableDictionary * params = [NSMutableDictionary new];
     
     void (^setParam)(NSString *, NSTextField *) = ^(NSString * key, NSTextField * field) {
@@ -107,35 +107,7 @@
     
     [[RTEngine sharedEngine] postReply:params toTicket:self.ticket];
     
-=======
-    RTEngine *engine;
-    [[self feedbackLabel] setText:@"Operational"];
-    [[self sendDraftButton] setEnabled:NO];
-    dispatch_queue_t queue = dispatch_queue_create("http://rhit-rt.axiixc.com/", 0);
-    dispatch_queue_t main = dispatch_get_main_queue();
-
-    // TODO: Interface with RTEngine
->>>>>>> Get the async operational
-    // TODO: Define async wait interface for composer window
-    
-    dispatch_async(queue, ^{
-        [self performSendDraft];
-        dispatch_async(main, ^{
-            [self sendDraftFinished];
-        });
 }
-
-+ (void)performSendDraft
-{
-    sleep(3);
-}
-
-+ (void) sendDraftFinished
-    {
-        [[self feedbackLabel] setText:@"Complete"];
-        [[self sendDraftButton] setEnabled:YES];
-    }
-
 - (void)_attachFileInline:(NSURL *)fileURL
 {
     // TODO: Keep track of inserted attachments
