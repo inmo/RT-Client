@@ -23,7 +23,9 @@
 
 - (void)configureWithAttachment:(RTAttachment *)attachment;
 {
-    self.descriptionLabel.stringValue = [attachment description];
+    
+   self.descriptionLabel.attributedStringValue = [[NSAttributedString alloc] initWithHTML: [attachment content] documentAttributes: NULL];
+   // self.descriptionLabel.stringValue = [attachment description];
 }
 
 @end
