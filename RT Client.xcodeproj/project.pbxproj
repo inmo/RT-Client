@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		0A0211A316A606EC00054395 /* RT_Client.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0A0211A116A606EC00054395 /* RT_Client.xcdatamodeld */; };
 		0A0211A816A6077F00054395 /* RTCSelfServiceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0211A616A6077F00054395 /* RTCSelfServiceWindowController.m */; };
-		0A31CC7416FA3C7500D24256 /* RTCSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A31CC7216FA3C7500D24256 /* RTCSender.m */; };
 		0A393BA416824C1500DEAFE2 /* RTEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A393BA316824C1500DEAFE2 /* RTEngine.m */; };
 		0A393BA8168255CC00DEAFE2 /* RTCLoginWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A393BA6168255CC00DEAFE2 /* RTCLoginWindowController.m */; };
 		0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0A393BA7168255CC00DEAFE2 /* RTCLoginWindowController.xib */; };
@@ -37,7 +36,6 @@
 		B314F39B16FCC862001928A6 /* RTCSelfServiceWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A0211A616A6077F00054395 /* RTCSelfServiceWindowController.m */; };
 		B314F39C16FCC862001928A6 /* RTCTicketStubTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A6F91B16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.m */; };
 		B314F39D16FCC862001928A6 /* RTCLoginWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A393BA6168255CC00DEAFE2 /* RTCLoginWindowController.m */; };
-		B314F39E16FCC862001928A6 /* RTCSender.m in Sources */ = {isa = PBXBuildFile; fileRef = 0A31CC7216FA3C7500D24256 /* RTCSender.m */; };
 		B314F3A016FCC872001928A6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */; };
 		B314F3A116FCC875001928A6 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015ED16B1E05100D09351 /* Security.framework */; };
 		B329A4CE17137DC000B8AF48 /* RTCTicketCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 0AAAB1C916FEAB150001A35E /* RTCTicketCell.m */; };
@@ -67,8 +65,6 @@
 		0A0211A216A606EC00054395 /* RT_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RT_Client.xcdatamodel; sourceTree = "<group>"; };
 		0A0211A516A6077F00054395 /* RTCSelfServiceWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCSelfServiceWindowController.h; sourceTree = "<group>"; };
 		0A0211A616A6077F00054395 /* RTCSelfServiceWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTCSelfServiceWindowController.m; sourceTree = "<group>"; };
-		0A31CC7016FA3C7500D24256 /* RTCSender.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCSender.h; sourceTree = "<group>"; };
-		0A31CC7216FA3C7500D24256 /* RTCSender.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTCSender.m; sourceTree = "<group>"; };
 		0A393BA116824B6B00DEAFE2 /* RTEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RTEngine.h; sourceTree = "<group>"; };
 		0A393BA316824C1500DEAFE2 /* RTEngine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTEngine.m; sourceTree = "<group>"; };
 		0A393BA5168255CC00DEAFE2 /* RTCLoginWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCLoginWindowController.h; sourceTree = "<group>"; };
@@ -268,8 +264,6 @@
 				B329A4CF1716296200B8AF48 /* RTCReplyComposerWindowController.h */,
 				B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */,
 				B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */,
-				0A31CC7016FA3C7500D24256 /* RTCSender.h */,
-				0A31CC7216FA3C7500D24256 /* RTCSender.m */,
 				B36192D3166D7B2F00D86162 /* Supporting Files */,
 			);
 			name = Application;
@@ -477,7 +471,6 @@
 				B314F39B16FCC862001928A6 /* RTCSelfServiceWindowController.m in Sources */,
 				B314F39C16FCC862001928A6 /* RTCTicketStubTableCellView.m in Sources */,
 				B314F39D16FCC862001928A6 /* RTCLoginWindowController.m in Sources */,
-				B314F39E16FCC862001928A6 /* RTCSender.m in Sources */,
 				0AE8ADF116FFEA78007519CB /* RTParser.m in Sources */,
 				B3D279C717011F820020E0B3 /* RTKeychainEntryTests.m in Sources */,
 				B329A4CE17137DC000B8AF48 /* RTCTicketCell.m in Sources */,
@@ -503,7 +496,6 @@
 				B30D0F9316BE864100DAB1D3 /* RTTicket.m in Sources */,
 				B3A6F91C16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.m in Sources */,
 				B370905A16F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m in Sources */,
-				0A31CC7416FA3C7500D24256 /* RTCSender.m in Sources */,
 				0AAAB1CA16FEAB150001A35E /* RTCTicketCell.m in Sources */,
 				0AAAB1CD16FEC9240001A35E /* RTCTicketDisplayer.m in Sources */,
 				0AE8AE0316FFEF74007519CB /* RTParser.m in Sources */,

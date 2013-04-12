@@ -17,10 +17,9 @@
 @interface RTCAppDelegate ()
 @end
 
-@interface RTCAppDelegate () <RTEngineDelegate> {
-    NSWindowController * _loginWindowController;
-}
+@interface RTCAppDelegate () <RTEngineDelegate>
 
+@property (nonatomic, strong) NSWindowController * loginWindowController;
 @property (nonatomic, assign, readwrite) BOOL canLogout;
 
 @end
@@ -47,8 +46,8 @@
     if (engine.isAuthenticated)
     {
         self.canLogout = YES;
-        if (_loginWindowController)
-            [_loginWindowController close];
+        if (self.loginWindowController)
+            [self.loginWindowController close];
         
         [[RTEngine sharedEngine] refreshSelfServiceQueue];
     }
@@ -69,10 +68,10 @@
 {
     NSLog(@"API Engine Requires Authentication: %p", authWindow);
     
-    if (_loginWindowController)
-        [NSApp endSheet:_loginWindowController.window];
+    if (self.loginWindowController)
+        [NSApp endSheet:self.loginWindowController.window];
     
-    _loginWindowController = authWindow;
+    self.loginWindowController = authWindow;
     [NSApp beginSheet:authWindow.window
        modalForWindow:self.window
         modalDelegate:nil
