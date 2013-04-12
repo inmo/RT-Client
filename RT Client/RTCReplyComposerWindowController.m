@@ -8,6 +8,8 @@
 
 #import <WebKit/WebKit.h>
 
+
+#import "RTEngine.h"
 #import "RTCReplyComposerWindowController.h"
 #import "RTEngine.h"
 #import "RTModels.h"
@@ -89,6 +91,7 @@
 
 - (IBAction)sendDraft:(id)sender
 {
+
     NSMutableDictionary * params = [NSMutableDictionary new];
     
     void (^setParam)(NSString *, NSTextField *) = ^(NSString * key, NSTextField * field) {
@@ -104,9 +107,7 @@
     
     [[RTEngine sharedEngine] postReply:params toTicket:self.ticket];
     
-    // TODO: Define async wait interface for composer window
 }
-
 - (void)_attachFileInline:(NSURL *)fileURL
 {
     // TODO: Keep track of inserted attachments
