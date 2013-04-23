@@ -19,6 +19,8 @@
 
 @interface RTCAppDelegate () <RTEngineDelegate>
 
+@property (nonatomic, strong) IBOutlet RTCSelfServiceWindowController * queueWindowController;
+
 @property (nonatomic, strong) NSWindowController * loginWindowController;
 @property (nonatomic, assign, readwrite) BOOL canLogout;
 
@@ -28,6 +30,9 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    self.queueWindowController = [[RTCSelfServiceWindowController alloc] init];
+    [self.queueWindowController showWindow:self];
+    
     RTEngine * engine = [RTEngine sharedEngine];
     engine.delegate = self;
     
@@ -73,7 +78,7 @@
     
     self.loginWindowController = authWindow;
     [NSApp beginSheet:authWindow.window
-       modalForWindow:self.window
+       modalForWindow:self.queueWindowController.window
         modalDelegate:nil
        didEndSelector:nil
           contextInfo:nil];

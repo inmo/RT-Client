@@ -15,6 +15,7 @@
 
 @interface RTCSelfServiceWindowController () <NSTableViewDelegate, NSTableViewDataSource>
 
+@property (nonatomic, strong) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, strong) IBOutlet NSArrayController * ticketController;
 @property (nonatomic, strong) IBOutlet NSTableView * ticketTableView;
 @property (nonatomic, strong) IBOutlet NSTableView * ticketDetailView;
@@ -25,6 +26,16 @@
 @end
 
 @implementation RTCSelfServiceWindowController
+
+- (NSManagedObjectContext *)managedObjectContext
+{
+    return [NSManagedObjectContext MR_defaultContext];
+}
+
+- (id)init
+{
+    return [super initWithWindowNibName:NSStringFromClass([self class])];
+}
 
 - (void)awakeFromNib;
 {
