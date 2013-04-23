@@ -51,7 +51,7 @@
 				<string key="NSWindowRect">{{196, 240}, {480, 400}}</string>
 				<int key="NSWTFlags">544736256</int>
 				<string key="NSWindowTitle">Window</string>
-				<string key="NSWindowClass">NSWindow</string>
+				<string key="NSWindowClass">RTCAnimatedCloseWindow</string>
 				<object class="NSToolbar" key="NSViewClass" id="78388548">
 					<object class="NSMutableString" key="NSToolbarIdentifier">
 						<characters key="NS.bytes">AA77E333-8521-44D5-8BED-43FB7ED7AC48</characters>
@@ -225,7 +225,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{480, 400}</string>
 				<object class="NSView" key="NSWindowView" id="1006">
-					<reference key="NSNextResponder"/>
+					<nil key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSTextField" id="864089572">
@@ -233,7 +233,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{79, 368}, {390, 22}}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="784248408"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
@@ -271,7 +270,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{17, 370}, {57, 17}}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="864089572"/>
 							<string key="NSReuseIdentifierKey">_NS:1535</string>
 							<bool key="NSEnabled">YES</bool>
@@ -305,7 +303,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{79, 338}, {390, 22}}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="101311140"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
@@ -327,7 +324,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{17, 340}, {57, 17}}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="362982594"/>
 							<string key="NSReuseIdentifierKey">_NS:1535</string>
 							<bool key="NSEnabled">YES</bool>
@@ -348,7 +344,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{79, 308}, {390, 22}}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="1048283741"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
@@ -370,7 +365,6 @@
 							<int key="NSvFlags">268</int>
 							<string key="NSFrame">{{17, 310}, {57, 17}}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="263893595"/>
 							<string key="NSReuseIdentifierKey">_NS:1535</string>
 							<bool key="NSEnabled">YES</bool>
@@ -408,7 +402,6 @@
 							</set>
 							<string key="NSFrameSize">{480, 300}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="FrameName"/>
@@ -429,7 +422,6 @@
 							<int key="NSvFlags">12</int>
 							<string key="NSFrame">{{0, 298}, {480, 5}}</string>
 							<reference key="NSSuperview" ref="1006"/>
-							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="143064458"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<string key="NSOffsets">{0, 0}</string>
@@ -451,8 +443,6 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{480, 400}</string>
-					<reference key="NSSuperview"/>
-					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="852870918"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -1390,6 +1380,25 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">RTCReplyComposerWindowController</string>
 					<string key="superclassName">NSWindowController</string>
+					<dictionary class="NSMutableDictionary" key="actions">
+						<string key="attachFile:">id</string>
+						<string key="sendDraft:">id</string>
+						<string key="showWindow:">id</string>
+					</dictionary>
+					<dictionary class="NSMutableDictionary" key="actionInfosByName">
+						<object class="IBActionInfo" key="attachFile:">
+							<string key="name">attachFile:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="sendDraft:">
+							<string key="name">sendDraft:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+						<object class="IBActionInfo" key="showWindow:">
+							<string key="name">showWindow:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</dictionary>
 					<dictionary class="NSMutableDictionary" key="outlets">
 						<string key="bccField">NSTextField</string>
 						<string key="ccField">NSTextField</string>

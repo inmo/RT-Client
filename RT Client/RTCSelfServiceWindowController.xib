@@ -418,7 +418,7 @@
 															<reference key="NSBackgroundColor" ref="675682247"/>
 															<reference key="NSGridColor" ref="128751826"/>
 															<double key="NSRowHeight">142</double>
-															<int key="NSTvFlags">-1239416832</int>
+															<int key="NSTvFlags">-1237319680</int>
 															<reference key="NSDelegate"/>
 															<reference key="NSDataSource"/>
 															<int key="NSGridStyleMask">2</int>
@@ -456,7 +456,7 @@
 												<object class="NSScroller" id="522900481">
 													<reference key="NSNextResponder" ref="334335929"/>
 													<int key="NSvFlags">-2147483392</int>
-													<string key="NSFrame">{{0, 434}, {395, 16}}</string>
+													<string key="NSFrame">{{0, 421}, {393, 16}}</string>
 													<reference key="NSSuperview" ref="334335929"/>
 													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView"/>

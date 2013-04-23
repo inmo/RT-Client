@@ -8,13 +8,10 @@
 
 #import <WebKit/WebKit.h>
 
-
 #import "RTEngine.h"
 #import "RTCReplyComposerWindowController.h"
 #import "RTEngine.h"
 #import "RTModels.h"
-
-
 
 @interface RTCReplyComposerWindowController () <NSTextViewDelegate>
 
@@ -93,9 +90,7 @@
 
 - (IBAction)sendDraft:(id)sender
 {
-
     NSMutableDictionary * params = [NSMutableDictionary new];
-    
     void (^setParam)(NSString *, NSTextField *) = ^(NSString * key, NSTextField * field) {
         if (![@"" isEqualToString:field.stringValue])
             params[key] = field.stringValue;
@@ -110,6 +105,7 @@
     [[RTEngine sharedEngine] postReply:params toTicket:self.ticket];
     
 }
+
 - (void)_attachFileInline:(NSURL *)fileURL
 {
     // TODO: Keep track of inserted attachments
