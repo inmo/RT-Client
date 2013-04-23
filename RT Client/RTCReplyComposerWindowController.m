@@ -50,7 +50,7 @@
     [self.subjectField setStringValue:self.ticket.subject];
     
     NSString * css = @"body { font-family: sans-serif; }"
-    @"blockquote { margin-left: 0; padding-left: 15px; border-left: 2px solid blue; color: blue; }"
+    @"blockquote { margin: 15px 0 0 0; padding: 0 0 0 15px; border-left: 2px solid blue; color: blue; outline: black dashed 1px; }"
     @"blockquote blockquote { border-color: green; color: green; }"
     @"blockquote blockquote blockquote { border-color: red; color: red; }";
     

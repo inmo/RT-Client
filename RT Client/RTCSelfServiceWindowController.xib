@@ -1311,7 +1311,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{131, 159}, {700, 450}}</string>
 				<int key="NSWTFlags">611845120</int>
-				<string key="NSWindowTitle">RT Client</string>
+				<string key="NSWindowTitle">Request Tracker — Self Service Queue</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<object class="NSToolbar" key="NSViewClass" id="375868635">
 					<object class="NSMutableString" key="NSToolbarIdentifier">
@@ -1333,11 +1333,9 @@
 							<string key="NSToolbarItemPaletteLabel">Custom View</string>
 							<nil key="NSToolbarItemToolTip"/>
 							<object class="NSButton" key="NSToolbarItemView" id="339660955">
-								<reference key="NSNextResponder"/>
+								<nil key="NSNextResponder"/>
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{11, 14}, {56, 28}}</string>
-								<reference key="NSSuperview"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:22</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSButtonCell" key="NSCell" id="970034550">
@@ -1379,11 +1377,9 @@
 							<string key="NSToolbarItemPaletteLabel">Custom View</string>
 							<nil key="NSToolbarItemToolTip"/>
 							<object class="NSButton" key="NSToolbarItemView" id="303866827">
-								<reference key="NSNextResponder"/>
+								<nil key="NSNextResponder"/>
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{19, 14}, {39, 31}}</string>
-								<reference key="NSSuperview"/>
-								<reference key="NSNextKeyView"/>
 								<string key="NSReuseIdentifierKey">_NS:22</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSButtonCell" key="NSCell" id="65314653">
@@ -1418,11 +1414,11 @@
 							<int key="NSToolbarItemVisibilityPriority">0</int>
 						</object>
 					</dictionary>
-					<array class="NSMutableArray" key="NSToolbarIBAllowedItems">
+					<array key="NSToolbarIBAllowedItems">
 						<reference ref="971336230"/>
 						<reference ref="462752133"/>
 					</array>
-					<array class="NSMutableArray" key="NSToolbarIBDefaultItems">
+					<array key="NSToolbarIBDefaultItems">
 						<reference ref="971336230"/>
 						<reference ref="462752133"/>
 					</array>
