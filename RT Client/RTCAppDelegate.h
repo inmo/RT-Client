@@ -12,13 +12,8 @@
 
 @interface RTCAppDelegate : NSObject <NSApplicationDelegate>
 
-//@property (nonatomic, strong, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-//@property (nonatomic, strong, readonly) NSManagedObjectModel *managedObjectModel;
-//@property (nonatomic, strong, readonly) NSManagedObjectContext *managedObjectContext;
-
-- (IBAction)saveAction:(id)sender;
-
 @property (nonatomic, assign, readonly) BOOL canLogout;
+
 - (IBAction)logout:(id)sender;
 - (IBAction)showSelfServiceQueue:(id)sender;
 

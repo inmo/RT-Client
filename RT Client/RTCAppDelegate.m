@@ -14,9 +14,6 @@
 #import "RTCSelfServiceWindowController.h"
 #import "RTCReplyComposerWindowController.h"
 
-@interface RTCAppDelegate ()
-@end
-
 @interface RTCAppDelegate () <RTEngineDelegate>
 
 @property (nonatomic, strong) IBOutlet RTCSelfServiceWindowController * queueWindowController;
@@ -38,11 +35,6 @@
     engine.delegate = self;
     
     [engine refreshLogin];
-}
-
-- (void)showSelfServiceQueue:(id)sender
-{
-    [self.queueWindowController.window makeKeyAndOrderFront:sender];
 }
 
 - (void)apiEngineWillAttemptLogin:(RTEngine *)engine
@@ -97,32 +89,20 @@
 
 #pragma mark - Top Level Actions
 
+- (void)logout:(id)sender
+{
+    [RTEngine.sharedEngine removeUsernameAndPassword];
+}
+
+- (void)showSelfServiceQueue:(id)sender
+{
+    [self.queueWindowController.window makeKeyAndOrderFront:sender];
+}
+
 - (void)openReplyComposerForTicket:(RTTicket *)ticket;
 {
     RTCReplyComposerWindowController * composer = [[RTCReplyComposerWindowController alloc] initWithTicket:ticket];
     [composer showWindow:self];
-}
-
-#pragma mark - Accessors for CoreData
-
-- (NSManagedObjectContext *)managedObjectContext
-{
-    return [NSManagedObjectContext MR_defaultContext];
-}
-
-- (NSManagedObjectModel *)managedObjectModel
-{
-    return [NSManagedObjectModel MR_defaultManagedObjectModel];
-}
-
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator
-{
-    return [NSPersistentStoreCoordinator MR_defaultStoreCoordinator];
-}
-
-- (void)logout:(id)sender
-{
-    [RTEngine.sharedEngine removeUsernameAndPassword];
 }
 
 @end
