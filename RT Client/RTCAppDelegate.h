@@ -20,6 +20,7 @@
 
 @property (nonatomic, assign, readonly) BOOL canLogout;
 - (IBAction)logout:(id)sender;
+- (IBAction)showSelfServiceQueue:(id)sender;
 
 - (void)openReplyComposerForTicket:(RTTicket *)ticket;
 

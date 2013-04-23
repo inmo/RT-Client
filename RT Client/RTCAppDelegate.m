@@ -31,12 +31,18 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     self.queueWindowController = [[RTCSelfServiceWindowController alloc] init];
+    [self.queueWindowController.window setExcludedFromWindowsMenu:YES];
     [self.queueWindowController showWindow:self];
     
     RTEngine * engine = [RTEngine sharedEngine];
     engine.delegate = self;
     
     [engine refreshLogin];
+}
+
+- (void)showSelfServiceQueue:(id)sender
+{
+    [self.queueWindowController.window makeKeyAndOrderFront:sender];
 }
 
 - (void)apiEngineWillAttemptLogin:(RTEngine *)engine
