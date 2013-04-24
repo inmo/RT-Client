@@ -6,9 +6,11 @@
 //  Copyright (c) 2013 INMO. All rights reserved.
 //
 
-#import "RTCTicketDetailWindowController.h"
-#import "RTModels.h"
 #import <WebKit/WebKit.h>
+
+#import "RTCTicketDetailWindowController.h"
+#import "RTCAppDelegate.h"
+#import "RTModels.h"
 
 @interface RTCTicketDetailWindowController () <NSTableViewDelegate, NSTableViewDataSource>
 
@@ -111,6 +113,14 @@
     NSString * jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     
     [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$detail.setTicket(%@)", jsonString]];
+}
+
+#pragma mark - Toolbar Actions
+
+- (IBAction)replyToSelectedTicket:(id)sender;
+{
+    [(RTCAppDelegate *)[[NSApplication sharedApplication] delegate]
+     openReplyComposerForTicket:self.selectedTicket];
 }
 
 @end

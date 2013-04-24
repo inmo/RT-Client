@@ -107,8 +107,7 @@
 
 - (IBAction)replyToSelectedTicket:(id)sender
 {
-    [(RTCAppDelegate *)[[NSApplication sharedApplication] delegate]
-     openReplyComposerForTicket:self.selectedTicket];
+    [self.ticketDetailWindowController replyToSelectedTicket:sender];
 }
 
 @end

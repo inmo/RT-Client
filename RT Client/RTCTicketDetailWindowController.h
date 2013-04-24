@@ -16,4 +16,6 @@
 
 - (id)initWithTicket:(RTTicket *)ticket;
 
+- (IBAction)replyToSelectedTicket:(id)sender;
+
 @end

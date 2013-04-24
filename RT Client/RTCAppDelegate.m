@@ -111,14 +111,12 @@
 
 - (void)openReplyComposerForTicket:(RTTicket *)ticket;
 {
-    RTCReplyComposerWindowController * composer = [[RTCReplyComposerWindowController alloc] initWithTicket:ticket];
-    [composer showWindow:self];
+    [[[RTCReplyComposerWindowController alloc] initWithTicket:ticket] showWindow:self];
 }
 
 - (void)openDetailForTicket:(RTTicket *)ticket;
 {
-    RTCTicketDetailWindowController * detail = [[RTCTicketDetailWindowController alloc] initWithTicket:ticket];
-    [detail showWindow:self];
+    [[[RTCTicketDetailWindowController alloc] initWithTicket:ticket] showWindow:self];
 }
 
 @end
