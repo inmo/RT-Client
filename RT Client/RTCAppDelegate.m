@@ -13,6 +13,7 @@
 
 #import "RTCTicketListWindowController.h"
 #import "RTCReplyComposerWindowController.h"
+#import "RTCTicketDetailWindowController.h"
 
 @interface RTCAppDelegate () <RTEngineDelegate>
 
@@ -112,6 +113,12 @@
 {
     RTCReplyComposerWindowController * composer = [[RTCReplyComposerWindowController alloc] initWithTicket:ticket];
     [composer showWindow:self];
+}
+
+- (void)openDetailForTicket:(RTTicket *)ticket;
+{
+    RTCTicketDetailWindowController * detail = [[RTCTicketDetailWindowController alloc] initWithTicket:ticket];
+    [detail showWindow:self];
 }
 
 @end

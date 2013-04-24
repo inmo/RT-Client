@@ -46,6 +46,8 @@
     self.ticketController.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]];
     [self.ticketController addObserver:self forKeyPath:@"selectionIndex" options:NULL context:NULL];
     
+    [self.ticketTableView setDoubleAction:@selector(doubleClicked:)];
+    
     [self.splitView.subviews.lastObject removeFromSuperview];
     [self.splitView addSubview:self.ticketDetailWindowController.window.contentView];
     [self.splitView adjustSubviews];
@@ -76,6 +78,14 @@
     }
     
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
+- (void)doubleClicked:(NSTableView *)sender
+{
+    RTTicket * clickedTicket = self.ticketController.arrangedObjects[[sender clickedRow]];
+    
+    [(RTCAppDelegate *)[[NSApplication sharedApplication] delegate]
+     openDetailForTicket:clickedTicket];
 }
 
 #pragma mark - Setters & Getters

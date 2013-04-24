@@ -180,7 +180,7 @@
 				<nil key="NSUserInterfaceItemIdentifier"/>
 				<string key="NSWindowContentMinSize">{700, 450}</string>
 				<object class="NSView" key="NSWindowView" id="54526467">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<array class="NSMutableArray" key="NSSubviews">
 						<object class="NSSplitView" id="293421512">
@@ -367,6 +367,7 @@
 						</object>
 					</array>
 					<string key="NSFrameSize">{700, 450}</string>
+					<reference key="NSSuperview"/>
 					<reference key="NSNextKeyView" ref="293421512"/>
 					<string key="NSReuseIdentifierKey">_NS:54</string>
 				</object>
@@ -483,6 +484,14 @@
 						</object>
 					</object>
 					<int key="connectionID">1441</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="508672336"/>
+						<reference key="destination" ref="1021"/>
+					</object>
+					<int key="connectionID">1488</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
@@ -1468,7 +1477,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1487</int>
+			<int key="maxID">1488</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes"/>
 		<int key="IBDocument.localizationMode">0</int>

@@ -18,5 +18,6 @@
 - (IBAction)showSelfServiceQueue:(id)sender;
 
 - (void)openReplyComposerForTicket:(RTTicket *)ticket;
+- (void)openDetailForTicket:(RTTicket *)ticket;
 
 @end

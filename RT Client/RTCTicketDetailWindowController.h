@@ -14,4 +14,6 @@
 
 @property (nonatomic, strong) RTTicket * selectedTicket;
 
+- (id)initWithTicket:(RTTicket *)ticket;
+
 @end

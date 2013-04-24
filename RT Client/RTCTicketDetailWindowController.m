@@ -13,8 +13,9 @@
 @interface RTCTicketDetailWindowController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) IBOutlet WebView * webView;
-
 @property (nonatomic, strong) NSArray * selectedTicketAttachments;
+
+@property (nonatomic, strong) id keepAlive;
 
 @end
 
@@ -25,9 +26,21 @@
     return [super initWithWindowNibName:NSStringFromClass([self class])];
 }
 
+- (id)initWithTicket:(RTTicket *)ticket;
+{
+    if ((self = [self init]))
+    {
+        self.selectedTicket = ticket;
+        self.keepAlive = self;
+    }
+    
+    return self;
+}
+
 - (void)awakeFromNib
 {
     [self.webView setDrawsBackground:NO];
+    self.selectedTicket = self.selectedTicket;
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -71,6 +84,11 @@
     [[self.webView mainFrame] loadHTMLString:detailViewBaseString baseURL:nil];
 }
 
+- (void)windowWillClose:(NSNotification *)notification
+{
+    self.keepAlive = nil;
+}
+
 #pragma mark - WebView Frame Loader Delegate
 
 - (void)webView:(WebView *)webView didFinishLoadForFrame:(WebFrame *)frame
@@ -92,10 +110,7 @@
     id jsonData = [NSJSONSerialization dataWithJSONObject:attachments options:NULL error:&jsonError];
     NSString * jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     
-    NSLog(@"%@", jsonString);
-    
-    NSString * result = [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$detail.setTicket(%@)", jsonString]];
-    NSLog(@"%@", result);
+    [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$detail.setTicket(%@)", jsonString]];
 }
 
 @end
