@@ -110,4 +110,10 @@
     [self.ticketDetailWindowController replyToSelectedTicket:sender];
 }
 
+- (IBAction)openSelectedTicketInNewWindow:(id)sender
+{
+    [(RTCAppDelegate *)[[NSApplication sharedApplication] delegate]
+     openDetailForTicket:self.selectedTicket];
+}
+
 @end
