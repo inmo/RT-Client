@@ -9,13 +9,13 @@
 #import <Cocoa/Cocoa.h>
 
 @class RTAttachment;
+@class WebView;
 
 @interface RTCTicketCell : NSTableCellView
 
-@property (nonatomic, strong) IBOutlet NSTextField * descriptionLabel;
+@property (nonatomic, strong) IBOutlet WebView * webView;
 
 - (id)initWithIdentifier:(NSString *)identifier;
-
 - (void)configureWithAttachment:(RTAttachment *)attachment;
 
 @end

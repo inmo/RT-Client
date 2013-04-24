@@ -9,6 +9,7 @@
 #import "RTCTicketDetailWindowController.h"
 #import "RTCTicketCell.h"
 #import "RTModels.h"
+#import <WebKit/WebKit.h>
 
 @interface RTCTicketDetailWindowController () <NSTableViewDelegate, NSTableViewDataSource>
 

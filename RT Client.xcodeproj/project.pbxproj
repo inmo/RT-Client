@@ -55,13 +55,13 @@
 		B382294717272BDC00590C3B /* RTCAnimatedCloseWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = B38229451727246E00590C3B /* RTCAnimatedCloseWindow.m */; };
 		B382294A17272CB300590C3B /* RTCReplyComposerEditor.html in Resources */ = {isa = PBXBuildFile; fileRef = B382294817272CB300590C3B /* RTCReplyComposerEditor.html */; };
 		B382294D17272DD500590C3B /* RTCReplyComposerEditor.html in Sources */ = {isa = PBXBuildFile; fileRef = B382294817272CB300590C3B /* RTCReplyComposerEditor.html */; };
-		B382294E1727385300590C3B /* RTCReplyComposerEditor.html in Resources */ = {isa = PBXBuildFile; fileRef = B382294817272CB300590C3B /* RTCReplyComposerEditor.html */; };
 		B382295117273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = B382295017273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m */; };
 		B382295217273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = B382295017273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m */; };
 		B382295917278B6800590C3B /* RTCTicketDetailWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = B382295717278B6800590C3B /* RTCTicketDetailWindowController.m */; };
 		B382295A17278B6800590C3B /* RTCTicketDetailWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = B382295717278B6800590C3B /* RTCTicketDetailWindowController.m */; };
 		B382295B17278B6800590C3B /* RTCTicketDetailWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B382295817278B6800590C3B /* RTCTicketDetailWindowController.xib */; };
 		B382295C17278B6800590C3B /* RTCTicketDetailWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B382295817278B6800590C3B /* RTCTicketDetailWindowController.xib */; };
+		B3822962172797F600590C3B /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B329A4D61716FDA400B8AF48 /* WebKit.framework */; };
 		B3A015E916B1E01700D09351 /* RTKeychainEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E516B1E01700D09351 /* RTKeychainEntry.m */; };
 		B3A015F016B1E05D00D09351 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */; };
 		B3A015F116B1E06600D09351 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015ED16B1E05100D09351 /* Security.framework */; };
@@ -185,6 +185,7 @@
 				B3A015F016B1E05D00D09351 /* SystemConfiguration.framework in Frameworks */,
 				B36192CD166D7B2F00D86162 /* Cocoa.framework in Frameworks */,
 				75152FD39F7642488E1B9FB1 /* libPods.a in Frameworks */,
+				B3822962172797F600590C3B /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +316,8 @@
 				B3CC5C1816BB5F05005C71C4 /* RTRequestOperation.m */,
 				B3A015E616B1E01700D09351 /* RTParser.h */,
 				B3A015E716B1E01700D09351 /* RTParser.m */,
+				B370905816F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.h */,
+				B370905916F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m */,
 			);
 			name = "-C- : API Engine";
 			sourceTree = "<group>";
@@ -352,8 +355,6 @@
 				B3AB10C316AB2177004F1F17 /* RTCTicketListWindowController.xib */,
 				B3A6F91A16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.h */,
 				B3A6F91B16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.m */,
-				B370905816F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.h */,
-				B370905916F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m */,
 			);
 			name = "-VC : Ticket Lists";
 			sourceTree = "<group>";
@@ -477,7 +478,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B382294E1727385300590C3B /* RTCReplyComposerEditor.html in Resources */,
 				B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */,
 				B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */,
 				0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */,

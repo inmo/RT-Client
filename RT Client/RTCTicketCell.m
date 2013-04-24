@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 INMO. All rights reserved.
 //
 
+#import <WebKit/WebKit.h>
+
 #import "RTCTicketCell.h"
 #import "RTModels.h"
 
@@ -23,9 +25,10 @@
 
 - (void)configureWithAttachment:(RTAttachment *)attachment;
 {
-    
-   self.descriptionLabel.attributedStringValue = [[NSAttributedString alloc] initWithHTML: [attachment content] documentAttributes: NULL];
-   // self.descriptionLabel.stringValue = [attachment description];
+    [[self.webView mainFrame] loadData:[attachment content]
+                              MIMEType:[attachment contentType]
+                      textEncodingName:@"utf-8"
+                               baseURL:nil];
 }
 
 @end
