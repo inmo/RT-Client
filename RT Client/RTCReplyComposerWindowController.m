@@ -8,12 +8,10 @@
 
 #import <WebKit/WebKit.h>
 
+#import "RTEngine.h"
 #import "RTCReplyComposerWindowController.h"
-#import "RTCAnimatedCloseWindow.h"
-#import "RTCWindowOverlayProgressIndicatorView.h"
 #import "RTEngine.h"
 #import "RTModels.h"
-
 
 @interface RTCReplyComposerWindowController () <NSTextViewDelegate>
 
@@ -24,8 +22,6 @@
 
 @property (nonatomic, strong) RTTicket * ticket;
 @property (nonatomic, strong) id keepAlive;
-
-@property (nonatomic, strong) RTCWindowOverlayProgressIndicatorView * indicator;
 
 @end
 
@@ -48,40 +44,21 @@
     [super showWindow:sender];
 }
 
-- (BOOL)acceptsFirstResponder
-{
-    return YES;
-}
-
-- (NSString *)editorHTMLString
-{
-    static NSString * editorBaseString = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        // external symbols generated via custom build rule and xxd
-        extern unsigned char RTCReplyComposerEditor_html[];
-        extern unsigned int RTCReplyComposerEditor_html_len;
-        
-        editorBaseString = [[NSString alloc] initWithBytesNoCopy:RTCReplyComposerEditor_html
-                                                          length:RTCReplyComposerEditor_html_len
-                                                        encoding:NSUTF8StringEncoding freeWhenDone:NO];
-    });
-    
-    return [editorBaseString stringByReplacingOccurrencesOfString:@"${INITIAL_EDITOR_CONTENTS}"
-                                                       withString:@""]; // [self.ticket HTMLStringForReplyComposer]
-}
-
 - (void)windowDidLoad
 {
     [self.subjectField setStringValue:self.ticket.subject];
-    [[self.webView mainFrame] loadHTMLString:[self editorHTMLString] baseURL:nil];
-}
-
-#pragma mark - WebViewFrameDelegate
-
-- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
-{
-    [sender stringByEvaluatingJavaScriptFromString:@"document.body.focus();"];
+    
+    NSString * css = @"body { font-family: sans-serif; }"
+    @"blockquote { margin: 15px 0 0 0; padding: 0 0 0 15px; border-left: 2px solid blue; color: blue; outline: black dashed 1px; }"
+    @"blockquote blockquote { border-color: green; color: green; }"
+    @"blockquote blockquote blockquote { border-color: red; color: red; }";
+    
+    NSString * editorString = [NSString stringWithFormat:
+                               @"<html><head><style>%@</style></head>"
+                               @"<body contenteditable=true><p></p><br>%@</body></html>",
+                               css, [self.ticket HTMLStringForReplyComposer]];
+    
+    [[self.webView mainFrame] loadHTMLString:editorString baseURL:nil];
 }
 
 #pragma mark - Custom Appearance Methods
@@ -89,7 +66,7 @@
 - (void)_updateWindowTitle
 {
     BOOL isValidTitle = ![@"" isEqualToString:self.subjectField.stringValue];
-    self.window.title = (isValidTitle) ? self.subjectField.stringValue : @"(No Subject)";
+    self.window.title = (isValidTitle) ? self.subjectField.stringValue : @"New Reply";
 }
 
 #pragma mark - NSTextViewDelegate
@@ -123,19 +100,14 @@
     setParam(@"bcc", self.bccField);
     setParam(@"subject", self.subjectField);
     
-    params[@"body"] = [self.webView stringByEvaluatingJavaScriptFromString:@"$editor.getContent();"];
+    params[@"body"] = [self.webView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML"];
     
-    self.indicator = [[RTCWindowOverlayProgressIndicatorView alloc] init];
-    [self.indicator showInWindow:self.window];
+    [[RTEngine sharedEngine] postReply:params toTicket:self.ticket];
     
-    [[RTEngine sharedEngine] postReply:params toTicket:self.ticket completion:^(NSError * error) {
-        [(RTCAnimatedCloseWindow *)self.window orderOutWithAnimation:self];
-    }];
 }
 
 - (void)_attachFileInline:(NSURL *)fileURL
 {
-    // TODO: Copy to temp directory
     // TODO: Keep track of inserted attachments
     // TODO: Monitor DOM for attachment deletion
 }

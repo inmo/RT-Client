@@ -16,10 +16,8 @@
 
 - (void)orderOutWithAnimation:(id)sender
 {
-    if (_isAnimating)
+    if(_isAnimating)
         return;
-    
-    [self setIgnoresMouseEvents:YES];
     
     _isAnimating = YES;
     [NSAnimationContext runAnimationGroup:^(NSAnimationContext * context) {
