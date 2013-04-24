@@ -6,26 +6,25 @@
 //  Copyright (c) 2013 INMO. All rights reserved.
 //
 
-#import "RTCSelfServiceWindowController.h"
+#import "RTCTicketListWindowController.h"
+#import "RTCTicketDetailWindowController.h"
+#import "RTCAppDelegate.h"
 #import "RTModels.h"
 #import "RTEngine.h"
-#import "RTCTicketStubTableCellView.h"
-#import "RTCTicketCell.h"
-#import "RTCAppDelegate.h"
 
-@interface RTCSelfServiceWindowController () <NSTableViewDelegate, NSTableViewDataSource>
+@interface RTCTicketListWindowController ()
 
 @property (nonatomic, strong) NSManagedObjectContext * managedObjectContext;
 @property (nonatomic, strong) IBOutlet NSArrayController * ticketController;
 @property (nonatomic, strong) IBOutlet NSTableView * ticketTableView;
-@property (nonatomic, strong) IBOutlet NSTableView * ticketDetailView;
 
 @property (nonatomic, strong) RTTicket * selectedTicket;
-@property (nonatomic, strong) NSArray * selectedTicketAttachments;
+@property (nonatomic, strong) RTCTicketDetailWindowController * ticketDetailWindowController;
+@property (nonatomic, strong) IBOutlet NSSplitView * splitView;
 
 @end
 
-@implementation RTCSelfServiceWindowController
+@implementation RTCTicketListWindowController
 
 - (NSManagedObjectContext *)managedObjectContext
 {
@@ -34,13 +33,22 @@
 
 - (id)init
 {
-    return [super initWithWindowNibName:NSStringFromClass([self class])];
+    if ((self = [super initWithWindowNibName:NSStringFromClass([self class])]))
+    {
+        self.ticketDetailWindowController = [[RTCTicketDetailWindowController alloc] init];
+    }
+    
+    return self;
 }
 
 - (void)awakeFromNib;
 {
     self.ticketController.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]];
     [self.ticketController addObserver:self forKeyPath:@"selectionIndex" options:NULL context:NULL];
+    
+    [self.splitView.subviews.lastObject removeFromSuperview];
+    [self.splitView addSubview:self.ticketDetailWindowController.window.contentView];
+    [self.splitView adjustSubviews];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
@@ -51,8 +59,7 @@
             return;
         
         self.selectedTicket = self.ticketController.arrangedObjects[self.ticketController.selectionIndex];
-        self.selectedTicketAttachments = [self.selectedTicket chronologicallySortedTopLevelAttachments];
-        [self.ticketDetailView reloadData];
+        [self.ticketDetailWindowController setSelectedTicket:self.selectedTicket];
         
         return;
     }
@@ -62,11 +69,8 @@
         if (self.ticketController.selectionIndex == NSNotFound)
             return;
         
-        self.selectedTicketAttachments = [self.selectedTicket chronologicallySortedTopLevelAttachments];
-        
-        [self.ticketDetailView reloadData];
-        [self.ticketTableView reloadDataForRowIndexes:[NSIndexSet indexSetWithIndex:self.ticketController.selectionIndex]
-                                        columnIndexes:[NSIndexSet indexSetWithIndex:0]];
+        [self.ticketTableView reloadDataForRowIndexes:[self.ticketTableView selectedRowIndexes]
+                                        columnIndexes:[self.ticketTableView selectedColumnIndexes]];
         
         return;
     }
@@ -95,27 +99,6 @@
 {
     [(RTCAppDelegate *)[[NSApplication sharedApplication] delegate]
      openReplyComposerForTicket:self.selectedTicket];
-}
-
-#pragma mark - NSTableViewDelegate
-
-- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
-{
-    return self.selectedTicketAttachments.count;
-}
-
-- (NSView *)tableView:(NSTableView *)tableView
-   viewForTableColumn:(NSTableColumn *)tableColumn
-                  row:(NSInteger)row
-{
-    static NSString * const TicketCellIdentifier = @"ticketCell";
-    
-    RTCTicketCell * cell = [tableView makeViewWithIdentifier:TicketCellIdentifier owner:self];
-    cell = (cell) ?: [[RTCTicketCell alloc] initWithIdentifier:TicketCellIdentifier];
-    
-    [cell configureWithAttachment:self.selectedTicketAttachments[row]];
-    
-    return cell;
 }
 
 @end
