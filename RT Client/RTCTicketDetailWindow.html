@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body {
+            font-family: sans-serif;
+            background: url(https://github.com/axiixc/Rose-Bandwidth-Monitor/blob/master/public/images/underPageBackground.png?raw=true);
+            background: transparent;
+            background-size: 50% 50%;
+            padding: 0;
+            margin: 0;
+            -webkit-user-select: none;
+        }
+        blockquote {
+            margin: 15px 0 0 0;
+            padding: 0 0 0 15px;
+            border-left: 2px solid transparent;
+        }
+        blockquote { color: blue; border-color: blue; }
+        blockquote blockquote { border-color: green; color: green; }
+        blockquote blockquote blockquote { border-color: red; color: red; }
+        
+        .message {
+            background: white;
+            outline: 1px solid #c2c2c2;
+            margin: 25px;
+            padding: 25px;
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.5);
+        }
+        .message .header {
+            width: 100%;
+            border-spacing: 0;
+            padding-bottom: 10px;
+            color: gray;
+            font-size: 14px;
+            border-bottom: 1px solid gray;
+            margin-bottom: 10px;
+        }
+        .message .header td:first-child { width: 1px; max-width: 30%; }
+        .message .header td:first-child:after { content: ':\00a0'; }
+        .message .header td:last-child { -webkit-user-select: text; }
+        .message .contents {
+            margin-top: 10px;
+            -webkit-user-select: text;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script>
+        $detail = {
+            setTicket: function(attachmentData) {
+                var bodyEl = $(document.body);
+                $.each(attachmentData, function(idx, attachment) {
+                    var messageEl = $('<div/>', { class: 'message', children: [headerEl, contentsEl] })
+                        .appendTo(bodyEl);
+                    
+                    var headerEl = $('<table/>', { class: 'header' })
+                        .appendTo(messageEl);
+                        
+                    var createRow = function(key, value) {
+                        var row = $('<tr/>').appendTo(headerEl);
+                        $('<td/>', { text: key }).appendTo(row);
+                        $('<td/>', { text: value }).appendTo(row);
+                    }
+                    
+                    createRow('Subject', attachment.headers['subject'] || '(No Subject)');
+                        
+                    var contentsEl = $('<div/>', { class: 'contents', html: attachment.contents })
+                        .appendTo(messageEl);
+                });
+                
+                return true;
+            }
+        };
+    </script>
+</head>
+<body></body>
+</html>
