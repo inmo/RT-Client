@@ -11,12 +11,12 @@
 #import "RTEngine.h"
 #import "RTModels.h"
 
-#import "RTCSelfServiceWindowController.h"
+#import "RTCTicketListWindowController.h"
 #import "RTCReplyComposerWindowController.h"
 
 @interface RTCAppDelegate () <RTEngineDelegate>
 
-@property (nonatomic, strong) IBOutlet RTCSelfServiceWindowController * queueWindowController;
+@property (nonatomic, strong) IBOutlet RTCTicketListWindowController * queueWindowController;
 
 @property (nonatomic, strong) NSWindowController * loginWindowController;
 @property (nonatomic, assign, readwrite) BOOL canLogout;
@@ -27,7 +27,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    self.queueWindowController = [[RTCSelfServiceWindowController alloc] init];
+    self.queueWindowController = [[RTCTicketListWindowController alloc] init];
     [self.queueWindowController.window setExcludedFromWindowsMenu:YES];
     [self.queueWindowController showWindow:self];
     
@@ -36,6 +36,15 @@
     
     [engine refreshLogin];
 }
+
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag
+{
+    [self showSelfServiceQueue:self];
+    
+    return NO;
+}
+
+#pragma mark - RTEngineDelegate
 
 - (void)apiEngineWillAttemptLogin:(RTEngine *)engine
 {

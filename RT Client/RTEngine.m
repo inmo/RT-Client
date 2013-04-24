@@ -166,6 +166,14 @@
 
 - (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
 {
+    // DEBUG: No-op for UI testing
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        completion(nil);
+    });
+    return;
+    
     NSMutableString * encodedContent = [NSMutableString new];
     [encodedContent appendFormat:@"id: %@\n", ticket.ticketID];
     [encodedContent appendFormat:@"Action: correspond\n"];

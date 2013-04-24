@@ -8,6 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface RTCSelfServiceWindowController : NSWindowController
+@interface RTCTicketListWindowController : NSWindowController
 
 @end
