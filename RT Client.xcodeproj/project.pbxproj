@@ -54,8 +54,11 @@
 		B3822943172721F300590C3B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3822942172721F300590C3B /* QuartzCore.framework */; };
 		B38229461727246E00590C3B /* RTCAnimatedCloseWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = B38229451727246E00590C3B /* RTCAnimatedCloseWindow.m */; };
 		B382294717272BDC00590C3B /* RTCAnimatedCloseWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = B38229451727246E00590C3B /* RTCAnimatedCloseWindow.m */; };
-		B382294917272CB300590C3B /* RTCReplyComposerEditor.html in Resources */ = {isa = PBXBuildFile; fileRef = B382294817272CB300590C3B /* RTCReplyComposerEditor.html */; };
 		B382294A17272CB300590C3B /* RTCReplyComposerEditor.html in Resources */ = {isa = PBXBuildFile; fileRef = B382294817272CB300590C3B /* RTCReplyComposerEditor.html */; };
+		B382294D17272DD500590C3B /* RTCReplyComposerEditor.html in Sources */ = {isa = PBXBuildFile; fileRef = B382294817272CB300590C3B /* RTCReplyComposerEditor.html */; };
+		B382294E1727385300590C3B /* RTCReplyComposerEditor.html in Resources */ = {isa = PBXBuildFile; fileRef = B382294817272CB300590C3B /* RTCReplyComposerEditor.html */; };
+		B382295117273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = B382295017273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m */; };
+		B382295217273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = B382295017273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m */; };
 		B3A015E916B1E01700D09351 /* RTKeychainEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E516B1E01700D09351 /* RTKeychainEntry.m */; };
 		B3A015F016B1E05D00D09351 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */; };
 		B3A015F116B1E06600D09351 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015ED16B1E05100D09351 /* Security.framework */; };
@@ -66,6 +69,20 @@
 		B3D279C41700FD620020E0B3 /* resources in Resources */ = {isa = PBXBuildFile; fileRef = B3D279C016FD0EA40020E0B3 /* resources */; };
 		B3D279C717011F820020E0B3 /* RTKeychainEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B3D279C617011F820020E0B3 /* RTKeychainEntryTests.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		B382294B17272CE800590C3B /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.html";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"${INPUT_FILE_BASE}.html.c",
+			);
+			script = "cd \"$INPUT_FILE_DIR\"  # move into file dir, otherwise xxd takes the full path for the symbol\n/usr/bin/xxd -i \"$INPUT_FILE_NAME\" \"$DERIVED_SOURCES_DIR/$INPUT_FILE_BASE.html.c\" # builds a c file with a hex array\n";
+		};
+/* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
 		0A0211A216A606EC00054395 /* RT_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RT_Client.xcdatamodel; sourceTree = "<group>"; };
@@ -120,6 +137,8 @@
 		B38229441727246E00590C3B /* RTCAnimatedCloseWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCAnimatedCloseWindow.h; sourceTree = "<group>"; };
 		B38229451727246E00590C3B /* RTCAnimatedCloseWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTCAnimatedCloseWindow.m; sourceTree = "<group>"; };
 		B382294817272CB300590C3B /* RTCReplyComposerEditor.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = RTCReplyComposerEditor.html; sourceTree = "<group>"; };
+		B382294F17273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCWindowOverlayProgressIndicatorView.h; sourceTree = "<group>"; };
+		B382295017273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTCWindowOverlayProgressIndicatorView.m; sourceTree = "<group>"; };
 		B3A015E416B1E01700D09351 /* RTKeychainEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTKeychainEntry.h; sourceTree = "<group>"; };
 		B3A015E516B1E01700D09351 /* RTKeychainEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTKeychainEntry.m; sourceTree = "<group>"; };
 		B3A015E616B1E01700D09351 /* RTParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTParser.h; sourceTree = "<group>"; };
@@ -281,6 +300,8 @@
 				B382294817272CB300590C3B /* RTCReplyComposerEditor.html */,
 				B38229441727246E00590C3B /* RTCAnimatedCloseWindow.h */,
 				B38229451727246E00590C3B /* RTCAnimatedCloseWindow.m */,
+				B382294F17273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.h */,
+				B382295017273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m */,
 				B36192D3166D7B2F00D86162 /* Supporting Files */,
 			);
 			name = Application;
@@ -365,6 +386,7 @@
 				2BE9D0D720884E6EAAABBEF9 /* Copy Pods Resources */,
 			);
 			buildRules = (
+				B382294B17272CE800590C3B /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -417,13 +439,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B382294E1727385300590C3B /* RTCReplyComposerEditor.html in Resources */,
 				B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */,
 				B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */,
 				0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */,
 				B3AB10C416AB2177004F1F17 /* RTCSelfServiceWindowController.xib in Resources */,
 				B329A4D41716296200B8AF48 /* RTCReplyComposerWindowController.xib in Resources */,
 				B38229411726CCC700590C3B /* RTCMainMenu.xib in Resources */,
-				B382294917272CB300590C3B /* RTCReplyComposerEditor.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -496,6 +518,7 @@
 				B329A4CE17137DC000B8AF48 /* RTCTicketCell.m in Sources */,
 				B329A4D31716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */,
 				B382294717272BDC00590C3B /* RTCAnimatedCloseWindow.m in Sources */,
+				B382295217273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -522,6 +545,8 @@
 				0AE8AE0316FFEF74007519CB /* RTParser.m in Sources */,
 				B329A4D21716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */,
 				B38229461727246E00590C3B /* RTCAnimatedCloseWindow.m in Sources */,
+				B382294D17272DD500590C3B /* RTCReplyComposerEditor.html in Sources */,
+				B382295117273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

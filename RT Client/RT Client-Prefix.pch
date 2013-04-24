@@ -4,11 +4,10 @@
 
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
+    #import <MagicalRecord/CoreData+MagicalRecord.h>
+
+    // Define basic block types globally
+    typedef void (^RTBasicBlock)();
+    typedef void (^RTBasicErrorBlock)(NSError * error);
+    typedef void (^RTManagedObjectIDBlock)(NSManagedObjectID * objectID);
 #endif
-
-#import <MagicalRecord/CoreData+MagicalRecord.h>
-
-// Define basic block types globally
-typedef void (^RTBasicBlock)();
-typedef void (^RTBasicErrorBlock)(NSError * error);
-typedef void (^RTManagedObjectIDBlock)(NSManagedObjectID * objectID);
