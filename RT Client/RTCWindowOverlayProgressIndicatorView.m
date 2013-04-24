@@ -13,8 +13,6 @@
 @property (nonatomic, strong) NSProgressIndicator * indicator;
 @property (nonatomic, strong) NSTextField * textView;
 
-@property (nonatomic, weak) NSWindow * presentingWindow;
-
 @end
 
 @implementation RTCWindowOverlayProgressIndicatorView
@@ -64,7 +62,14 @@
 
 - (void)showInWindow:(NSWindow *)window;
 {
-    self.presentingWindow = window;
+    NSView * hostView = [window.contentView superview];
+    self.frame = hostView.frame;
+    
+    [[self.window standardWindowButton:NSWindowZoomButton] setEnabled:NO];
+    [self.window setShowsResizeIndicator:NO];
+    [self.window setResizeIncrements:NSMakeSize(MAXFLOAT, MAXFLOAT)];
+    
+    [hostView addSubview:self];
     [self layoutSubtreeIfNeeded];
     
     self.alphaValue = 0.0;
@@ -74,25 +79,13 @@
     } completionHandler:nil];
 }
 
-- (void)setPresentingWindow:(NSWindow *)presentingWindow
+- (void)removeFromSuperview
 {
-    if (self.presentingWindow)
-    {
-        [[_presentingWindow standardWindowButton:NSWindowZoomButton] setEnabled:YES];
-        [_presentingWindow setShowsResizeIndicator:YES];
-        [_presentingWindow setResizeIncrements:NSMakeSize(1, 1)];
-        
-        [self removeFromSuperview];
-    }
+    [[self.window standardWindowButton:NSWindowZoomButton] setEnabled:YES];
+    [self.window setShowsResizeIndicator:YES];
+    [self.window setResizeIncrements:NSMakeSize(1, 1)];
     
-    _presentingWindow = presentingWindow;
-    self.frame = [[_presentingWindow.contentView superview] frame];
-    
-    [[_presentingWindow standardWindowButton:NSWindowZoomButton] setEnabled:NO];
-    [_presentingWindow setShowsResizeIndicator:NO];
-    [_presentingWindow setResizeIncrements:NSMakeSize(MAXFLOAT, MAXFLOAT)];
-    
-    [[_presentingWindow.contentView superview] addSubview:self];
+    [super removeFromSuperview];
 }
 
 - (void)layoutSubtreeIfNeeded
