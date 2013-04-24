@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style>
+		body {
+			font-family: sans-serif;
+		}
+		blockquote {
+			margin: 15px 0 0 0;
+			padding: 0 0 0 15px;
+			border-left: 2px solid transparent;
+			outline: black dashed 1px;
+		}
+		blockquote { color: blue; border-color: blue; }
+		blockquote blockquote { border-color: green; color: green; }
+		blockquote blockquote blockquote { border-color: red; color: red; }
+	</style>
+	<script>
+		$editor = {
+			getContent: function() {
+				return document.body.innerHTML;
+			},
+			insertImage: function(url) {
+				if (url === undefined) return;
+				document.execCommand('insertImage', false, url);
+			}
+		};
+	</script>
+</head>
+<body contenteditable="true">
+<p></p><br>
+${INITIAL_EDITOR_CONTENTS}
+</body>
+</html>

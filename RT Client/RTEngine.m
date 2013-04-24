@@ -164,13 +164,14 @@
 
 #pragma mark - Ticket Replies
 
-- (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket;
+- (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
 {
     NSMutableString * encodedContent = [NSMutableString new];
     [encodedContent appendFormat:@"id: %@\n", ticket.ticketID];
     [encodedContent appendFormat:@"Action: correspond\n"];
     
     NSString * santizedBody = [parameters[@"body"] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    santizedBody = [santizedBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     [encodedContent appendFormat:@"Text: %@\n", santizedBody];
     
     if (parameters[@"cc"])
@@ -184,8 +185,9 @@
     NSString * requestPath = [NSString stringWithFormat:@"/REST/1.0/%@/comment", ticket.ticketID];
     [self postPath:requestPath parameters:@{@"content": encodedContent} success:^(AFHTTPRequestOperation *operation, id responseObject) {
         NSLog(@"op: %@", operation.responseString);
+        completion(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", error);
+        completion(error);
     }];
     
 //    Still fighting the API
