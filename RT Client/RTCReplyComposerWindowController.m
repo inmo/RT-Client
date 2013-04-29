@@ -129,6 +129,13 @@
     [self.indicator showInWindow:self.window];
     
     [[RTEngine sharedEngine] postReply:params toTicket:self.ticket completion:^(NSError * error) {
+        if (error)
+        {
+            [self.indicator removeFromSuperview];
+            [[NSAlert alertWithError:error] beginSheetModalForWindow:self.window modalDelegate:nil didEndSelector:nil contextInfo:NULL];
+            return;
+        }
+        
         [(RTCAnimatedCloseWindow *)self.window orderOutWithAnimation:self];
     }];
 }

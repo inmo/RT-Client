@@ -104,6 +104,7 @@
         
         [attachments addObject:@{
          @"contents": [[NSString alloc] initWithData:[attachment content] encoding:NSUTF8StringEncoding],
+         @"date": ([[attachment created] description]) ?: @"",
          @"headers": headers
          }];
     }];

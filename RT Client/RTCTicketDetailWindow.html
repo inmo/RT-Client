@@ -51,7 +51,7 @@
             setTicket: function(attachmentData) {
                 var bodyEl = $(document.body);
                 $.each(attachmentData, function(idx, attachment) {
-                    var messageEl = $('<div/>', { class: 'message', children: [headerEl, contentsEl] })
+                    var messageEl = $('<div/>', { class: 'message' })
                         .appendTo(bodyEl);
                     
                     var headerEl = $('<table/>', { class: 'header' })
@@ -64,9 +64,15 @@
                     }
                     
                     createRow('Subject', attachment.headers['subject'] || '(No Subject)');
-                        
+                    createRow('Date', attachment.date);
+                       
                     var contentsEl = $('<div/>', { class: 'contents', html: attachment.contents })
                         .appendTo(messageEl);
+                       
+                    $('<div/>', {
+                      text: JSON.stringify(attachment),
+                      style: 'font-family: monospace; word-wrap: break-word; margin-top: 10px;'
+                    }).appendTo(messageEl);
                 });
                 
                 return true;
