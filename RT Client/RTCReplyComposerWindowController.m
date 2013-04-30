@@ -128,16 +128,16 @@
     self.indicator = [[RTCWindowOverlayProgressIndicatorView alloc] init];
     [self.indicator showInWindow:self.window];
     
-    [[RTEngine sharedEngine] postReply:params toTicket:self.ticket completion:^(NSError * error) {
-        if (error)
-        {
-            [self.indicator removeFromSuperview];
-            [[NSAlert alertWithError:error] beginSheetModalForWindow:self.window modalDelegate:nil didEndSelector:nil contextInfo:NULL];
-            return;
-        }
-        
-        [(RTCAnimatedCloseWindow *)self.window orderOutWithAnimation:self];
-    }];
+//    [[RTEngine sharedEngine] postReply:params toTicket:self.ticket completion:^(NSError * error) {
+//        if (error)
+//        {
+//            [self.indicator removeFromSuperview];
+//            [[NSAlert alertWithError:error] beginSheetModalForWindow:self.window modalDelegate:nil didEndSelector:nil contextInfo:NULL];
+//            return;
+//        }
+//        
+//        [(RTCAnimatedCloseWindow *)self.window orderOutWithAnimation:self];
+//    }];
 }
 
 - (void)_attachFileInline:(NSURL *)fileURL

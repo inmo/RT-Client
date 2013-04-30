@@ -117,4 +117,17 @@
     return [NSDateFormatter localizedStringFromDate:self.created dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterShortStyle];
 }
 
+- (NSString *)numericTicketID;
+{
+    NSRange range = [self.ticketID rangeOfString:@"/"];
+    BOOL isValidRange = (range.location != NSNotFound && range.location + 1 < self.ticketID.length);
+    
+    return isValidRange ? [self.ticketID substringFromIndex:range.location + 1] : nil;
+}
+
+- (NSString *)lastAttachmentID;
+{
+    return [[[self.chronologicallySortedTopLevelAttachments lastObject] transaction] stringValue];
+}
+
 @end

@@ -20,4 +20,7 @@
 - (NSString *)plainTextSummary;
 - (NSString *)stringFromCreated;
 
+- (NSString *)numericTicketID;
+- (NSString *)lastAttachmentID;
+
 @end

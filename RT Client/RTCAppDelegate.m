@@ -111,7 +111,7 @@
 
 - (void)openReplyComposerForTicket:(RTTicket *)ticket;
 {
-    [[[RTCReplyComposerWindowController alloc] initWithTicket:ticket] showWindow:self];
+    [[NSWorkspace sharedWorkspace] openURL:[[RTEngine sharedEngine] replyURLForTicket:ticket]];
 }
 
 - (void)openDetailForTicket:(RTTicket *)ticket;
