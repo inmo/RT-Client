@@ -77,7 +77,7 @@
 - (NSMutableURLRequest *)requestWithMethod:(NSString *)method path:(NSString *)path parameters:(NSDictionary *)parameters
 {
     NSMutableURLRequest * request = [super requestWithMethod:method path:path parameters:parameters];
-    [request setTimeoutInterval:120]; 
+    [request setTimeoutInterval:120];
     
     return request;
 }
@@ -104,7 +104,7 @@
 - (void)fetchSearchResultsForQuery:(NSString *)query getAllTicketInformation:(BOOL)allInfo
 {
     [self getPath:@"REST/1.0/search/ticket" parameters:@{
-        @"query": query, @"format": @"l",
+     @"query": query, @"format": @"l",
      } success:^(AFHTTPRequestOperation * operation, id responseObject) {
          NSArray * rawTickets = [operation responseArray];
          NSMutableArray * createdTickets = [NSMutableArray arrayWithCapacity:rawTickets.count];
@@ -164,64 +164,40 @@
 
 #pragma mark - Ticket Replies
 
-- (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError *))completion
-{
-    
-}
-
 #define kContentKey @"content"
 
-- (void)_postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
+- (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
 {
-    // DEBUG: No-op for UI testing
-//    double delayInSeconds = 2.0;
-//    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-//    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-//        completion([NSError errorWithDomain:NSCocoaErrorDomain code:10 userInfo:nil]);
-//    });
-//    return;
+    NSString * santizedBody = [parameters[@"body"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    NSString * requestPath = @"Ticket/Update.html";
     
-    NSMutableString * encodedContent = [NSMutableString new];
-    [encodedContent appendFormat:@"id: %@\n", ticket.ticketID];
-    [encodedContent appendFormat:@"Action: correspond\n"];
+    NSRange range = [ticket.ticketID rangeOfString:@"/"];
+    BOOL isValidRange = (range.location != NSNotFound && range.location < ticket.ticketID.length);
+    NSString * ticketID = (isValidRange) ? [ticket.ticketID substringFromIndex:(range.location + 1)] : @"";
     
-    NSString * santizedBody = [parameters[@"body"] stringByReplacingOccurrencesOfString:@"\n" withString:@""];
-    santizedBody = [santizedBody stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    [encodedContent appendFormat:@"Text: %@\n", santizedBody];
+    NSNumber * transactionID = [ticket.chronologicallySortedTopLevelAttachments.lastObject transaction];
     
-    if (parameters[@"cc"])
-        [encodedContent appendFormat:@"Cc: %@", parameters[@"cc"]];
-    
-    if (parameters[@"bcc"])
-        [encodedContent appendFormat:@"Bcc: %@", parameters[@"bcc"]];
-    
-//    NSURL * attachmentURL = [NSURL fileURLWithPath:@"/Users/axiixc/Dropbox/Avatars/cover-adn.jpg"];
-//    [encodedContent appendFormat:@"Attachment: %@\n", [attachmentURL lastPathComponent]];
-    
-    NSLog(@"%@", encodedContent);
-    
-    [encodedContent appendFormat:@"Attachment: message.html\n"];
-    
-    NSString * requestPath = [NSString stringWithFormat:@"REST/1.0/%@/comment", ticket.ticketID];
-//    [self postPath:requestPath parameters:@{@"content": encodedContent} success:^(AFHTTPRequestOperation *operation, id responseObject) {
-//        completion(nil);
-//    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-//        completion(error);
-//    }];
+    NSDictionary * requestParameters =
+    @{@"QuoteTransaction": transactionID,
+      @"DefaultStatus": @"new",
+      @"Action": @"Respond", // Comment?
+      @"id": ticketID,
+      @"UpdateType": @"response", // Comment => @"private"
+      @"UpdateContent": santizedBody,
+      @"UpdateContentType": @"text/html"};
     
     id constructor = ^(id <AFMultipartFormData> formData) {
-//        NSError * __autoreleasing error = nil;
-//        [formData appendPartWithFileURL:attachmentURL name:@"attachment_1" error:&error];
-        [formData appendPartWithFileData:[parameters[@"body"] dataUsingEncoding:NSUTF8StringEncoding]
-                                    name:@"attachment_1"
-                                fileName:@"message.html"
-                                mimeType:@"text/html"];
+        
     };
     
     NSMutableURLRequest * request = [self multipartFormRequestWithMethod:@"POST"
                                                                     path:requestPath
-                                                              parameters:@{@"content" : encodedContent}
+                                                              parameters:requestParameters
                                                constructingBodyWithBlock:constructor];
+    [request addValue:[NSString stringWithFormat:@"%@?id=%@&QuoteTransaction=%@&Action=Respond",
+                       [self.baseURL URLByAppendingPathComponent:requestPath],
+                       ticketID, transactionID]
+   forHTTPHeaderField:@"Referer"];
     
     id success = ^(AFHTTPRequestOperation * op, id responseObject) {
         NSLog(@"op: %@", op.responseString);
@@ -234,24 +210,6 @@
     };
     
     [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:request success:success failure:error]];
-}
-
-#pragma mark - Add Comment
-- (void)addComment:(NSDictionary *)parameters sendTicket:(RTTicket *)ticket;
-{
-    NSMutableString *addContent = [NSMutableString new];
-    [addContent appendFormat:@"id: %@\n", ticket.ticketID];
-    [addContent appendFormat:@"Action: comment\n"];
-    [addContent appendFormat:@"Text: %@\n", parameters[@"body"]];
-    [addContent appendFormat:@"Attachment: message.html\n"];
-    
-    NSString * requestPath = [NSString stringWithFormat:@"REST/1.0/%@/comment", ticket.ticketID];
-    
-    [self postPath:requestPath parameters:@{@"contents": addContent} success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"op: %@", operation.responseString);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        NSLog(@"%@", error);
-    }];
 }
 
 #pragma mark - Authentication (Keychain)

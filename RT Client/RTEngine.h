@@ -32,7 +32,6 @@
 - (void)fetchAttachmentsForTicket:(RTTicket *)ticket;
 
 - (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
-- (void)addComment:(NSDictionary *)parameters sendTicket:(RTTicket *)ticket;
 
 @end
 
