@@ -19,6 +19,11 @@
 
 #define SAFE_DELEGATE_CALL(CODE) if (self.delegate) { dispatch_async(dispatch_get_main_queue(), ^{ CODE; }); }
 
+typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
+    RTEngineLoginFailureReasonNetwork,
+    RTEngineLoginFailureReasonCredentials
+};
+
 @interface RTEngine (/* Private */)
 
 @property (nonatomic, assign, readwrite, getter = isAuthenticated) BOOL authenticated;
@@ -291,17 +296,14 @@
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation * operation, id responseObject) {
-        // If no redirect is given, credentials must have failed
+        // Completion means that we failed to get a redirect, bad credentials
         completionBlock(YES, NO);
     } failure:^(AFHTTPRequestOperation * operation, NSError * error) {
-        // Upon success, the redirection handler invalidates the request, so it technically "errors"
-        // But since we already succeeded, prevent the default failure action here.
-        if (self.authenticated)
-            return;
-        
+        // Failure means it was a network error
         completionBlock(NO, YES);
     }];
     
+    __weak __typeof(operation) wOp = operation;
     [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
         // NOTE: This is really the only way to grab successful logins as of this version
         //       However, it is also a hack and should be considered for fixing if at all possible.
@@ -309,7 +311,7 @@
         {
             self.authenticated = YES;
             completionBlock(NO, NO);
-            return nil;
+            [wOp cancel];
         }
         
         return request;
