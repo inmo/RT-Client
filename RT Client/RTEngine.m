@@ -169,9 +169,76 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
 
 #pragma mark - Ticket Replies
 
+- (void)_requestNonRESTCookie:(void (^)(NSString * cookie))continuation;
+{
+    NSDictionary * roCredentials = self.keychainEntry.contents;
+//    if (!roCredentials)
+//        return completionBlock(YES, NO);
+    
+    NSMutableDictionary * credentials = roCredentials.mutableCopy;
+    credentials[@"next"] = @"c2eb5af67a20123fbac8cd57aa94e040"; // TODO: Figure this out more
+    
+    NSMutableURLRequest * request = [self requestWithMethod:@"POST" path:@"NoAuth/Login.html" parameters:credentials];
+    [request setValue:@"" forHTTPHeaderField:@"Cookie"];
+    [request setHTTPShouldHandleCookies:NO];
+    
+    AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation * operation, id responseObject) {
+        // Completion means that we failed to get a redirect, bad credentials
+//        completionBlock(YES, NO);
+
+    } failure:^(AFHTTPRequestOperation * operation, NSError * error) {
+        // Failure means it was a network error
+//        completionBlock(NO, YES);
+    }];
+    
+    [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
+        // NOTE: This is really the only way to grab successful logins as of this version
+        //       However, it is also a hack and should be considered for fixing if at all possible.
+        if ([request.URL isEqual:RT_SERVER_URL])
+        {
+            __block NSString * cookieValue = nil;
+            [[(NSHTTPURLResponse *)redirectResponse allHeaderFields] enumerateKeysAndObjectsUsingBlock:^(NSString * key, NSString * obj, BOOL *stop) {
+                if ([key.lowercaseString isEqualToString:@"set-cookie"])
+                {
+                    NSRange range = [obj rangeOfString:@";"];
+                    cookieValue = (range.location != NSNotFound) ? [obj substringToIndex:range.location] : nil;
+                    *stop = YES;
+                }
+            }];
+            
+            if (!cookieValue) continuation(nil);
+            
+            NSMutableURLRequest * request = [self requestWithMethod:@"GET" path:@"" parameters:nil];
+            [request setValue:cookieValue forHTTPHeaderField:@"Cookie"];
+            [request setHTTPShouldHandleCookies:NO];
+            
+            AFHTTPRequestOperation * op = [self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                continuation(cookieValue);
+            } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                continuation(nil);
+            }];
+            
+            [self enqueueHTTPRequestOperation:op];
+        }
+        
+        return request;
+    }];
+    
+    [self enqueueHTTPRequestOperation:operation];
+}
+
 #define kContentKey @"content"
 
 - (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
+{
+    [self _requestNonRESTCookie:^(NSString * cookie) {
+        [self _postReply:parameters toTicket:ticket withCookie:cookie completion:completion];
+    }];
+}
+
+- (void)_postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket withCookie:(NSString *)cookie completion:(void (^)(NSError * error))completion;
 {
     NSString * santizedBody = [parameters[@"body"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     NSString * requestPath = @"Ticket/Update.html";
@@ -203,6 +270,8 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
                        [self.baseURL URLByAppendingPathComponent:requestPath],
                        ticketID, transactionID]
    forHTTPHeaderField:@"Referer"];
+    [request setValue:cookie forHTTPHeaderField:@"Cookie"];
+    [request setHTTPShouldHandleCookies:NO];
     
     id success = ^(AFHTTPRequestOperation * op, id responseObject) {
         NSLog(@"op: %@", op.responseString);
