@@ -169,14 +169,39 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
 
 #pragma mark - Ticket Replies
 
+- (void)postPlainTextReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
+{
+    
+}
+
+- (void)postHTMLReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError *))completion
+{
+    [self _requestNonRESTCookie:^(NSString * cookie) {
+        [self _postReply:parameters toTicket:ticket withCookie:cookie completion:completion];
+    }];
+}
+
+/**
+ * So this is horrible, but it is the only way to do it as far as I could tell.
+ * 
+ * The only way to submit HTML responses is by hijacking the website's POST endpoint.
+ * In order to do that you need a web session (RT determins your session type by the
+ * first request you make. Go to /REST/* and you're a rest session, go somewhere else
+ * and you're a web). So in order for the request to succeed we need to authenticate
+ * a new session without messing up our REST session stored in the standard cookies.
+ * The quick-and-dirty approach I took was to just manually clear out the cookie
+ * for the login request and set `setHTTPShouldHandleCookies:` to `NO`. Then, snoop
+ * the redirect block like in the normal login flow, only here you want to check for
+ * the login cookie specifically. Once you find it, cut out the relevant part. You may
+ * think the next thing you'd do is pass it to the continuation. Ha! No, but seriously
+ * now you need to make a useless request to the main page because RT won't accept
+ * your POST request until you've requested a normal page first. So do that and then
+ * pass off the cookie.
+ */
 - (void)_requestNonRESTCookie:(void (^)(NSString * cookie))continuation;
 {
-    NSDictionary * roCredentials = self.keychainEntry.contents;
-//    if (!roCredentials)
-//        return completionBlock(YES, NO);
-    
-    NSMutableDictionary * credentials = roCredentials.mutableCopy;
-    credentials[@"next"] = @"c2eb5af67a20123fbac8cd57aa94e040"; // TODO: Figure this out more
+    NSMutableDictionary * credentials = [self.keychainEntry.contents mutableCopy];
+    credentials[@"next"] = @"c2eb5af67a20123fbac8cd57aa94e040";
     
     NSMutableURLRequest * request = [self requestWithMethod:@"POST" path:@"NoAuth/Login.html" parameters:credentials];
     [request setValue:@"" forHTTPHeaderField:@"Cookie"];
@@ -185,17 +210,14 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
     AFHTTPRequestOperation * operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     
     [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation * operation, id responseObject) {
-        // Completion means that we failed to get a redirect, bad credentials
-//        completionBlock(YES, NO);
-
+        if (!operation.isCancelled)
+            continuation(nil);
     } failure:^(AFHTTPRequestOperation * operation, NSError * error) {
-        // Failure means it was a network error
-//        completionBlock(NO, YES);
+        if (!operation.isCancelled)
+            continuation(nil);
     }];
     
     [operation setRedirectResponseBlock:^NSURLRequest *(NSURLConnection *connection, NSURLRequest *request, NSURLResponse *redirectResponse) {
-        // NOTE: This is really the only way to grab successful logins as of this version
-        //       However, it is also a hack and should be considered for fixing if at all possible.
         if ([request.URL isEqual:RT_SERVER_URL])
         {
             __block NSString * cookieValue = nil;
@@ -229,61 +251,43 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
     [self enqueueHTTPRequestOperation:operation];
 }
 
-#define kContentKey @"content"
+#define ENSURE_NOT_NIL(_val) ((_val) ?: @"")
 
-- (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
-{
-    [self _requestNonRESTCookie:^(NSString * cookie) {
-        [self _postReply:parameters toTicket:ticket withCookie:cookie completion:completion];
-    }];
-}
-
+/**
+ * The actual posting is honestly not terrible, except for the part where it is to an 
+ * undocumented endpoint that is liable to change on any upgrade. The dictionary of
+ * values is already filled out below, for private comments just change the string like
+ * the comments say. You'll also need to set the Referer header, because otherwise the
+ * request will be rejected for cross site scripting security violations.
+ */
 - (void)_postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket withCookie:(NSString *)cookie completion:(void (^)(NSError * error))completion;
 {
     NSString * santizedBody = [parameters[@"body"] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    NSString * requestPath = @"Ticket/Update.html";
     
     NSRange range = [ticket.ticketID rangeOfString:@"/"];
     BOOL isValidRange = (range.location != NSNotFound && range.location < ticket.ticketID.length);
-    NSString * ticketID = (isValidRange) ? [ticket.ticketID substringFromIndex:(range.location + 1)] : @"";
+    NSString * ticketID = (isValidRange) ? [ticket.ticketID substringFromIndex:(range.location + 1)] : nil;
     
-    NSNumber * transactionID = [ticket.chronologicallySortedTopLevelAttachments.lastObject transaction];
+    NSString * transactionID = [[ticket.chronologicallySortedTopLevelAttachments.lastObject transaction] stringValue];
     
-    NSDictionary * requestParameters =
-    @{@"QuoteTransaction": transactionID,
-      @"DefaultStatus": @"new",
-      @"Action": @"Respond", // Comment?
-      @"id": ticketID,
-      @"UpdateType": @"response", // Comment => @"private"
-      @"UpdateContent": santizedBody,
-      @"UpdateContentType": @"text/html"};
+    NSMutableURLRequest * request = [self multipartFormRequestWithMethod:@"POST" path:@"Ticket/Update.html" parameters:@{
+                                     @"QuoteTransaction": ENSURE_NOT_NIL(transactionID),
+                                     @"DefaultStatus": @"new",
+                                     @"Action": @"Respond", // Same for comments
+                                     @"id": ENSURE_NOT_NIL(ticketID),
+                                     @"UpdateType": @"response", // Comment => @"private"
+                                     @"UpdateContent": ENSURE_NOT_NIL(santizedBody),
+                                     @"UpdateContentType": @"text/html"} constructingBodyWithBlock:nil];
     
-    id constructor = ^(id <AFMultipartFormData> formData) {
-        
-    };
-    
-    NSMutableURLRequest * request = [self multipartFormRequestWithMethod:@"POST"
-                                                                    path:requestPath
-                                                              parameters:requestParameters
-                                               constructingBodyWithBlock:constructor];
-    [request addValue:[NSString stringWithFormat:@"%@?id=%@&QuoteTransaction=%@&Action=Respond",
-                       [self.baseURL URLByAppendingPathComponent:requestPath],
-                       ticketID, transactionID]
-   forHTTPHeaderField:@"Referer"];
+    [request addValue:[NSString stringWithFormat:@"%@?id=%@&QuoteTransaction=%@&Action=Respond", request.URL, ticketID, transactionID] forHTTPHeaderField:@"Referer"];
     [request setValue:cookie forHTTPHeaderField:@"Cookie"];
     [request setHTTPShouldHandleCookies:NO];
     
-    id success = ^(AFHTTPRequestOperation * op, id responseObject) {
-        NSLog(@"op: %@", op.responseString);
+    [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation * op, id responseObject) {
         completion(nil);
-    };
-    
-    id error = ^(AFHTTPRequestOperation * op, NSError * error) {
-        NSLog(@"%@", error);
+    } failure:^(AFHTTPRequestOperation * op, NSError * error) {
         completion(error);
-    };
-    
-    [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:request success:success failure:error]];
+    }]];
 }
 
 #pragma mark - Authentication (Keychain)

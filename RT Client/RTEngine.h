@@ -31,7 +31,8 @@
 - (void)fetchSearchResultsForQuery:(NSString *)query getAllTicketInformation:(BOOL)allInfo;
 - (void)fetchAttachmentsForTicket:(RTTicket *)ticket;
 
-- (void)postReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
+- (void)postPlainTextReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
+- (void)postHTMLReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
 
 @end
 
