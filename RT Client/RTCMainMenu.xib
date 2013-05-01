@@ -178,6 +178,25 @@
 						<object class="NSMenu" key="NSSubmenu" id="175977496">
 							<string key="NSTitle">File</string>
 							<array class="NSMutableArray" key="NSMenuItems">
+								<object class="NSMenuItem" id="524553522">
+									<reference key="NSMenu" ref="175977496"/>
+									<string key="NSTitle">Close Window</string>
+									<string key="NSKeyEquiv">w</string>
+									<int key="NSKeyEquivModMask">1048576</int>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="961533796"/>
+									<reference key="NSMixedImage" ref="432595652"/>
+								</object>
+								<object class="NSMenuItem" id="103991181">
+									<reference key="NSMenu" ref="175977496"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="961533796"/>
+									<reference key="NSMixedImage" ref="432595652"/>
+								</object>
 								<object class="NSMenuItem" id="324577540">
 									<reference key="NSMenu" ref="175977496"/>
 									<string key="NSTitle">Page Setup...</string>
@@ -1657,6 +1676,14 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBActionConnection" key="connection">
+						<string key="label">performClose:</string>
+						<reference key="source" ref="1014"/>
+						<reference key="destination" ref="524553522"/>
+					</object>
+					<int key="connectionID">1056</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
 						<string key="label">logout:</string>
 						<reference key="source" ref="720029833"/>
 						<reference key="destination" ref="273807392"/>
@@ -1954,6 +1981,8 @@
 						<array class="NSMutableArray" key="children">
 							<reference ref="324577540"/>
 							<reference ref="520793876"/>
+							<reference ref="103991181"/>
+							<reference ref="524553522"/>
 						</array>
 						<reference key="parent" ref="20399296"/>
 					</object>
@@ -2599,12 +2628,24 @@
 						<reference key="object" ref="760237712"/>
 						<reference key="parent" ref="311947906"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1053</int>
+						<reference key="object" ref="103991181"/>
+						<reference key="parent" ref="175977496"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">1054</int>
+						<reference key="object" ref="524553522"/>
+						<reference key="parent" ref="175977496"/>
+					</object>
 				</array>
 			</object>
 			<dictionary class="NSMutableDictionary" key="flattenedProperties">
 				<string key="-1.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="-2.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="-3.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1053.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
+				<string key="1054.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="795.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="796.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
 				<string key="797.IBPluginDependency">com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -2740,7 +2781,7 @@
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">1052</int>
+			<int key="maxID">1056</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -2749,41 +2790,11 @@
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="logout:">id</string>
-						<string key="makeBaseTextDirectionLeftToRight:">id</string>
-						<string key="makeBaseTextDirectionNatural:">id</string>
-						<string key="makeBaseTextDirectionRightToLeft:">id</string>
-						<string key="makeBaseWritingDirectionLeftToRight:">id</string>
-						<string key="makeBaseWritingDirectionNatural:">id</string>
-						<string key="makeBaseWritingDirectionRightToLeft:">id</string>
 						<string key="showSelfServiceQueue:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="logout:">
 							<string key="name">logout:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="makeBaseTextDirectionLeftToRight:">
-							<string key="name">makeBaseTextDirectionLeftToRight:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="makeBaseTextDirectionNatural:">
-							<string key="name">makeBaseTextDirectionNatural:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="makeBaseTextDirectionRightToLeft:">
-							<string key="name">makeBaseTextDirectionRightToLeft:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="makeBaseWritingDirectionLeftToRight:">
-							<string key="name">makeBaseWritingDirectionLeftToRight:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="makeBaseWritingDirectionNatural:">
-							<string key="name">makeBaseWritingDirectionNatural:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="makeBaseWritingDirectionRightToLeft:">
-							<string key="name">makeBaseWritingDirectionRightToLeft:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="showSelfServiceQueue:">

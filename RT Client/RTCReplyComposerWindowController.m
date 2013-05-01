@@ -20,11 +20,12 @@
 @property (nonatomic, strong) IBOutlet NSTextField * ccField;
 @property (nonatomic, strong) IBOutlet NSTextField * bccField;
 @property (nonatomic, strong) IBOutlet NSTextField * subjectField;
-@property (nonatomic, strong) IBOutlet WebView * webView;
+@property (nonatomic, strong) IBOutlet NSTextView * editorView;
 
 @property (nonatomic, strong) RTTicket * ticket;
 @property (nonatomic, strong) id keepAlive;
 
+@property (nonatomic, strong) NSMutableArray * attachedFiles;
 @property (nonatomic, strong) RTCWindowOverlayProgressIndicatorView * indicator;
 
 @end
@@ -37,6 +38,7 @@
     {
         self.ticket = ticket;
         self.keepAlive = self;
+        self.attachedFiles = [NSMutableArray new];
     }
     
     return self;
@@ -53,28 +55,11 @@
     return YES;
 }
 
-- (NSString *)editorHTMLString
-{
-    static NSString * editorBaseString = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        // external symbols generated via custom build rule and xxd
-        extern unsigned char RTCReplyComposerEditor_html[];
-        extern unsigned int RTCReplyComposerEditor_html_len;
-        
-        editorBaseString = [[NSString alloc] initWithBytesNoCopy:RTCReplyComposerEditor_html
-                                                          length:RTCReplyComposerEditor_html_len
-                                                        encoding:NSUTF8StringEncoding freeWhenDone:NO];
-    });
-    
-    return [editorBaseString stringByReplacingOccurrencesOfString:@"${INITIAL_EDITOR_CONTENTS}"
-                                                       withString:@""]; // [self.ticket HTMLStringForReplyComposer]
-}
-
 - (void)windowDidLoad
 {
     [self.subjectField setStringValue:self.ticket.subject];
-    [[self.webView mainFrame] loadHTMLString:[self editorHTMLString] baseURL:nil];
+    [self.editorView setTextContainerInset:NSMakeSize(3, 7)];
+    // TODO: Default string
 }
 
 #pragma mark - WebViewFrameDelegate
@@ -113,22 +98,15 @@
 
 - (IBAction)sendDraft:(id)sender
 {
-    NSMutableDictionary * params = [NSMutableDictionary new];
-    void (^setParam)(NSString *, NSTextField *) = ^(NSString * key, NSTextField * field) {
-        if (![@"" isEqualToString:field.stringValue])
-            params[key] = field.stringValue;
-    };
-    
-    setParam(@"cc", self.ccField);
-    setParam(@"bcc", self.bccField);
-    setParam(@"subject", self.subjectField);
-    
-    params[@"body"] = [self.webView stringByEvaluatingJavaScriptFromString:@"$editor.getContent();"];
-    
     self.indicator = [[RTCWindowOverlayProgressIndicatorView alloc] init];
     [self.indicator showInWindow:self.window];
     
-    [[RTEngine sharedEngine] postPlainTextReply:params toTicket:self.ticket completion:^(NSError * error) {
+    [[RTEngine sharedEngine] postPlainTextReply:@{
+                      RTTicketReplyMessageCCKey: ENSURE_NOT_NIL(self.ccField.stringValue),
+                     RTTicketReplyMessageBCCKey: ENSURE_NOT_NIL(self.bccField.stringValue),
+                 RTTicketReplyMessageSubjectKey: ENSURE_NOT_NIL(self.subjectField.stringValue),
+                    RTTicketReplyMessageBodyKey: ENSURE_NOT_NIL(self.editorView.string)
+     } attachments:self.attachedFiles toTicket:self.ticket completion:^(NSError * error) {
         if (error)
         {
             [self.indicator removeFromSuperview];
@@ -142,9 +120,17 @@
 
 - (void)_attachFileInline:(NSURL *)fileURL
 {
-    // TODO: Copy to temp directory
-    // TODO: Keep track of inserted attachments
-    // TODO: Monitor DOM for attachment deletion
+    NSURL * temporaryAttachmentDirectory = [[[NSURL fileURLWithPath:NSTemporaryDirectory()]
+                                             URLByAppendingPathComponent:@"com.inmo.RT-Client" isDirectory:YES]
+                                            URLByAppendingPathComponent:[NSString stringWithFormat:@"%p", self] isDirectory:YES];;
+    
+    NSError * __autoreleasing error = nil; // TODO: Handle this error
+    [[NSFileManager defaultManager] createDirectoryAtURL:temporaryAttachmentDirectory withIntermediateDirectories:YES attributes:nil error:&error];
+    
+    NSURL * temporaryURL = [temporaryAttachmentDirectory URLByAppendingPathComponent:[fileURL lastPathComponent]];
+    [[NSFileManager defaultManager] copyItemAtURL:fileURL toURL:temporaryURL error:&error];
+    
+    [self.attachedFiles addObject:temporaryURL];
 }
 
 - (IBAction)attachFile:(id)sender

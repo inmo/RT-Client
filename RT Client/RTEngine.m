@@ -29,8 +29,6 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
 @property (nonatomic, assign, readwrite, getter = isAuthenticated) BOOL authenticated;
 @property (nonatomic, strong, readwrite) RTKeychainEntry * keychainEntry;
 
-@property (nonatomic) dispatch_queue_t saveSyncQueue;
-
 @end
 
 @implementation RTEngine
@@ -58,23 +56,9 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
         
         self.keychainEntry = [RTKeychainEntry entryForService:@"Request Tracker" account:@"default"];
         [self _forcedLogout];
-        
-        self.saveSyncQueue = dispatch_queue_create("com.inmo.RTEngine", NULL);
     }
     
     return self;
-}
-
-- (RTBasicBlock)saveHandlerForContext:(NSManagedObjectContext *)context numberOfObjects:(NSInteger)numberOfObjects;
-{
-    __block NSInteger pendingObjects = numberOfObjects;
-    return [^{
-        dispatch_sync(self.saveSyncQueue, ^{
-            pendingObjects -= 1;
-            if (pendingObjects == 0)
-                [context MR_saveToPersistentStoreAndWait];
-        });
-    } copy];
 }
 
 #pragma mark - AFHTTPClient Overrides
@@ -124,7 +108,7 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
              if (!allInfo)
                  return;
              
-             for (RTTicket * ticket in (allInfo ? createdTickets : nil))
+             for (RTTicket * ticket in createdTickets)
                  [self fetchAttachmentsForTicket:ticket];
          }];
      } failure:nil];
@@ -143,35 +127,119 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
      parameters:nil
      success:^(AFHTTPRequestOperation *operation, id responseObject) {
          NSArray * stubs = operation.responseDictionary[@"Attachments"];
-         RTBasicBlock saveBlock = [self saveHandlerForContext:scratchContext numberOfObjects:stubs.count];
+         NSMutableArray * attachmentFetchOperations = [NSMutableArray arrayWithCapacity:stubs.count];
          
          [stubs enumerateObjectsUsingBlock:^(NSDictionary * stub, NSUInteger idx, BOOL *stop) {
-             [self _fetchAttachmentID:stub[@"id"] associatedWithTicket:ticket saveBlock:saveBlock];
+             attachmentFetchOperations[idx] = [self _operationForAttachmentWithID:stub[@"id"] associatedWithTicket:ticket];
+         }];
+         
+         [self enqueueBatchOfHTTPRequestOperations:attachmentFetchOperations progressBlock:nil completionBlock:^(NSArray * operations) {
+             [scratchContext MR_saveToPersistentStoreAndWait];
          }];
      } failure:nil];
 }
 
-- (void)_fetchAttachmentID:(id)attachmentID associatedWithTicket:(RTTicket *)ticket saveBlock:(void (^)())saveBlock
+- (AFHTTPRequestOperation *)_operationForAttachmentWithID:(id)attachmentID associatedWithTicket:(RTTicket *)ticket
 {
-    [self
-     getPath:[NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, attachmentID]
-     parameters:nil
-     success:^(AFHTTPRequestOperation *operation, id responseObject) {
-         RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:operation.responseDictionary
-                                                                         inContext:ticket.managedObjectContext];
-         attachment.ticket = ticket;
-         
-         saveBlock();
-     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-         saveBlock();
-     }];
+    NSString * path = [NSString stringWithFormat:@"REST/1.0/%@/attachments/%@", ticket.ticketID, attachmentID];
+    NSURLRequest * request = [self requestWithMethod:@"GET" path:path parameters:nil];
+    
+    id successBlock = ^(AFHTTPRequestOperation *operation, id responseObject) {
+        RTAttachment * attachment = [RTAttachment createAttachmentFromAPIResponse:operation.responseDictionary
+                                                                        inContext:ticket.managedObjectContext];
+        attachment.ticket = ticket;
+    };
+    
+    return [self HTTPRequestOperationWithRequest:request success:successBlock failure:nil];
 }
 
 #pragma mark - Ticket Replies
 
-- (void)postPlainTextReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
+NSString * const RTTicketReplyMessageCCKey = @"Cc";
+NSString * const RTTicketReplyMessageBCCKey = @"Bcc";
+NSString * const RTTicketReplyMessageSubjectKey = @"Subject";
+NSString * const RTTicketReplyMessageBodyKey = @"Text";
+
+static NSString * const RTTicketReplyMessageTicketIDKey = @"id";
+static NSString * const RTTicketReplyMessageActionKey = @"Action";
+static NSString * const RTTicketReplyMessageActionCorrespondValue = @"correspond";
+static NSString * const RTTicektReplyMessageActionCommentValue = @"comment";
+static NSString * const RTTicketReplyMessageAttachmentsKey = @"Attachment";
+
+- (NSDictionary *)_sanitizeInputParameters:(NSDictionary *)inParameters forTicket:(RTTicket *)ticket addingAttachments:(NSArray *)attachments
 {
+    NSMutableDictionary * parameters = [NSMutableDictionary dictionary];
+    [inParameters enumerateKeysAndObjectsUsingBlock:^(NSString * key, id obj, BOOL *stop) {
+        if (!obj || ([obj isKindOfClass:[NSString class]] && [@"" isEqualToString:obj]))
+            return;
+        
+        if ([obj isKindOfClass:[NSString class]])
+        {
+            obj = [obj stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            obj = [obj stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+        }
+        
+        parameters[key] = obj;
+    }];
     
+    parameters[RTTicketReplyMessageTicketIDKey] = ticket.ticketID;
+    parameters[RTTicketReplyMessageActionKey] = RTTicketReplyMessageActionCorrespondValue;
+    
+    if (!attachments || attachments.count == 0)
+        return parameters;
+    
+    NSMutableArray * attachmentFileNames = [NSMutableArray arrayWithCapacity:attachments.count];
+    [attachments enumerateObjectsUsingBlock:^(NSURL * fileURL, NSUInteger idx, BOOL *stop) {
+        attachmentFileNames[idx] = [fileURL lastPathComponent];
+    }];
+    
+    parameters[RTTicketReplyMessageAttachmentsKey] = [attachmentFileNames componentsJoinedByString:@", "];
+    
+    return parameters;
+}
+
+static NSString * const RTTicketReplyRequestContentKey = @"content";
+
+- (NSDictionary *)_serializeParametersForReply:(NSDictionary *)inputParameters
+{
+    NSMutableString * result = [NSMutableString string];
+    [inputParameters enumerateKeysAndObjectsUsingBlock:^(NSString * key, id obj, BOOL *stop) {
+        [result appendFormat:@"%@: %@\n", key, obj];
+    }];
+    
+    return @{ RTTicketReplyRequestContentKey : result };
+}
+
+- (void)postPlainTextReply:(NSDictionary *)inParameters attachments:(NSArray *)attachments toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
+{
+    NSDictionary * sanitizedParameters = [self _sanitizeInputParameters:inParameters forTicket:ticket addingAttachments:attachments];
+    NSDictionary * requestParameters = [self _serializeParametersForReply:sanitizedParameters];
+    NSString * requestPath = [NSString stringWithFormat:@"REST/1.0/%@/comment", ticket.ticketID];
+    
+    __block BOOL flag_errorCreatingRequest = NO;
+    id block = ^(id <AFMultipartFormData> formData) {
+        [attachments enumerateObjectsUsingBlock:^(NSURL * fileURL, NSUInteger idx, BOOL *stop) {
+            NSError * __autoreleasing error = nil;
+            [formData appendPartWithFileURL:fileURL name:[NSString stringWithFormat:@"attachment_%li", idx + 1] error:&error];
+            
+            if (error)
+            {
+                *stop = flag_errorCreatingRequest = YES;
+                completion(error);
+            }
+        }];
+    };
+    
+    NSMutableURLRequest * request = [self multipartFormRequestWithMethod:@"POST" path:requestPath parameters:requestParameters constructingBodyWithBlock:block];
+    
+    if (flag_errorCreatingRequest)
+        return;
+    
+    [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        completion(nil);
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        completion(error);
+    }]];
 }
 
 #pragma mark - Authentication (Keychain)

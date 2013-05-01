@@ -10,4 +10,6 @@
     typedef void (^RTBasicBlock)();
     typedef void (^RTBasicErrorBlock)(NSError * error);
     typedef void (^RTManagedObjectIDBlock)(NSManagedObjectID * objectID);
+
+    #define ENSURE_NOT_NIL(_val) ((_val) ?: @"")
 #endif

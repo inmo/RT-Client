@@ -11,6 +11,11 @@
 @protocol RTEngineDelegate;
 @class RTTicket;
 
+extern NSString * const RTTicketReplyMessageCCKey;
+extern NSString * const RTTicketReplyMessageBCCKey;
+extern NSString * const RTTicketReplyMessageSubjectKey;
+extern NSString * const RTTicketReplyMessageBodyKey;
+
 @interface RTEngine : AFHTTPClient
 
 + (RTEngine *)sharedEngine;
@@ -31,7 +36,7 @@
 - (void)fetchSearchResultsForQuery:(NSString *)query getAllTicketInformation:(BOOL)allInfo;
 - (void)fetchAttachmentsForTicket:(RTTicket *)ticket;
 
-- (void)postPlainTextReply:(NSDictionary *)parameters toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
+- (void)postPlainTextReply:(NSDictionary *)parameters attachments:(NSArray *)attachments toTicket:(RTTicket *)ticket completion:(void (^)(NSError * error))completion;
 
 @end
 

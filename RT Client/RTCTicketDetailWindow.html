@@ -63,16 +63,15 @@
                         $('<td/>', { text: value }).appendTo(row);
                     }
                     
-                    createRow('Subject', attachment.headers['subject'] || '(No Subject)');
                     createRow('Date', attachment.date);
                        
                     var contentsEl = $('<div/>', { class: 'contents', html: attachment.contents })
                         .appendTo(messageEl);
                        
-                    $('<div/>', {
-                      text: JSON.stringify(attachment),
-                      style: 'font-family: monospace; word-wrap: break-word; margin-top: 10px;'
-                    }).appendTo(messageEl);
+//                    $('<div/>', {
+//                      text: JSON.stringify(attachment),
+//                      style: 'font-family: monospace; word-wrap: break-word; margin-top: 10px;'
+//                    }).appendTo(messageEl);
                 });
                 
                 return true;
