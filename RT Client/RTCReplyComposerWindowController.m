@@ -128,7 +128,7 @@
     self.indicator = [[RTCWindowOverlayProgressIndicatorView alloc] init];
     [self.indicator showInWindow:self.window];
     
-    [[RTEngine sharedEngine] postReply:params toTicket:self.ticket completion:^(NSError * error) {
+    [[RTEngine sharedEngine] postPlainTextReply:params toTicket:self.ticket completion:^(NSError * error) {
         if (error)
         {
             [self.indicator removeFromSuperview];
