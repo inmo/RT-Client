@@ -50,8 +50,51 @@
     NSPredicate * topLevelPredicate = [NSPredicate predicateWithFormat:@"parent = 0"];
     NSArray * sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]];
 
-    return [[self.attachments filteredSetUsingPredicate:topLevelPredicate]
-            sortedArrayUsingDescriptors:sortDescriptors];
+    NSMutableArray * attachments = [[[self.attachments filteredSetUsingPredicate:topLevelPredicate] allObjects] mutableCopy];
+    
+    // TODO :Refactor this in th emornign
+    for (NSInteger idx = 0; idx < attachments.count; idx++)
+    {
+        RTAttachment * attachment = attachments[idx];
+        if (attachment.content.length > 0 && [[NSString alloc] initWithData:attachment.content encoding:NSUTF8StringEncoding])
+            continue;
+        
+        NSPredicate * childrenPredicate = [NSPredicate predicateWithFormat:@"parent = %@", attachment.attachmentID];
+        NSArray * children = [[self.attachments filteredSetUsingPredicate:childrenPredicate] allObjects];
+        
+        attachment = nil;
+        
+        for (RTAttachment * child in children)
+            if ([child.contentType hasPrefix:@"text"])
+            {
+                attachment = child;
+                break;
+            }
+        
+        if (attachment)
+        {
+            attachments[idx] = attachment;
+            continue;
+        }
+        
+        for (RTAttachment * child in children)
+            if ([[NSString alloc] initWithData:child.content encoding:NSUTF8StringEncoding])
+            {
+                attachment = child;
+                break;
+            }
+        
+        if (attachment)
+        {
+            attachments[idx] = attachment;
+            continue;
+        }
+        
+        [attachments removeObjectAtIndex:idx];
+        idx -= 1;
+    }
+    
+    return [attachments sortedArrayUsingDescriptors:sortDescriptors];
 }
 
 - (NSAttributedString *)stringForReplyComposer;
