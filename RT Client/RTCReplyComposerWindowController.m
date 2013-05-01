@@ -7,6 +7,8 @@
 //
 
 #import <WebKit/WebKit.h>
+#import <QuickLook/QuickLook.h>
+#import <Quartz/Quartz.h>
 
 #import "RTCReplyComposerWindowController.h"
 #import "RTCAnimatedCloseWindow.h"
@@ -14,8 +16,11 @@
 #import "RTEngine.h"
 #import "RTModels.h"
 
+@implementation RTCReplyComposerAttachmentTableViewCellView
+@end
 
-@interface RTCReplyComposerWindowController () <NSTextViewDelegate>
+
+@interface RTCReplyComposerWindowController () <NSTextViewDelegate, NSTableViewDataSource, NSTableViewDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate>
 
 @property (nonatomic, strong) IBOutlet NSTextField * ccField;
 @property (nonatomic, strong) IBOutlet NSTextField * bccField;
@@ -26,6 +31,12 @@
 @property (nonatomic, strong) id keepAlive;
 
 @property (nonatomic, strong) NSMutableArray * attachedFiles;
+@property (nonatomic, strong) IBOutlet NSPopover * attachmentsPopover;
+@property (nonatomic, strong) IBOutlet NSScrollView * attachmentsScrollView;
+@property (nonatomic, strong) IBOutlet NSTableView * attachmentsTableView;
+
+@property (nonatomic, strong) QLPreviewPanel * quickLookPanel;
+
 @property (nonatomic, strong) RTCWindowOverlayProgressIndicatorView * indicator;
 
 @end
@@ -131,6 +142,27 @@
     [[NSFileManager defaultManager] copyItemAtURL:fileURL toURL:temporaryURL error:&error];
     
     [self.attachedFiles addObject:temporaryURL];
+    [self.attachmentsTableView reloadData];
+    [self.quickLookPanel reloadData];
+}
+
+- (IBAction)toggleAttachmentList:(id)sender
+{
+    if (self.attachedFiles.count == 0)
+    {
+        [self attachFile:sender];
+        return;
+    }
+    
+    if (self.attachmentsPopover.isShown)
+    {
+        [self.attachmentsPopover performClose:sender];
+    }
+    else
+    {    
+        NSButton * button = (NSButton *) sender;
+        [self.attachmentsPopover showRelativeToRect:button.frame ofView:button preferredEdge:NSMaxYEdge];
+    }
 }
 
 - (IBAction)attachFile:(id)sender
@@ -139,9 +171,84 @@
     openPanel.allowsMultipleSelection = YES;
     
     [openPanel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        if (result == NSOKButton)
-            [self _attachFileInline:openPanel.URL];
+        if (result == NSOKButton) [openPanel.URLs enumerateObjectsUsingBlock:^(NSURL * url, NSUInteger idx, BOOL *stop) {
+            [self _attachFileInline:url];
+        }];
     }];
+}
+
+- (void)quickLookAttachment:(id)sender
+{
+    NSInteger row = [(NSButton *)sender tag];
+    
+    [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:self];
+    [[QLPreviewPanel sharedPreviewPanel] setCurrentPreviewItemIndex:row];
+}
+
+- (void)deleteAttachment:(id)sender
+{
+    NSInteger row = [(NSButton *)sender tag];
+    
+    [self.attachedFiles removeObjectAtIndex:row];
+    [self.attachmentsTableView reloadData];
+    [self.quickLookPanel reloadData];
+}
+
+#pragma - NSTableViewDataSource
+
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView
+{
+    return self.attachedFiles.count;
+}
+
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
+{
+    RTCReplyComposerAttachmentTableViewCellView * cell = [tableView makeViewWithIdentifier:@"std" owner:self];
+    NSURL * fileURL = self.attachedFiles[row];
+    
+    id __autoreleasing value = nil;
+    NSError * __autoreleasing error = nil;
+    [fileURL getResourceValue:&value forKey:NSURLFileSizeKey error:&error];
+    
+    cell.textField.stringValue = [fileURL lastPathComponent];
+    cell.detailTextField.stringValue = [NSByteCountFormatter stringFromByteCount:[value longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
+    cell.imageView.image = [[NSWorkspace sharedWorkspace] iconForFile:[fileURL path]];
+    cell.toolTip = [NSString stringWithFormat:@"%@\n%@", cell.textField.stringValue, cell.detailTextField.stringValue];
+    cell.quickLookButton.tag = cell.deleteRowButton.tag = row;
+    
+    return cell;
+}
+
+#pragma mark - QLPreviewPanelDelegate
+
+- (BOOL)acceptsPreviewPanelControl:(QLPreviewPanel *)panel;
+{
+    return YES;
+}
+
+- (void)beginPreviewPanelControl:(QLPreviewPanel *)panel
+{
+    panel.delegate = self;
+    panel.dataSource = self;
+    
+    self.quickLookPanel = panel;
+}
+
+- (void)endPreviewPanelControl:(QLPreviewPanel *)panel
+{
+    self.quickLookPanel = nil;
+}
+
+#pragma mark - QLPreviewPanelDataSource
+
+- (NSInteger)numberOfPreviewItemsInPreviewPanel:(QLPreviewPanel *)panel
+{
+    return [self.attachedFiles count];
+}
+
+- (id <QLPreviewItem>)previewPanel:(QLPreviewPanel *)panel previewItemAtIndex:(NSInteger)index
+{
+    return (NSURL *) self.attachedFiles[index];
 }
 
 @end

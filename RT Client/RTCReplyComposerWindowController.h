@@ -10,9 +10,20 @@
 
 @class RTTicket;
 
+@interface RTCReplyComposerAttachmentTableViewCellView : NSTableCellView
+
+@property (nonatomic, strong) IBOutlet NSTextField * detailTextField;
+@property (nonatomic, strong) IBOutlet NSButton * quickLookButton;
+@property (nonatomic, strong) IBOutlet NSButton * deleteRowButton;
+
+@end
+
 @interface RTCReplyComposerWindowController : NSWindowController
 
 - (id)initWithTicket:(RTTicket *)ticket;
+
+- (IBAction)quickLookAttachment:(id)sender;
+- (IBAction)deleteAttachment:(id)sender;
 
 @property (nonatomic, copy) void (^completionBlock)(RTCReplyComposerWindowController * composer, BOOL success);
 

@@ -103,8 +103,8 @@
         }];
         
         [attachments addObject:@{
-         @"contents": [[NSString alloc] initWithData:[attachment content] encoding:NSUTF8StringEncoding],
-         @"date": ([[attachment created] description]) ?: @"",
+         @"contents": ENSURE_NOT_NIL([[NSString alloc] initWithData:[attachment content] encoding:NSUTF8StringEncoding]),
+         @"date": ENSURE_NOT_NIL([[attachment created] description]),
          @"headers": headers
          }];
     }];
