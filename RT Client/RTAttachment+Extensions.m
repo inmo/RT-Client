@@ -7,6 +7,7 @@
 //
 
 #import "RTAttachment+Extensions.h"
+#import "RTTicket+Extensions.h"
 
 @implementation RTAttachment (Extensions)
 
@@ -34,7 +35,15 @@
     attachment.filename = apiResponse[@"Filename"];
     attachment.contentType = apiResponse[@"ContentType"];
     attachment.contentEncoding = apiResponse[@"ContentEncoding"];
-    attachment.headers = apiResponse[@"Headers"];
+    
+    NSDictionary * headers = apiResponse[@"Headers"];
+    NSMutableDictionary * lowercasedHeaders = [NSMutableDictionary dictionaryWithCapacity:headers.count];
+    
+    [headers enumerateKeysAndObjectsUsingBlock:^(NSString * key, id obj, BOOL *stop) {
+        lowercasedHeaders[key.lowercaseString] = obj;
+    }];
+    
+    attachment.headers = headers;
     
     if ([apiResponse[@"Content"] isKindOfClass:[NSData class]])
         attachment.content = apiResponse[@"Content"];
@@ -44,14 +53,10 @@
     return attachment;
 }
 
-- (NSAttributedString *)attributedStringContents;
+- (NSArray *)childrenAttachments;
 {
-    return [[NSAttributedString alloc] initWithHTML:self.content documentAttributes:nil];
-}
-
-- (NSString *)HTMLString
-{
-    return [[NSString alloc] initWithData:self.content encoding:NSUTF8StringEncoding];
+    NSPredicate * childrenPredicate = [NSPredicate predicateWithFormat:@"parent = %@", self.attachmentID];
+    return [[self.ticket.attachments filteredSetUsingPredicate:childrenPredicate] allObjects];
 }
 
 @end

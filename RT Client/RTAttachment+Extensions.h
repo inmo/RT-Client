@@ -13,7 +13,6 @@
 + (RTAttachment *)createAttachmentFromAPIResponse:(NSDictionary *)apiResponse;
 + (RTAttachment *)createAttachmentFromAPIResponse:(NSDictionary *)apiResponse inContext:(NSManagedObjectContext *)context;
 
-- (NSAttributedString *)attributedStringContents;
-- (NSString *)HTMLString;
+- (NSArray *)childrenAttachments;
 
 @end

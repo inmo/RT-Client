@@ -62,9 +62,9 @@
                         $('<td/>', { text: value }).appendTo(row);
                     }
                     
-                    createRow('Date', attachment.date);
+                    createRow('Date', attachment.dateCreated);
                        
-                    var contentsEl = $('<div/>', { class: 'contents', html: attachment.contents })
+                    var contentsEl = $('<div/>', { class: 'contents', html: attachment.body })
                         .appendTo(messageEl);
                        
 //                    $('<div/>', {

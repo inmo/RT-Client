@@ -242,6 +242,12 @@ static NSString * const RTTicketReplyRequestContentKey = @"content";
     }]];
 }
 
+// TODO: Debug logging for later
+// TODO: Attachment previews in detail view
+// TODO: Drag & Drop attachments
+// TODO: "Delete" key, "Space" key, and double click support for previews within attachments composer
+// TODO: Dates aren't parsing correctly
+
 #pragma mark - Authentication (Keychain)
 
 - (void)setUsername:(NSString *)username password:(NSString *)password errorBlock:(RTBasicBlock)errorBlock

@@ -37,6 +37,8 @@
 		B314F3A016FCC872001928A6 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */; };
 		B314F3A116FCC875001928A6 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015ED16B1E05100D09351 /* Security.framework */; };
 		B3279B5217310BDC00A0AAFF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3279B5117310BDC00A0AAFF /* Quartz.framework */; };
+		B3279B531731DBF900A0AAFF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3822942172721F300590C3B /* QuartzCore.framework */; };
+		B3279B551731EF3200A0AAFF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3279B5117310BDC00A0AAFF /* Quartz.framework */; };
 		B329A4D21716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */; };
 		B329A4D31716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */; };
 		B329A4D41716296200B8AF48 /* RTCReplyComposerWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */; };
@@ -59,7 +61,7 @@
 		B382295B17278B6800590C3B /* RTCTicketDetailWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B382295817278B6800590C3B /* RTCTicketDetailWindowController.xib */; };
 		B382295C17278B6800590C3B /* RTCTicketDetailWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B382295817278B6800590C3B /* RTCTicketDetailWindowController.xib */; };
 		B3822962172797F600590C3B /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B329A4D61716FDA400B8AF48 /* WebKit.framework */; };
-		B38229641727AECD00590C3B /* RTCTicketDetailWindow.html in Sources */ = {isa = PBXBuildFile; fileRef = B38229631727AECD00590C3B /* RTCTicketDetailWindow.html */; };
+		B38229641727AECD00590C3B /* RTCTicketDetailWindow.html in Resources */ = {isa = PBXBuildFile; fileRef = B38229631727AECD00590C3B /* RTCTicketDetailWindow.html */; };
 		B38229651727AECD00590C3B /* RTCTicketDetailWindow.html in Resources */ = {isa = PBXBuildFile; fileRef = B38229631727AECD00590C3B /* RTCTicketDetailWindow.html */; };
 		B3A015E916B1E01700D09351 /* RTKeychainEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E516B1E01700D09351 /* RTKeychainEntry.m */; };
 		B3A015F016B1E05D00D09351 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3A015EF16B1E05D00D09351 /* SystemConfiguration.framework */; };
@@ -71,20 +73,6 @@
 		B3D279C41700FD620020E0B3 /* resources in Resources */ = {isa = PBXBuildFile; fileRef = B3D279C016FD0EA40020E0B3 /* resources */; };
 		B3D279C717011F820020E0B3 /* RTKeychainEntryTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B3D279C617011F820020E0B3 /* RTKeychainEntryTests.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXBuildRule section */
-		B382294B17272CE800590C3B /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*.html";
-			fileType = pattern.proxy;
-			isEditable = 1;
-			outputFiles = (
-				"${INPUT_FILE_BASE}.html.c",
-			);
-			script = "cd \"$INPUT_FILE_DIR\"  # move into file dir, otherwise xxd takes the full path for the symbol\n/usr/bin/xxd -i \"$INPUT_FILE_NAME\" \"$DERIVED_SOURCES_DIR/$INPUT_FILE_BASE.html.c\" # builds a c file with a hex array\n";
-		};
-/* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
 		0A0211A216A606EC00054395 /* RT_Client.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RT_Client.xcdatamodel; sourceTree = "<group>"; };
@@ -112,7 +100,6 @@
 		B314F38916FCC7D9001928A6 /* RTTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RTTests.h; sourceTree = "<group>"; };
 		B314F38A16FCC7D9001928A6 /* RTTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RTTests.m; sourceTree = "<group>"; };
 		B314F38C16FCC7D9001928A6 /* RT Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RT Tests-Prefix.pch"; sourceTree = "<group>"; };
-		B3279B4F17310A3800A0AAFF /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = System/Library/Frameworks/QuickLook.framework; sourceTree = SDKROOT; };
 		B3279B5117310BDC00A0AAFF /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		B329A4CF1716296200B8AF48 /* RTCReplyComposerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCReplyComposerWindowController.h; sourceTree = "<group>"; };
 		B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTCReplyComposerWindowController.m; sourceTree = "<group>"; };
@@ -172,6 +159,8 @@
 				B314F3A016FCC872001928A6 /* SystemConfiguration.framework in Frameworks */,
 				B314F3A116FCC875001928A6 /* Security.framework in Frameworks */,
 				46E2F687D9E9466DAA81F80A /* libPods-RT Tests.a in Frameworks */,
+				B3279B531731DBF900A0AAFF /* QuartzCore.framework in Frameworks */,
+				B3279B551731EF3200A0AAFF /* Quartz.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,7 +221,6 @@
 		B36192BD166D7B2F00D86162 = {
 			isa = PBXGroup;
 			children = (
-				B3279B5117310BDC00A0AAFF /* Quartz.framework */,
 				B36192D2166D7B2F00D86162 /* Application */,
 				B314F38316FCC7D9001928A6 /* Unit Tests */,
 				B36192CB166D7B2F00D86162 /* Frameworks */,
@@ -254,7 +242,7 @@
 		B36192CB166D7B2F00D86162 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B3279B4F17310A3800A0AAFF /* QuickLook.framework */,
+				B3279B5117310BDC00A0AAFF /* Quartz.framework */,
 				B3822942172721F300590C3B /* QuartzCore.framework */,
 				B329A4D61716FDA400B8AF48 /* WebKit.framework */,
 				B314F37916FCC67C001928A6 /* SenTestingKit.framework */,
@@ -424,7 +412,6 @@
 				2BE9D0D720884E6EAAABBEF9 /* Copy Pods Resources */,
 			);
 			buildRules = (
-				B382294B17272CE800590C3B /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -478,6 +465,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B38229641727AECD00590C3B /* RTCTicketDetailWindow.html in Resources */,
 				B36192D7166D7B2F00D86162 /* InfoPlist.strings in Resources */,
 				B36192DD166D7B2F00D86162 /* Credits.rtf in Resources */,
 				0A393BA9168255CC00DEAFE2 /* RTCLoginWindowController.xib in Resources */,
@@ -565,7 +553,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B38229641727AECD00590C3B /* RTCTicketDetailWindow.html in Sources */,
 				B36192D9166D7B2F00D86162 /* main.m in Sources */,
 				B36192E0166D7B2F00D86162 /* RTCAppDelegate.m in Sources */,
 				0A393BA416824C1500DEAFE2 /* RTEngine.m in Sources */,

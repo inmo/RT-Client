@@ -15,7 +15,6 @@
 @interface RTCTicketDetailWindowController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) IBOutlet WebView * webView;
-@property (nonatomic, strong) NSArray * selectedTicketAttachments;
 
 @property (nonatomic, strong) id keepAlive;
 
@@ -49,7 +48,7 @@
 {
     if ([keyPath isEqualToString:@"attachments"] && object == self.selectedTicket)
     {
-        self.selectedTicketAttachments = [self.selectedTicket chronologicallySortedTopLevelAttachments];
+        [self reloadDetailView];
         return;
     }
     
@@ -62,25 +61,21 @@
     
     if ((self->_selectedTicket = selectedTicket))
     {
-        self.selectedTicketAttachments = [self.selectedTicket chronologicallySortedTopLevelAttachments];
+        [self reloadDetailView];
         [self.selectedTicket addObserver:self forKeyPath:@"attachments" options:NULL context:NULL];
     }
 }
 
-- (void)setSelectedTicketAttachments:(NSArray *)selectedTicketAttachments
+- (void)reloadDetailView
 {
-    self->_selectedTicketAttachments = selectedTicketAttachments;
-    
     static NSString * detailViewBaseString = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        // external symbols generated via custom build rule and xxd
-        extern unsigned char RTCTicketDetailWindow_html[];
-        extern unsigned int RTCTicketDetailWindow_html_len;
+        NSString * path = [[NSBundle mainBundle] pathForResource:@"RTCTicketDetailWindow" ofType:@"html"];
+        NSError * __autoreleasing error = nil;
+        detailViewBaseString = [[NSString alloc] initWithContentsOfFile:path encoding:NSUTF8StringEncoding error:&error];
         
-        detailViewBaseString = [[NSString alloc] initWithBytesNoCopy:RTCTicketDetailWindow_html
-                                                          length:RTCTicketDetailWindow_html_len
-                                                        encoding:NSUTF8StringEncoding freeWhenDone:NO];
+        if (error) NSLog(@"%s: %@", __PRETTY_FUNCTION__, error);
     });
     
     [[self.webView mainFrame] loadHTMLString:detailViewBaseString baseURL:nil];
@@ -95,25 +90,9 @@
 
 - (void)webView:(WebView *)webView didFinishLoadForFrame:(WebFrame *)frame
 {
-    NSMutableArray * attachments = [NSMutableArray arrayWithCapacity:self.selectedTicketAttachments.count];
-    [self.selectedTicketAttachments enumerateObjectsUsingBlock:^(RTAttachment * attachment, NSUInteger idx, BOOL *stop) {
-        NSMutableDictionary * headers = [NSMutableDictionary dictionaryWithCapacity:[attachment.headers count]];
-        [attachment.headers enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            headers[[key lowercaseString]] = obj;
-        }];
-        
-        [attachments addObject:@{
-         @"contents": ENSURE_NOT_NIL([[NSString alloc] initWithData:[attachment content] encoding:NSUTF8StringEncoding]),
-         @"date": ENSURE_NOT_NIL([[attachment created] description]),
-         @"headers": headers
-         }];
-    }];
-    
-    NSError * __autoreleasing jsonError = nil;
-    id jsonData = [NSJSONSerialization dataWithJSONObject:attachments options:NULL error:&jsonError];
-    NSString * jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    
-    [webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"$detail.setTicket(%@)", jsonString]];
+    [webView stringByEvaluatingJavaScriptFromString:
+     [NSString stringWithFormat:@"$detail.setTicket(%@)",
+      [self.selectedTicket constructTicketHierarchyJSON]]];
 }
 
 #pragma mark - Toolbar Actions

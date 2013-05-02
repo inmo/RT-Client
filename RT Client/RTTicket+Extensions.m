@@ -45,101 +45,71 @@
     return ticket;
 }
 
-- (NSArray *)chronologicallySortedTopLevelAttachments;
-{
-    NSPredicate * topLevelPredicate = [NSPredicate predicateWithFormat:@"parent = 0"];
-    NSArray * sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]];
+static NSString * const RTAttachmentSerializationChronologicalOrderingKey = @"chronologicalOrdering";
+static NSString * const RTAttachmentSerializationDateCreatedKey = @"dateCreated";
+static NSString * const RTAttachmentSerializationBodyKey = @"body";
+static NSString * const RTAttachmentSerializationHeadersKey = @"headers";
 
-    NSMutableArray * attachments = [[[self.attachments filteredSetUsingPredicate:topLevelPredicate] allObjects] mutableCopy];
+- (NSString *)constructTicketHierarchyJSON
+{
+    NSMutableArray * jsonAttachments = [NSMutableArray array];
+    [[self.attachments filteredSetUsingPredicate:[NSPredicate predicateWithFormat:@"parent = 0"]]
+     enumerateObjectsUsingBlock:^(RTAttachment * attachment, BOOL *stop) {
+         NSDictionary * dictionary = [self _constructSubhierarchyForAttachment:attachment];
+         if (dictionary) [jsonAttachments addObject:dictionary];
+     }];
     
-    // TODO :Refactor this in th emornign
-    for (NSInteger idx = 0; idx < attachments.count; idx++)
+    [jsonAttachments sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:RTAttachmentSerializationChronologicalOrderingKey ascending:YES]]];
+
+    NSError * __autoreleasing error = nil;
+    NSData * data = [NSJSONSerialization dataWithJSONObject:jsonAttachments options:NULL error:&error];
+    
+    if (!data || error)
+        return nil;
+    
+    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
+- (NSDictionary *)_constructSubhierarchyForAttachment:(RTAttachment *)attachment;
+{
+    attachment = [self _ensureValidateTopLevelAttachment:attachment];
+    
+    if (!attachment)
+        return nil;
+    
+    NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterMediumStyle];
+    
+    return @{ RTAttachmentSerializationChronologicalOrderingKey: @(attachment.created.timeIntervalSince1970),
+              RTAttachmentSerializationDateCreatedKey: ENSURE_NOT_NIL([formatter stringFromDate:attachment.created]),
+              RTAttachmentSerializationBodyKey: ENSURE_NOT_NIL([[NSString alloc] initWithData:attachment.content encoding:NSUTF8StringEncoding]),
+              RTAttachmentSerializationHeadersKey: ENSURE_NOT_NIL_OR(attachment.headers, @{}) };
+}
+
+- (RTAttachment *)_ensureValidateTopLevelAttachment:(RTAttachment *)attachment;
+{
+    if (attachment.content.length > 0 && [[NSString alloc] initWithData:attachment.content encoding:NSUTF8StringEncoding])
+        return attachment;
+    
+    NSArray * children = [attachment childrenAttachments];
+    NSArray * predicates = @[[NSPredicate predicateWithFormat:@"contentType BEGINSWITH \"text\""],
+                             [NSPredicate predicateWithBlock:^BOOL(RTAttachment * evaluatedObject, NSDictionary * bindings) {
+                                 return !![[NSString alloc] initWithData:evaluatedObject.content encoding:NSUTF8StringEncoding];
+                             }]];
+    
+    RTAttachment * replacementAttachment = nil;
+    for (NSPredicate * predicate in predicates)
     {
-        RTAttachment * attachment = attachments[idx];
-        if (attachment.content.length > 0 && [[NSString alloc] initWithData:attachment.content encoding:NSUTF8StringEncoding])
-            continue;
+        NSUInteger foundIdx = [children indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop) {
+            return (*stop = [predicate evaluateWithObject:obj]);
+        }];
         
-        NSPredicate * childrenPredicate = [NSPredicate predicateWithFormat:@"parent = %@", attachment.attachmentID];
-        NSArray * children = [[self.attachments filteredSetUsingPredicate:childrenPredicate] allObjects];
-        
-        attachment = nil;
-        
-        for (RTAttachment * child in children)
-            if ([child.contentType hasPrefix:@"text"])
-            {
-                attachment = child;
-                break;
-            }
-        
-        if (attachment)
-        {
-            attachments[idx] = attachment;
-            continue;
-        }
-        
-        for (RTAttachment * child in children)
-            if ([[NSString alloc] initWithData:child.content encoding:NSUTF8StringEncoding])
-            {
-                attachment = child;
-                break;
-            }
-        
-        if (attachment)
-        {
-            attachments[idx] = attachment;
-            continue;
-        }
-        
-        [attachments removeObjectAtIndex:idx];
-        idx -= 1;
+        if (foundIdx != NSNotFound)
+            return children[foundIdx];
     }
     
-    return [attachments sortedArrayUsingDescriptors:sortDescriptors];
-}
-
-- (NSAttributedString *)stringForReplyComposer;
-{
-    NSMutableParagraphStyle * style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-    style.paragraphSpacing = style.paragraphSpacingBefore = 5.0f;
-    
-    NSMutableAttributedString * composerReply = [NSMutableAttributedString new];
-    [composerReply addAttribute:NSParagraphStyleAttributeName value:style range:NSMakeRange(0, 0)];
-    NSArray * attachments = self.chronologicallySortedTopLevelAttachments;
-    
-    [attachments enumerateObjectsUsingBlock:^(RTAttachment * attachment, NSUInteger idx, BOOL *stop) {
-        NSMutableAttributedString * attachmentContents = [[attachment attributedStringContents] mutableCopy];
-        if (!attachmentContents)
-            return;
-        
-        style.firstLineHeadIndent = style.headIndent = 10.0 * (CGFloat)(attachments.count - idx);
-        
-        [attachmentContents setAttributes:@{
-            NSParagraphStyleAttributeName: [style copy],
-           NSForegroundColorAttributeName: [NSColor blueColor]
-         } range:NSMakeRange(0, attachmentContents.length)];
-        
-        [composerReply insertAttributedString:[[NSAttributedString alloc] initWithString:@"\n"] atIndex:0];
-        [composerReply insertAttributedString:attachmentContents atIndex:0];
-    }];
-    
-    style.firstLineHeadIndent = style.headIndent = 0.0;
-    
-    NSAttributedString * header = [[NSAttributedString alloc] initWithString:@"\n" attributes:@{ NSParagraphStyleAttributeName : [NSParagraphStyle defaultParagraphStyle] }];
-    [composerReply insertAttributedString:header atIndex:0];
-    
-    return composerReply;
-}
-
-- (NSString *)HTMLStringForReplyComposer;
-{
-    NSMutableString * string = [NSMutableString new];
-    [self.chronologicallySortedTopLevelAttachments enumerateObjectsUsingBlock:^(RTAttachment * attachment, NSUInteger idx, BOOL *stop) {
-        [string insertString:[attachment HTMLString] atIndex:0];
-        [string insertString:@"<blockquote>" atIndex:0];
-        [string appendFormat:@"</blockquote>"];
-    }];
-    
-    return string;
+    return nil;
 }
 
 - (NSString *)plainTextSummary;

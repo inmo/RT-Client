@@ -7,7 +7,6 @@
 //
 
 #import <WebKit/WebKit.h>
-#import <QuickLook/QuickLook.h>
 #import <Quartz/Quartz.h>
 
 #import "RTCReplyComposerWindowController.h"
