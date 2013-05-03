@@ -10,7 +10,9 @@
 
 int main(int argc, char *argv[])
 {
-    [MagicalRecord setupCoreDataStackWithInMemoryStore];
-    
-    return NSApplicationMain(argc, (const char **)argv);
+    @autoreleasepool {
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"WebKitDeveloperExtras"];
+        [MagicalRecord setupCoreDataStackWithInMemoryStore];
+        return NSApplicationMain(argc, (const char **)argv);
+    }
 }
