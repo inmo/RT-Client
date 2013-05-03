@@ -116,7 +116,7 @@
 
 - (void)openDetailForTicket:(RTTicket *)ticket;
 {
-    [[[RTCTicketDetailWindowController alloc] initWithTicket:ticket] showWindow:self];
+    [[RTCTicketDetailWindowController registeredWindowControllerForTicket:ticket] showWindow:self];
 }
 
 @end

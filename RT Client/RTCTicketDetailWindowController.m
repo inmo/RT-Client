@@ -16,11 +16,33 @@
 
 @property (nonatomic, strong) IBOutlet WebView * webView;
 
-@property (nonatomic, strong) id keepAlive;
-
 @end
 
 @implementation RTCTicketDetailWindowController
+
+static NSMutableDictionary * __registeredTicketDetailWindows = nil;
+
++ (void)initialize
+{
+    __registeredTicketDetailWindows = [NSMutableDictionary new];
+}
+
++ (instancetype)registeredWindowControllerForTicket:(RTTicket *)ticket;
+{
+    if (!ticket)
+        return nil;
+    
+    RTCTicketDetailWindowController * result = __registeredTicketDetailWindows[ticket.objectID];
+    if (!result)
+    {
+        result = [[self alloc] initWithTicket:ticket];
+        
+        if (result)
+            __registeredTicketDetailWindows[ticket.objectID] = result;
+    }
+    
+    return result;
+}
 
 - (id)init
 {
@@ -32,7 +54,6 @@
     if ((self = [self init]))
     {
         self.selectedTicket = ticket;
-        self.keepAlive = self;
     }
     
     return self;
@@ -83,7 +104,7 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-    self.keepAlive = nil;
+    [__registeredTicketDetailWindows removeObjectForKey:self.selectedTicket.objectID];
 }
 
 #pragma mark - WebView Frame Loader Delegate

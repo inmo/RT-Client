@@ -16,7 +16,7 @@
 #import "RTModels.h"
 
 // TODO: Add "view ticket" logic
-// TODO: Modify app delegate to reuse ticket display windows
+// TODO: Add "refresh this ticket" logic
 // TODO: Add debug logging
 
 @implementation RTCReplyComposerAttachmentTableViewCellView

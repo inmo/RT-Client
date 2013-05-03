@@ -42,7 +42,7 @@
 			<object class="NSWindowTemplate" id="1005">
 				<int key="NSWindowStyleMask">4111</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{196, 240}, {400, 428}}</string>
+				<string key="NSWindowRect">{{196, 240}, {556, 428}}</string>
 				<int key="NSWTFlags">544735232</int>
 				<string key="NSWindowTitle">Window</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -67,10 +67,9 @@
 							<string key="NSToolbarItemPaletteLabel">Reply</string>
 							<nil key="NSToolbarItemToolTip"/>
 							<object class="NSButton" key="NSToolbarItemView" id="961355058">
-								<reference key="NSNextResponder"/>
+								<nil key="NSNextResponder"/>
 								<int key="NSvFlags">268</int>
 								<string key="NSFrame">{{0, 14}, {56, 28}}</string>
-								<reference key="NSSuperview"/>
 								<string key="NSReuseIdentifierKey">_NS:22</string>
 								<bool key="NSEnabled">YES</bool>
 								<object class="NSButtonCell" key="NSCell" id="923757860">
@@ -108,12 +107,13 @@
 					<array key="NSToolbarIBAllowedItems">
 						<reference ref="241935484"/>
 					</array>
-					<array class="NSMutableArray" key="NSToolbarIBDefaultItems">
+					<array key="NSToolbarIBDefaultItems">
 						<reference ref="241935484"/>
 					</array>
 					<array key="NSToolbarIBSelectableItems" id="0"/>
 				</object>
 				<nil key="NSUserInterfaceItemIdentifier"/>
+				<string key="NSWindowContentMinSize">{400, 300}</string>
 				<object class="NSView" key="NSWindowView" id="1006">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
@@ -138,7 +138,7 @@
 								<string>public.url</string>
 								<string>public.url-name</string>
 							</set>
-							<string key="NSFrameSize">{400, 428}</string>
+							<string key="NSFrameSize">{556, 428}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView"/>
@@ -150,23 +150,20 @@
 								<dictionary class="NSMutableDictionary" key="Values">
 									<integer value="12" key="WebKitDefaultFixedFontSize"/>
 									<integer value="12" key="WebKitDefaultFontSize"/>
-									<boolean value="YES" key="WebKitJavaEnabled"/>
-									<boolean value="YES" key="WebKitJavaScriptCanOpenWindowsAutomatically"/>
-									<boolean value="YES" key="WebKitJavaScriptEnabled"/>
 									<integer value="1" key="WebKitMinimumFontSize"/>
-									<boolean value="YES" key="WebKitPluginsEnabled"/>
 								</dictionary>
 							</object>
 							<bool key="UseBackForwardList">YES</bool>
 							<bool key="AllowsUndo">YES</bool>
 						</object>
 					</array>
-					<string key="NSFrameSize">{400, 428}</string>
+					<string key="NSFrameSize">{556, 428}</string>
 					<reference key="NSSuperview"/>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="396444369"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
+				<string key="NSMinSize">{400, 355}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
@@ -422,6 +419,17 @@
 				<object class="IBPartialClassDescription">
 					<string key="className">RTCTicketDetailWindowController</string>
 					<string key="superclassName">NSWindowController</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">replyToSelectedTicket:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="actionInfosByName">
+						<string key="NS.key.0">replyToSelectedTicket:</string>
+						<object class="IBActionInfo" key="NS.object.0">
+							<string key="name">replyToSelectedTicket:</string>
+							<string key="candidateClassName">id</string>
+						</object>
+					</object>
 					<object class="NSMutableDictionary" key="outlets">
 						<string key="NS.key.0">webView</string>
 						<string key="NS.object.0">WebView</string>

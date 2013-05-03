@@ -12,9 +12,11 @@
 
 @interface RTCTicketDetailWindowController : NSWindowController
 
-@property (nonatomic, strong) RTTicket * selectedTicket;
++ (instancetype)registeredWindowControllerForTicket:(RTTicket *)ticket;
 
 - (id)initWithTicket:(RTTicket *)ticket;
+
+@property (nonatomic, strong) RTTicket * selectedTicket;
 
 - (IBAction)replyToSelectedTicket:(id)sender;
 
