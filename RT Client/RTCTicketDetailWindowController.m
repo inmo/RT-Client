@@ -114,6 +114,7 @@ static NSMutableDictionary * __registeredTicketDetailWindows = nil;
     [webView stringByEvaluatingJavaScriptFromString:
      [NSString stringWithFormat:@"$detail.setTicket(%@)",
       [self.selectedTicket constructTicketHierarchyJSON]]];
+    self.window.title = self.selectedTicket.subject;
 }
 
 #pragma mark - Toolbar Actions
