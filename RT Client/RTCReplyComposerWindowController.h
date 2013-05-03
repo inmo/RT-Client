@@ -23,6 +23,7 @@
 + (instancetype)registeredWindowControllerForTicket:(RTTicket *)ticket;
 - (id)initWithTicket:(RTTicket *)ticket;
 
+- (IBAction)viewTicketThread:(id)sender;
 - (IBAction)quickLookAttachment:(id)sender;
 - (IBAction)deleteAttachment:(id)sender;
 

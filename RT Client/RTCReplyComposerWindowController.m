@@ -10,12 +10,12 @@
 #import <Quartz/Quartz.h>
 
 #import "RTCReplyComposerWindowController.h"
+#import "RTCAppDelegate.h"
 #import "RTCAnimatedCloseWindow.h"
 #import "RTCWindowOverlayProgressIndicatorView.h"
 #import "RTEngine.h"
 #import "RTModels.h"
 
-// TODO: Add "view ticket" logic
 // TODO: Add "refresh this ticket" logic
 // TODO: Add debug logging
 
@@ -156,6 +156,12 @@ static NSMutableDictionary * __registeredTicketReplyComposerWindows = nil;
         
         [(RTCAnimatedCloseWindow *)self.window orderOutWithAnimation:self];
     }];
+}
+
+- (IBAction)viewTicketThread:(id)sender;
+{
+    [(RTCAppDelegate *)[[NSApplication sharedApplication] delegate]
+     openDetailForTicket:self.ticket];
 }
 
 - (void)_attachFileInline:(NSURL *)fileURL
