@@ -7,6 +7,7 @@
 //
 
 #import "RTAttachment.h"
+#import <Quartz/Quartz.h>
 
 extern NSString * const RTAttachmentSerializationChronologicalOrderingKey;
 extern NSString * const RTAttachmentSerializationDateCreatedKey;
@@ -17,7 +18,7 @@ extern NSString * const RTAttachmentSerializationResourceFilenameKey;
 extern NSString * const RTAttachmentSerializationResourceSizeKey;
 extern NSString * const RTAttachmentSerializationResourceURLKey;
 
-@interface RTAttachment (Extensions)
+@interface RTAttachment (Extensions) <QLPreviewItem>
 
 + (RTAttachment *)createAttachmentFromAPIResponse:(NSDictionary *)apiResponse;
 + (RTAttachment *)createAttachmentFromAPIResponse:(NSDictionary *)apiResponse inContext:(NSManagedObjectContext *)context;

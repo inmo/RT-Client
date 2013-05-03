@@ -54,12 +54,34 @@ NSString * const RTAttachmentSerializationResourceURLKey = @"url";
     
     attachment.headers = headers;
     
-    if ([apiResponse[@"Content"] isKindOfClass:[NSData class]])
-        attachment.content = apiResponse[@"Content"];
-    else if ([apiResponse[@"Content"] isKindOfClass:[NSString class]])
-        attachment.content = [(NSString *)apiResponse[@"Content"] dataUsingEncoding:NSUTF8StringEncoding];
+    attachment.contentPath = [self _generateUniqueContentPathWithHint:attachment.filename];
+    [apiResponse[@"Content"] writeToFile:attachment.contentPath atomically:YES];
     
     return attachment;
+}
+
+#define RTAttachmentStorageDirectory() [RTDataStorageDirectory() stringByAppendingPathComponent:@"RTAttachment"]
+
++ (NSString *)_generateUniqueContentPathWithHint:(NSString *)hint;
+{
+    CFUUIDRef uuid = CFUUIDCreate(kCFAllocatorDefault);
+    NSString * uniqueString = CFBridgingRelease(CFUUIDCreateString(kCFAllocatorDefault, uuid));
+    CFRelease(uuid);
+    
+    NSString * filename = (hint.length == 0) ? uniqueString : [uniqueString stringByAppendingString:hint];
+    
+    [self ensureAttachmentsStorageDirectoryExists];
+    return [RTAttachmentStorageDirectory() stringByAppendingPathComponent:filename];
+}
+
++ (void)ensureAttachmentsStorageDirectoryExists
+{
+    NSError * __autoreleasing error = nil;
+    BOOL success = [[NSFileManager defaultManager]
+                    createDirectoryAtPath:RTAttachmentStorageDirectory() withIntermediateDirectories:YES
+                    attributes:nil error:&error];
+    
+    if (!success) NSLog(@"%@", error);
 }
 
 + (NSDateFormatter *)defaultDateFormatter
@@ -106,6 +128,11 @@ NSString * const RTAttachmentSerializationResourceURLKey = @"url";
               RTAttachmentSerializationAttachmentsKey: ENSURE_NOT_NIL_OR(childrenLeaves, @[])};
 }
 
+- (NSData *)content
+{
+    return [NSData dataWithContentsOfFile:self.contentPath];
+}
+
 - (RTAttachment *)_validTopLevelAttachmentForAttachment:(RTAttachment *)attachment;
 {
     if (attachment.content.length > 0 && [[NSString alloc] initWithData:attachment.content encoding:NSUTF8StringEncoding])
@@ -138,6 +165,18 @@ NSString * const RTAttachmentSerializationResourceURLKey = @"url";
               RTAttachmentSerializationResourceFilenameKey: ENSURE_NOT_NIL_OR(self.filename, @"untitled"),
               RTAttachmentSerializationResourceSizeKey: [NSByteCountFormatter stringFromByteCount:self.content.length countStyle:NSByteCountFormatterCountStyleFile],
               RTAttachmentSerializationResourceURLKey: self.objectID.URIRepresentation.absoluteString };
+}
+
+#pragma mark - QLPreviewItem
+
+- (NSURL *)previewItemURL
+{
+    return [NSURL fileURLWithPath:self.contentPath];
+}
+
+- (NSString *)previewItemTitle
+{
+    return ENSURE_NOT_NIL_OR(self.filename, @"Untitled Attachment");
 }
 
 @end

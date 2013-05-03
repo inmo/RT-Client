@@ -2,7 +2,7 @@
 //  RTAttachment.m
 //  RT Client
 //
-//  Created by James Savage on 2/3/13.
+//  Created by James Savage on 5/2/13.
 //  Copyright (c) 2013 INMO. All rights reserved.
 //
 
@@ -13,17 +13,18 @@
 @implementation RTAttachment
 
 @dynamic attachmentID;
-@dynamic subject;
-@dynamic creator;
-@dynamic created;
-@dynamic transaction;
-@dynamic parent;
-@dynamic messageID;
-@dynamic filename;
-@dynamic contentType;
-@dynamic contentEncoding;
-@dynamic headers;
 @dynamic content;
+@dynamic contentEncoding;
+@dynamic contentType;
+@dynamic created;
+@dynamic creator;
+@dynamic filename;
+@dynamic headers;
+@dynamic messageID;
+@dynamic parent;
+@dynamic subject;
+@dynamic transaction;
+@dynamic contentPath;
 @dynamic ticket;
 
 @end

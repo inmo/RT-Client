@@ -2,8 +2,9 @@
 <model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="2061" systemVersion="12D78" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="RTAttachment" representedClassName="RTAttachment" syncable="YES">
         <attribute name="attachmentID" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="content" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="content" optional="YES" transient="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="contentEncoding" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="contentPath" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="contentType" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="created" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="creator" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -36,7 +37,7 @@
         <relationship name="attachments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="RTAttachment" inverseName="ticket" inverseEntity="RTAttachment" syncable="YES"/>
     </entity>
     <elements>
-        <element name="RTAttachment" positionX="160" positionY="192" width="128" height="240"/>
+        <element name="RTAttachment" positionX="160" positionY="192" width="128" height="255"/>
         <element name="RTTicket" positionX="-54" positionY="-9" width="128" height="315"/>
     </elements>
 </model>

@@ -17,14 +17,12 @@
 		46E2F687D9E9466DAA81F80A /* libPods-RT Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 65A87782D79E4217A0F30C99 /* libPods-RT Tests.a */; };
 		75152FD39F7642488E1B9FB1 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ABB1DB00277340CC97CD8018 /* libPods.a */; };
 		B30D0F8D16BE6C5800DAB1D3 /* RTAttachment+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F8C16BE6C5800DAB1D3 /* RTAttachment+Extensions.m */; };
-		B30D0F9016BE864100DAB1D3 /* RTAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F8F16BE864000DAB1D3 /* RTAttachment.m */; };
 		B30D0F9316BE864100DAB1D3 /* RTTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F9216BE864100DAB1D3 /* RTTicket.m */; };
 		B314F38116FCC7D9001928A6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B314F37916FCC67C001928A6 /* SenTestingKit.framework */; };
 		B314F38216FCC7D9001928A6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B36192CC166D7B2F00D86162 /* Cocoa.framework */; };
 		B314F38816FCC7D9001928A6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B314F38616FCC7D9001928A6 /* InfoPlist.strings */; };
 		B314F38B16FCC7D9001928A6 /* RTTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B314F38A16FCC7D9001928A6 /* RTTests.m */; };
 		B314F39216FCC862001928A6 /* RTTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F9216BE864100DAB1D3 /* RTTicket.m */; };
-		B314F39316FCC862001928A6 /* RTAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F8F16BE864000DAB1D3 /* RTAttachment.m */; };
 		B314F39416FCC862001928A6 /* RTTicket+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B3CC5C0F16BAB813005C71C4 /* RTTicket+Extensions.m */; };
 		B314F39516FCC862001928A6 /* RTAttachment+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B30D0F8C16BE6C5800DAB1D3 /* RTAttachment+Extensions.m */; };
 		B314F39616FCC862001928A6 /* RTKeychainEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = B3A015E516B1E01700D09351 /* RTKeychainEntry.m */; };
@@ -39,6 +37,8 @@
 		B3279B5217310BDC00A0AAFF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3279B5117310BDC00A0AAFF /* Quartz.framework */; };
 		B3279B531731DBF900A0AAFF /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3822942172721F300590C3B /* QuartzCore.framework */; };
 		B3279B551731EF3200A0AAFF /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3279B5117310BDC00A0AAFF /* Quartz.framework */; };
+		B3279B5C173354DE00A0AAFF /* RTAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = B3279B5B173354DE00A0AAFF /* RTAttachment.m */; };
+		B3279B5D173354DE00A0AAFF /* RTAttachment.m in Sources */ = {isa = PBXBuildFile; fileRef = B3279B5B173354DE00A0AAFF /* RTAttachment.m */; };
 		B329A4D21716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */; };
 		B329A4D31716296200B8AF48 /* RTCReplyComposerWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */; };
 		B329A4D41716296200B8AF48 /* RTCReplyComposerWindowController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */; };
@@ -89,8 +89,6 @@
 		ABB1DB00277340CC97CD8018 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B30D0F8B16BE6C5800DAB1D3 /* RTAttachment+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "RTAttachment+Extensions.h"; sourceTree = "<group>"; };
 		B30D0F8C16BE6C5800DAB1D3 /* RTAttachment+Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "RTAttachment+Extensions.m"; sourceTree = "<group>"; };
-		B30D0F8E16BE864000DAB1D3 /* RTAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTAttachment.h; sourceTree = "<group>"; };
-		B30D0F8F16BE864000DAB1D3 /* RTAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTAttachment.m; sourceTree = "<group>"; };
 		B30D0F9116BE864100DAB1D3 /* RTTicket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTTicket.h; sourceTree = "<group>"; };
 		B30D0F9216BE864100DAB1D3 /* RTTicket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTTicket.m; sourceTree = "<group>"; };
 		B314F37916FCC67C001928A6 /* SenTestingKit.framework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -101,6 +99,8 @@
 		B314F38A16FCC7D9001928A6 /* RTTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RTTests.m; sourceTree = "<group>"; };
 		B314F38C16FCC7D9001928A6 /* RT Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RT Tests-Prefix.pch"; sourceTree = "<group>"; };
 		B3279B5117310BDC00A0AAFF /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
+		B3279B5A173354DE00A0AAFF /* RTAttachment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTAttachment.h; sourceTree = "<group>"; };
+		B3279B5B173354DE00A0AAFF /* RTAttachment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTAttachment.m; sourceTree = "<group>"; };
 		B329A4CF1716296200B8AF48 /* RTCReplyComposerWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RTCReplyComposerWindowController.h; sourceTree = "<group>"; };
 		B329A4D01716296200B8AF48 /* RTCReplyComposerWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTCReplyComposerWindowController.m; sourceTree = "<group>"; };
 		B329A4D11716296200B8AF48 /* RTCReplyComposerWindowController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RTCReplyComposerWindowController.xib; sourceTree = "<group>"; };
@@ -209,10 +209,10 @@
 			isa = PBXGroup;
 			children = (
 				0A0211A116A606EC00054395 /* RT_Client.xcdatamodeld */,
+				B3279B5A173354DE00A0AAFF /* RTAttachment.h */,
+				B3279B5B173354DE00A0AAFF /* RTAttachment.m */,
 				B30D0F9116BE864100DAB1D3 /* RTTicket.h */,
 				B30D0F9216BE864100DAB1D3 /* RTTicket.m */,
-				B30D0F8E16BE864000DAB1D3 /* RTAttachment.h */,
-				B30D0F8F16BE864000DAB1D3 /* RTAttachment.m */,
 				B3CC5C0C16BAB7C8005C71C4 /* RTModels.h */,
 			);
 			name = "Core Data";
@@ -530,7 +530,6 @@
 			files = (
 				B314F38B16FCC7D9001928A6 /* RTTests.m in Sources */,
 				B314F39216FCC862001928A6 /* RTTicket.m in Sources */,
-				B314F39316FCC862001928A6 /* RTAttachment.m in Sources */,
 				B314F39416FCC862001928A6 /* RTTicket+Extensions.m in Sources */,
 				B314F39516FCC862001928A6 /* RTAttachment+Extensions.m in Sources */,
 				B314F39616FCC862001928A6 /* RTKeychainEntry.m in Sources */,
@@ -546,6 +545,7 @@
 				B382294717272BDC00590C3B /* RTCAnimatedCloseWindow.m in Sources */,
 				B382295217273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m in Sources */,
 				B382295A17278B6800590C3B /* RTCTicketDetailWindowController.m in Sources */,
+				B3279B5D173354DE00A0AAFF /* RTAttachment.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -563,7 +563,6 @@
 				B3CC5C1016BAB814005C71C4 /* RTTicket+Extensions.m in Sources */,
 				B3CC5C1916BB5F05005C71C4 /* RTRequestOperation.m in Sources */,
 				B30D0F8D16BE6C5800DAB1D3 /* RTAttachment+Extensions.m in Sources */,
-				B30D0F9016BE864100DAB1D3 /* RTAttachment.m in Sources */,
 				B30D0F9316BE864100DAB1D3 /* RTTicket.m in Sources */,
 				B3A6F91C16C99DCA00B8D9D7 /* RTCTicketStubTableCellView.m in Sources */,
 				B370905A16F2D43A00DF719B /* NSHTTPCookieStorage+RequestTracker.m in Sources */,
@@ -572,6 +571,7 @@
 				B38229461727246E00590C3B /* RTCAnimatedCloseWindow.m in Sources */,
 				B382295117273DD600590C3B /* RTCWindowOverlayProgressIndicatorView.m in Sources */,
 				B382295917278B6800590C3B /* RTCTicketDetailWindowController.m in Sources */,
+				B3279B5C173354DE00A0AAFF /* RTAttachment.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

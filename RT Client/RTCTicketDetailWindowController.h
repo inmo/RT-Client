@@ -10,7 +10,7 @@
 
 @class RTTicket;
 
-@interface RTCTicketDetailWindowController : NSWindowController
+@interface RTCTicketDetailWindowController : NSWindowController <QLPreviewPanelDataSource, QLPreviewPanelDelegate>
 
 + (instancetype)registeredWindowControllerForTicket:(RTTicket *)ticket;
 

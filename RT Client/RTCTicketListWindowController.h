@@ -8,6 +8,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface RTCTicketListWindowController : NSWindowController
+@interface RTCTicketListWindowController : NSWindowController <QLPreviewPanelDataSource, QLPreviewPanelDelegate>
 
 @end

@@ -166,9 +166,10 @@ static NSMutableDictionary * __registeredTicketReplyComposerWindows = nil;
 
 - (void)_attachFileInline:(NSURL *)fileURL
 {
-    NSURL * temporaryAttachmentDirectory = [[[NSURL fileURLWithPath:NSTemporaryDirectory()]
-                                             URLByAppendingPathComponent:@"com.inmo.RT-Client" isDirectory:YES]
-                                            URLByAppendingPathComponent:[NSString stringWithFormat:@"%p", self] isDirectory:YES];;
+    
+    NSURL * temporaryAttachmentDirectory = [NSURL fileURLWithPath:
+                                            [[RTDataStorageDirectory() stringByAppendingPathComponent:@"composer-attachment"]
+                                             stringByAppendingPathComponent:[NSString stringWithFormat:@"%p", self]]];
     
     NSError * __autoreleasing error = nil; // TODO: Handle this error
     [[NSFileManager defaultManager] createDirectoryAtURL:temporaryAttachmentDirectory withIntermediateDirectories:YES attributes:nil error:&error];

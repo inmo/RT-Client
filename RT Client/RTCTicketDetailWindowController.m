@@ -7,6 +7,7 @@
 //
 
 #import <WebKit/WebKit.h>
+#import <Quartz/Quartz.h>
 
 #import "RTCTicketDetailWindowController.h"
 #import "RTCAppDelegate.h"
@@ -15,6 +16,9 @@
 @interface RTCTicketDetailWindowController () <NSTableViewDelegate, NSTableViewDataSource>
 
 @property (nonatomic, strong) IBOutlet WebView * webView;
+
+@property (nonatomic, strong) RTAttachment * quickLookAttachment;
+@property (nonatomic, strong) QLPreviewPanel * quickLookPanel;
 
 @end
 
@@ -82,6 +86,9 @@ static NSMutableDictionary * __registeredTicketDetailWindows = nil;
     
     if ((self->_selectedTicket = selectedTicket))
     {
+        self.quickLookAttachment = nil;
+        [self.quickLookPanel orderOut:self];
+        
         [self reloadDetailView];
         [self.selectedTicket addObserver:self forKeyPath:@"attachments" options:NULL context:NULL];
     }
@@ -117,12 +124,72 @@ static NSMutableDictionary * __registeredTicketDetailWindows = nil;
     self.window.title = self.selectedTicket.subject;
 }
 
+- (void)webView:(WebView *)webView decidePolicyForNavigationAction:(NSDictionary *)actionInformation request:(NSURLRequest *)request frame:(WebFrame *)frame decisionListener:(id <WebPolicyDecisionListener>)listener
+{
+    if ([actionInformation[WebActionNavigationTypeKey] integerValue] == WebNavigationTypeLinkClicked)
+    {
+        NSManagedObjectID * objectID = [[NSPersistentStoreCoordinator MR_defaultStoreCoordinator] managedObjectIDForURIRepresentation:[request URL]];
+        self.quickLookAttachment = (RTAttachment *)[[NSManagedObjectContext MR_defaultContext] objectWithID:objectID];
+        
+        if (self.quickLookAttachment) // Ensure that the object is still alive
+            self.quickLookAttachment = [RTAttachment MR_findFirstByAttribute:@"self" withValue:self.quickLookAttachment];
+        
+        if (self.quickLookAttachment)
+        {
+            [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:self];
+            [[QLPreviewPanel sharedPreviewPanel] reloadData];
+        }
+        else
+        {
+            [[NSAlert alertWithMessageText:@"Error opening attachment" defaultButton:@"Okay" alternateButton:nil otherButton:nil informativeTextWithFormat:nil]
+             beginSheetModalForWindow:self.window modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        }
+        
+        [listener ignore];
+        return;
+    }
+    
+    [listener use];
+}
+
 #pragma mark - Toolbar Actions
 
 - (IBAction)replyToSelectedTicket:(id)sender;
 {
     [(RTCAppDelegate *)[[NSApplication sharedApplication] delegate]
      openReplyComposerForTicket:self.selectedTicket];
+}
+
+#pragma mark - QLPreviewPanelDelegate
+
+- (BOOL)acceptsPreviewPanelControl:(QLPreviewPanel *)panel;
+{
+    return YES;
+}
+
+- (void)beginPreviewPanelControl:(QLPreviewPanel *)panel
+{
+    panel.delegate = self;
+    panel.dataSource = self;
+    
+    self.quickLookPanel = panel;
+}
+
+- (void)endPreviewPanelControl:(QLPreviewPanel *)panel
+{
+    self.quickLookPanel = nil;
+}
+
+#pragma mark - QLPreviewPanelDataSource
+
+- (NSInteger)numberOfPreviewItemsInPreviewPanel:(QLPreviewPanel *)panel
+{
+    return (self.quickLookAttachment) ? 1 : 0;
+}
+
+- (id <QLPreviewItem>)previewPanel:(QLPreviewPanel *)panel previewItemAtIndex:(NSInteger)index
+{
+    return self.quickLookAttachment;
 }
 
 @end

@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 INMO. All rights reserved.
 //
 
+#import <Quartz/Quartz.h>
+
 #import "RTCTicketListWindowController.h"
 #import "RTCTicketDetailWindowController.h"
 #import "RTCAppDelegate.h"
@@ -114,6 +116,35 @@
 {
     [(RTCAppDelegate *)[[NSApplication sharedApplication] delegate]
      openDetailForTicket:self.selectedTicket];
+}
+
+#pragma mark - QLPreviewPanelDelegate
+
+- (BOOL)acceptsPreviewPanelControl:(QLPreviewPanel *)panel;
+{
+    return [self.ticketDetailWindowController acceptsPreviewPanelControl:panel];
+}
+
+- (void)beginPreviewPanelControl:(QLPreviewPanel *)panel
+{
+    [self.ticketDetailWindowController beginPreviewPanelControl:panel];
+}
+
+- (void)endPreviewPanelControl:(QLPreviewPanel *)panel
+{
+    [self.ticketDetailWindowController endPreviewPanelControl:panel];
+}
+
+#pragma mark - QLPreviewPanelDataSource
+
+- (NSInteger)numberOfPreviewItemsInPreviewPanel:(QLPreviewPanel *)panel
+{
+    return [self.ticketDetailWindowController numberOfPreviewItemsInPreviewPanel:panel];
+}
+
+- (id <QLPreviewItem>)previewPanel:(QLPreviewPanel *)panel previewItemAtIndex:(NSInteger)index
+{
+    return [self.ticketDetailWindowController previewPanel:panel previewItemAtIndex:index];
 }
 
 @end
