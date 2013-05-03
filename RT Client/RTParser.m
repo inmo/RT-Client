@@ -19,6 +19,17 @@ static NSString * kRTParserKeyValueDivisionMarker = @": ";
 
 @implementation RTParser
 
+static NSData * kRTParserContentRangeMarker = nil;
+static NSData * kRTParserAttachmentLineMarker = nil;
+static NSData * kRTParserAttachmentTrailerMarker = nil;
+
++ (void)initialize
+{
+    kRTParserContentRangeMarker = [@"Content: " dataUsingEncoding:NSUTF8StringEncoding];
+    kRTParserAttachmentLineMarker = [@"         " dataUsingEncoding:NSUTF8StringEncoding];
+    kRTParserAttachmentTrailerMarker = [NSData dataWithBytes:(char[]){0x0A, 0x0A, 0x0A} length:3];
+}
+
 #pragma mark - Dictionary Parsing
 
 - (NSDictionary *)dictionaryWithData:(NSData *)data;
@@ -28,12 +39,7 @@ static NSString * kRTParserKeyValueDivisionMarker = @": ";
     if (quickDecodeAttempt)
         return [self _dictionaryWithString:quickDecodeAttempt];
     
-    // TODO These are constants, so they should probably be made static eventually
-    NSData * contentRangeMarker = [@"Content: " dataUsingEncoding:NSUTF8StringEncoding];
-    NSData * attachmentLineMarker = [@"         " dataUsingEncoding:NSUTF8StringEncoding];
-    NSData * attachmentTrailerMarker = [NSData dataWithBytes:(char[]){0x0A, 0x0A, 0x0A} length:3];
-    
-    NSRange rangeOfContentMarker = [data rangeOfData:contentRangeMarker options:0 range:NSMakeRange(0, data.length)];
+    NSRange rangeOfContentMarker = [data rangeOfData:kRTParserContentRangeMarker options:0 range:NSMakeRange(0, data.length)];
     NSRange rangeOfParsableData = NSMakeRange(0, rangeOfContentMarker.location);
     
     NSString * parsableString = [[NSString alloc] initWithData:[data subdataWithRange:rangeOfParsableData] encoding:NSUTF8StringEncoding];
@@ -47,12 +53,12 @@ static NSString * kRTParserKeyValueDivisionMarker = @": ";
         [attachmentData replaceBytesInRange:attachmentDataRemovalRange withBytes:NULL length:0];
         
         attachmentDataSearchRange = NSMakeRange(attachmentDataRemovalRange.location, attachmentData.length - attachmentDataRemovalRange.location);
-        attachmentDataRemovalRange = [attachmentData rangeOfData:attachmentLineMarker options:0 range:attachmentDataSearchRange];
+        attachmentDataRemovalRange = [attachmentData rangeOfData:kRTParserAttachmentLineMarker options:0 range:attachmentDataSearchRange];
     } while (attachmentDataRemovalRange.location != NSNotFound);
     
-    NSRange attachmentTrailerCheckRange = NSMakeRange(attachmentData.length - attachmentTrailerMarker.length, attachmentTrailerMarker.length);
+    NSRange attachmentTrailerCheckRange = NSMakeRange(attachmentData.length - kRTParserAttachmentTrailerMarker.length, kRTParserAttachmentTrailerMarker.length);
     NSData * foundAttachmentTrailer = [attachmentData subdataWithRange:attachmentTrailerCheckRange];
-    if ([attachmentTrailerMarker isEqualToData:foundAttachmentTrailer])
+    if ([kRTParserAttachmentTrailerMarker isEqualToData:foundAttachmentTrailer])
         [attachmentData replaceBytesInRange:attachmentTrailerCheckRange withBytes:NULL length:0];
     
     resultDictionary[@"Content"] = attachmentData;
@@ -84,7 +90,10 @@ static NSString * kRTParserKeyValueDivisionMarker = @": ";
         if ([kRTParserSegmentDivisionMarker isEqualToString:line] && segmentRange.length > 0)
         {
             NSArray * segmentArray = [inputLines subarrayWithRange:segmentRange];
-            [returnArray addObject:[self _parseTextualResponseLines:segmentArray]]; // TODO: missing nil check, good for debugging though
+            NSDictionary * result = [self _parseTextualResponseLines:segmentArray];
+            
+            if (result)
+                [returnArray addObject:result];
             
             segmentRange = NSMakeRange(idx + 1, 0);
             return;
