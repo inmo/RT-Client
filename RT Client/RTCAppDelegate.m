@@ -111,7 +111,7 @@
 
 - (void)openReplyComposerForTicket:(RTTicket *)ticket;
 {
-    [[[RTCReplyComposerWindowController alloc] initWithTicket:ticket] showWindow:self];
+    [[RTCReplyComposerWindowController registeredWindowControllerForTicket:ticket] showWindow:self];
 }
 
 - (void)openDetailForTicket:(RTTicket *)ticket;

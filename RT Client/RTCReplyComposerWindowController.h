@@ -20,6 +20,7 @@
 
 @interface RTCReplyComposerWindowController : NSWindowController
 
++ (instancetype)registeredWindowControllerForTicket:(RTTicket *)ticket;
 - (id)initWithTicket:(RTTicket *)ticket;
 
 - (IBAction)quickLookAttachment:(id)sender;

@@ -47,7 +47,6 @@
 @property (nonatomic, strong) IBOutlet NSTextView * editorView;
 
 @property (nonatomic, strong) RTTicket * ticket;
-@property (nonatomic, strong) id keepAlive;
 
 @property (nonatomic, strong) NSMutableArray * attachedFiles;
 @property (nonatomic, strong) IBOutlet NSPopover * attachmentsPopover;
@@ -62,12 +61,35 @@
 
 @implementation RTCReplyComposerWindowController
 
+static NSMutableDictionary * __registeredTicketReplyComposerWindows = nil;
+
++ (void)initialize
+{
+    __registeredTicketReplyComposerWindows = [NSMutableDictionary new];
+}
+
++ (instancetype)registeredWindowControllerForTicket:(RTTicket *)ticket;
+{
+    if (!ticket)
+        return nil;
+    
+    RTCReplyComposerWindowController * result = __registeredTicketReplyComposerWindows[ticket.objectID];
+    if (!result)
+    {
+        result = [[self alloc] initWithTicket:ticket];
+        
+        if (result)
+            __registeredTicketReplyComposerWindows[ticket.objectID] = result;
+    }
+    
+    return result;
+}
+
 - (id)initWithTicket:(RTTicket *)ticket
 {
     if ((self = [super initWithWindowNibName:NSStringFromClass([self class])]))
     {
         self.ticket = ticket;
-        self.keepAlive = self;
         self.attachedFiles = [NSMutableArray new];
     }
     
@@ -110,7 +132,7 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-    self.keepAlive = nil;
+    [__registeredTicketReplyComposerWindows removeObjectForKey:self.ticket.objectID];
 }
 
 #pragma mark - Composer Actions
