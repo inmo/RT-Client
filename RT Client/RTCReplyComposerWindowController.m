@@ -112,6 +112,7 @@ static NSMutableDictionary * __registeredTicketReplyComposerWindows = nil;
     return self;
 }
 
+
 - (void)showWindow:(id)sender
 {
     [self _updateWindowTitle];
@@ -125,15 +126,11 @@ static NSMutableDictionary * __registeredTicketReplyComposerWindows = nil;
 
 - (void)windowDidLoad
 {
+    [super windowDidLoad];
+    
     [self.editorView setTextContainerInset:NSMakeSize(3, 7)];
+    [self.attachmentsTableView setDoubleAction:@selector(tableViewDoubleClicked:)];
     // TODO: Default string
-}
-
-#pragma mark - WebViewFrameDelegate
-
-- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame
-{
-    [sender stringByEvaluatingJavaScriptFromString:@"document.body.focus();"];
 }
 
 #pragma mark - Custom Appearance Methods
@@ -231,10 +228,14 @@ static NSMutableDictionary * __registeredTicketReplyComposerWindows = nil;
 
 - (void)quickLookAttachment:(id)sender
 {
-    NSInteger row = [(NSButton *)sender tag];
-    
+    [self _quickLookAtIndex:[(NSButton *)sender tag]];
+}
+
+- (void)_quickLookAtIndex:(NSInteger)index
+{
     [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:self];
-    [[QLPreviewPanel sharedPreviewPanel] setCurrentPreviewItemIndex:row];
+    [[QLPreviewPanel sharedPreviewPanel] setCurrentPreviewItemIndex:index];
+
 }
 
 - (void)deleteAttachment:(id)sender
@@ -259,6 +260,14 @@ static NSMutableDictionary * __registeredTicketReplyComposerWindows = nil;
     [cell configureCellWithFileURL:self.attachedFiles[row] atRow:row];
     
     return cell;
+}
+
+- (void)tableViewDoubleClicked:(NSTableView *)sender
+{
+    if ([sender clickedRow] < 0)
+        return;
+    
+    [self _quickLookAtIndex:[sender clickedRow]];
 }
 
 #pragma mark - QLPreviewPanelDelegate
