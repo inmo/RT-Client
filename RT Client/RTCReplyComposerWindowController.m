@@ -19,7 +19,25 @@
 // TODO: Add "refresh this ticket" logic
 // TODO: Add debug logging
 
-@implementation RTCReplyComposerAttachmentTableViewCellView
+@implementation RTCReplyComposerAttachmentTableViewCellView {
+    NSURL * _fileURL;
+}
+
+- (void)_configureCellIconWithFileURL:(NSURL *)fileURL
+{
+    self.imageView.image = nil;
+    _fileURL = fileURL;
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, NULL), ^{
+        CGImageRef iconPreview = QLThumbnailImageCreate(kCFAllocatorDefault, (__bridge CFURLRef)(fileURL), self.imageView.frame.size, NULL);
+        NSImage * icon = (iconPreview) ? [[NSImage alloc] initWithCGImage:iconPreview size:NSZeroSize] : [[NSWorkspace sharedWorkspace] iconForFile:[fileURL path]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (_fileURL == fileURL)
+                self.imageView.image = icon;
+        });
+    });
+}
 
 - (void)configureCellWithFileURL:(NSURL *)fileURL atRow:(NSInteger)row;
 {
@@ -29,9 +47,7 @@
     
     self.textField.stringValue = [fileURL lastPathComponent];
     self.detailTextField.stringValue = [NSByteCountFormatter stringFromByteCount:[value longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
-    
-    CGImageRef iconPreview = QLThumbnailImageCreate(kCFAllocatorDefault, (__bridge CFURLRef)(fileURL), self.imageView.frame.size, NULL);
-    self.imageView.image = (iconPreview) ? [[NSImage alloc] initWithCGImage:iconPreview size:NSZeroSize] : [[NSWorkspace sharedWorkspace] iconForFile:[fileURL path]];
+    [self _configureCellIconWithFileURL:fileURL];
     
     self.toolTip = [NSString stringWithFormat:@"%@\n%@", self.textField.stringValue, self.detailTextField.stringValue];
     self.quickLookButton.tag = self.deleteRowButton.tag = row;
