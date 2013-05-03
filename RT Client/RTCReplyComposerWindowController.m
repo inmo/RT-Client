@@ -15,15 +15,35 @@
 #import "RTEngine.h"
 #import "RTModels.h"
 
+// TODO: Add "view ticket" logic
+// TODO: Modify app delegate to reuse ticket display windows
+// TODO: Add debug logging
+
 @implementation RTCReplyComposerAttachmentTableViewCellView
+
+- (void)configureCellWithFileURL:(NSURL *)fileURL atRow:(NSInteger)row;
+{
+    id __autoreleasing value = nil;
+    NSError * __autoreleasing error = nil;
+    [fileURL getResourceValue:&value forKey:NSURLFileSizeKey error:&error];
+    
+    self.textField.stringValue = [fileURL lastPathComponent];
+    self.detailTextField.stringValue = [NSByteCountFormatter stringFromByteCount:[value longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
+    
+    CGImageRef iconPreview = QLThumbnailImageCreate(kCFAllocatorDefault, (__bridge CFURLRef)(fileURL), self.imageView.frame.size, NULL);
+    self.imageView.image = (iconPreview) ? [[NSImage alloc] initWithCGImage:iconPreview size:NSZeroSize] : [[NSWorkspace sharedWorkspace] iconForFile:[fileURL path]];
+    
+    self.toolTip = [NSString stringWithFormat:@"%@\n%@", self.textField.stringValue, self.detailTextField.stringValue];
+    self.quickLookButton.tag = self.deleteRowButton.tag = row;
+}
+
 @end
 
 
-@interface RTCReplyComposerWindowController () <NSTextViewDelegate, NSTableViewDataSource, NSTableViewDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate>
+@interface RTCReplyComposerWindowController () <NSTableViewDataSource, NSTableViewDelegate, QLPreviewPanelDataSource, QLPreviewPanelDelegate>
 
 @property (nonatomic, strong) IBOutlet NSTextField * ccField;
 @property (nonatomic, strong) IBOutlet NSTextField * bccField;
-@property (nonatomic, strong) IBOutlet NSTextField * subjectField;
 @property (nonatomic, strong) IBOutlet NSTextView * editorView;
 
 @property (nonatomic, strong) RTTicket * ticket;
@@ -67,7 +87,6 @@
 
 - (void)windowDidLoad
 {
-    [self.subjectField setStringValue:self.ticket.subject];
     [self.editorView setTextContainerInset:NSMakeSize(3, 7)];
     // TODO: Default string
 }
@@ -83,18 +102,8 @@
 
 - (void)_updateWindowTitle
 {
-    BOOL isValidTitle = ![@"" isEqualToString:self.subjectField.stringValue];
-    self.window.title = (isValidTitle) ? self.subjectField.stringValue : @"(No Subject)";
-}
-
-#pragma mark - NSTextViewDelegate
-
-- (void)controlTextDidChange:(NSNotification *)note;
-{
-    if (note.object != self.subjectField)
-        return;
-    
-    [self _updateWindowTitle];
+    BOOL isValidTitle = ![@"" isEqualToString:self.ticket.subject];
+    self.window.title = (isValidTitle) ? self.ticket.subject : @"(No Subject)";
 }
 
 #pragma mark - NSWindowDelegate
@@ -114,7 +123,6 @@
     [[RTEngine sharedEngine] postPlainTextReply:@{
                       RTTicketReplyMessageCCKey: ENSURE_NOT_NIL(self.ccField.stringValue),
                      RTTicketReplyMessageBCCKey: ENSURE_NOT_NIL(self.bccField.stringValue),
-                 RTTicketReplyMessageSubjectKey: ENSURE_NOT_NIL(self.subjectField.stringValue),
                     RTTicketReplyMessageBodyKey: ENSURE_NOT_NIL(self.editorView.string)
      } attachments:self.attachedFiles toTicket:self.ticket completion:^(NSError * error) {
         if (error)
@@ -203,17 +211,7 @@
 - (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row
 {
     RTCReplyComposerAttachmentTableViewCellView * cell = [tableView makeViewWithIdentifier:@"std" owner:self];
-    NSURL * fileURL = self.attachedFiles[row];
-    
-    id __autoreleasing value = nil;
-    NSError * __autoreleasing error = nil;
-    [fileURL getResourceValue:&value forKey:NSURLFileSizeKey error:&error];
-    
-    cell.textField.stringValue = [fileURL lastPathComponent];
-    cell.detailTextField.stringValue = [NSByteCountFormatter stringFromByteCount:[value longLongValue] countStyle:NSByteCountFormatterCountStyleFile];
-    cell.imageView.image = [[NSWorkspace sharedWorkspace] iconForFile:[fileURL path]];
-    cell.toolTip = [NSString stringWithFormat:@"%@\n%@", cell.textField.stringValue, cell.detailTextField.stringValue];
-    cell.quickLookButton.tag = cell.deleteRowButton.tag = row;
+    [cell configureCellWithFileURL:self.attachedFiles[row] atRow:row];
     
     return cell;
 }
