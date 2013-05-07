@@ -50,7 +50,10 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
 
 - (id)init;
 {
-    if ((self = [super initWithBaseURL:RT_SERVER_URL]))
+    NSString * serverPrefValue = [[NSUserDefaults standardUserDefaults] stringForKey:@"RTServerURL"];
+    NSURL * serverURL = [NSURL URLWithString:serverPrefValue];
+    
+    if ((self = [super initWithBaseURL:ENSURE_NOT_NIL_OR(serverURL, RT_SERVER_URL)]))
     {
         [self registerHTTPOperationClass:[RTRequestOperation class]];
         
