@@ -57,7 +57,7 @@
             [jsonAttachments addObject:dictionary];
     }];
     
-    [jsonAttachments sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:RTAttachmentSerializationChronologicalOrderingKey ascending:YES]]];
+    [jsonAttachments sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:RTAttachmentSerializationChronologicalOrderingKey ascending:NO]]];
 
     NSError * __autoreleasing error = nil;
     NSData * data = [NSJSONSerialization dataWithJSONObject:jsonAttachments options:NULL error:&error];
@@ -70,15 +70,10 @@
 
 - (NSString *)plainTextSummary;
 {
-    NSArray * attachments = [RTAttachment MR_findAllSortedBy:@"attachmentID" ascending:NO withPredicate:[NSPredicate predicateWithFormat:@"ticket = %@ AND parent = 0", self]];
+    NSArray * attachments = [self.attachments sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]];
+    NSDictionary * lastAttachmentDictionary = [[attachments lastObject] constructSubhierarchyForJSON];
     
-    if (!attachments.lastObject)
-        return @"Loading…";
-    
-    NSString * rawString = [[NSString alloc] initWithData:((RTAttachment *)attachments.lastObject).content encoding:NSUTF8StringEncoding];
-    NSAttributedString * summary = [[NSAttributedString alloc] initWithHTML:[rawString dataUsingEncoding:NSUTF8StringEncoding] baseURL:[[NSBundle mainBundle] bundleURL] documentAttributes:NULL];
-    
-    return summary.string;
+    return lastAttachmentDictionary[RTAttachmentSerializationBodyKey];
 }
 
 - (NSString *)stringFromCreated;

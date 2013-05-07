@@ -10,6 +10,6 @@
 
 @interface RTCAnimatedCloseWindow : NSWindow
 
-- (IBAction)orderOutWithAnimation:(id)sender;
+- (IBAction)performCloseWithAnimation:(id)sender;
 
 @end

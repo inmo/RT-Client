@@ -167,7 +167,7 @@ static NSMutableDictionary * __registeredTicketReplyComposerWindows = nil;
             return;
         }
         
-        [(RTCAnimatedCloseWindow *)self.window orderOutWithAnimation:self];
+        [(RTCAnimatedCloseWindow *)self.window performCloseWithAnimation:self];
     }];
 }
 

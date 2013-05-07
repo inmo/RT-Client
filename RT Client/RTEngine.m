@@ -134,6 +134,8 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
          }];
          
          [self enqueueBatchOfHTTPRequestOperations:attachmentFetchOperations progressBlock:nil completionBlock:^(NSArray * operations) {
+             ticket.attachments = [ticket.attachments copy];
+             NSLog(@"Saved: %d tickets", ticket.attachments.count);
              [scratchContext MR_saveToPersistentStoreAndWait];
          }];
      } failure:nil];
@@ -236,6 +238,7 @@ static NSString * const RTTicketReplyRequestContentKey = @"content";
         return;
     
     [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"%@", operation.responseString);
         completion(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         completion(error);

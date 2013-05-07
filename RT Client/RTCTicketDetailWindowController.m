@@ -73,7 +73,9 @@ static NSMutableDictionary * __registeredTicketDetailWindows = nil;
 {
     if ([keyPath isEqualToString:@"attachments"] && object == self.selectedTicket)
     {
-        [self reloadDetailView];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self reloadDetailView];
+        });
         return;
     }
     

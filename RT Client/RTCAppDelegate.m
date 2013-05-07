@@ -28,6 +28,9 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    NSError * __autoreleasing error = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:RTDataStorageDirectory() error:&error];
+    
     self.queueWindowController = [[RTCTicketListWindowController alloc] init];
     [self.queueWindowController.window setExcludedFromWindowsMenu:YES];
     [self.queueWindowController showWindow:self];

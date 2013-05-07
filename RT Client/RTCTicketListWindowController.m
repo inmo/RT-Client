@@ -43,6 +43,8 @@
     return self;
 }
 
+// TODO: Refreshing of "Loading…" text
+
 - (void)awakeFromNib;
 {
     self.ticketController.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]];

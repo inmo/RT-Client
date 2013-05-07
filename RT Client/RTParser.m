@@ -250,7 +250,7 @@ static NSData * kRTParserAttachmentTrailerMarker = nil;
     NSDate * date = [dateFormatter dateFromString:str];
     if (date) return date;
     
-    dateFormatter.dateFormat = @"yyyy-mm-dd HH:mm:ss";
+    dateFormatter.dateFormat = @"yyyy-MM-dd HH:mm:ss";
     
     date = [dateFormatter dateFromString:str];
     if (date) return date;

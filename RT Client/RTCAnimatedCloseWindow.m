@@ -14,7 +14,7 @@
     BOOL _isAnimating;
 }
 
-- (void)orderOutWithAnimation:(id)sender
+- (void)performCloseWithAnimation:(id)sender
 {
     if (_isAnimating)
         return;
@@ -30,7 +30,7 @@
         CGRect offscreenRect = CGRectOffset(self.frame, 0, screen.frame.size.height);
         [[self animator] setFrame:offscreenRect display:YES];
     } completionHandler:^{
-        [super orderOut:sender];
+        [self performClose:sender];
     }];
 }
 
