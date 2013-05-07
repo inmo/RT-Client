@@ -137,6 +137,10 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
          }];
          
          [self enqueueBatchOfHTTPRequestOperations:attachmentFetchOperations progressBlock:nil completionBlock:^(NSArray * operations) {
+             NSSet * attachments = [ticket.attachments copy];
+             ticket.attachments = nil;
+             [scratchContext MR_saveToPersistentStoreAndWait];
+             ticket.attachments = attachments;
              [scratchContext MR_saveToPersistentStoreAndWait];
          }];
      } failure:nil];
@@ -239,8 +243,10 @@ static NSString * const RTTicketReplyRequestContentKey = @"content";
         return;
     
     [self enqueueHTTPRequestOperation:[self HTTPRequestOperationWithRequest:request success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        NSLog(@"%@", operation.responseString);
-        completion(nil);
+        NSRange successRange = [operation.responseString rangeOfString:@"# Message recorded"];
+        if (successRange.location == NSNotFound)
+            completion([NSError errorWithDomain:@"com.inmo.RT-Client" code:500 userInfo:@{ NSLocalizedDescriptionKey: operation.responseString }]);
+        else completion(nil);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         completion(error);
     }]];
