@@ -137,8 +137,6 @@ typedef NS_OPTIONS(NSUInteger, RTEngineLoginFailureReason) {
          }];
          
          [self enqueueBatchOfHTTPRequestOperations:attachmentFetchOperations progressBlock:nil completionBlock:^(NSArray * operations) {
-             ticket.attachments = [ticket.attachments copy];
-             NSLog(@"Saved: %d tickets", ticket.attachments.count);
              [scratchContext MR_saveToPersistentStoreAndWait];
          }];
      } failure:nil];
